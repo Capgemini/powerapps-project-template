@@ -103,11 +103,11 @@ module.exports = class extends Generator {
       this.templatePath(
         `Solutions\\${this.answers.client}.${
           this.answers.package
-        }.Customisations\\Scripts\\.npmrc`
+        }.WebResources\\Scripts\\.npmrc`
       ),
       `Solutions\\${this.answers.client}.${
         this.answers.package
-      }.Customisations\\Scripts\\.npmrc`
+      }.WebResources\\Scripts\\.npmrc`
     );
   }
 };
