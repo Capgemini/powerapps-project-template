@@ -219,65 +219,75 @@ async function setupAzureDevOps(
   repoName: string,
   log: (message?: string) => void,
 ) {
-  try {
-    const azureDevOps = new Ado(url, token, log);
-    const variableGroups = await azureDevOps.createVariableGroups(
-      project,
-      [
-        {
-          name: "Azure DevOps - Capgemini UK",
-          variables: {
-            CapgeminiUkPackageReadKey: { value: nugetKey, isSecret: true },
-          },
+  const azureDevOps = new Ado(url, token, log);
+  const variableGroups = await azureDevOps.createVariableGroups(
+    project,
+    [
+      {
+        name: "Azure DevOps - Capgemini UK",
+        variables: {
+          CapgeminiUkPackageReadKey: { value: nugetKey, isSecret: true },
         },
-        {
-          name: "Azure DevOps",
-          variables: { GitAuthToken: { value: gitToken, isSecret: true } },
-        },
-      ],
-    );
-
-    const repositories = await azureDevOps.createRepos(project, [{ name: repoName }]);
-
-    const packageSolutions = await getYamlBuildFilesFromPackage(destination);
-    const variableGroupIds = variableGroups.map((group) => group.id || -1);
-    const projectId = await azureDevOps.getProjectId(project) || "";
-
-    const buildDefinitions = await azureDevOps.createBuildDefinitions(
-      project,
-      packageSolutions.map((solution) =>
-        azureDevOps.generateBuildDefinition(
-          solution.name,
-          solution.filePath,
-          repositories[0].id || "",
-          variableGroupIds,
-        )
-      )
-    );
-
-    const releaseDefinitions = await azureDevOps.createReleaseDefinitions(
-      project,
-      packageSolutions.map(solution =>
-        azureDevOps.generateReleaseDefinitionFromTemplate(
-          solution.name,
-          variableGroupIds,
-          projectId,
-          buildDefinitions.filter(definition => (definition.name && definition.name.startsWith(solution.name)))[0].id || 0,
-          buildDefinitions[0] && buildDefinitions[0].queue && buildDefinitions[0].queue.id || 0
-        )
-      )
-    );
-
-    return {
-      variableGroups,
-      repositories,
-      buildDefinitions,
-      releaseDefinitions
-    };
-  } catch (e) {
+      },
+      {
+        name: "Azure DevOps",
+        variables: { GitAuthToken: { value: gitToken, isSecret: true } },
+      },
+    ],
+  ).catch(e => {
     log(e);
-    return {};
-  }
+    return undefined;
+  });
+
+  const repositories = await azureDevOps.createRepos(project, [{ name: repoName }]);
+  const packageSolutions = await getYamlBuildFilesFromPackage(destination);
+  const projectId = await azureDevOps.getProjectId(project);
+
+  if (variableGroups === undefined)
+    throw "Cannot continue. Azure DevOps setup is stopping."
+
+  const variableGroupIds = variableGroups.map(group => group.id!);
+
+  const buildDefinitions = await azureDevOps.createBuildDefinitions(
+    project,
+    packageSolutions.map((solution) =>
+      azureDevOps.generateBuildDefinition(
+        solution.name,
+        solution.filePath,
+        repositories[0].id || "",
+        variableGroupIds,
+      )
+    )
+  ).catch(e => {
+    log(e);
+    return undefined;
+  });
+
+  if (buildDefinitions === undefined)
+    throw "Cannot continue. Azure DevOps setup is stopping."
+
+  const releaseDefinitions = await azureDevOps.createReleaseDefinitions(
+    project,
+    packageSolutions.map(solution =>
+      azureDevOps.generateReleaseDefinitionFromTemplate(
+        solution.name,
+        variableGroupIds,
+        projectId!,
+        buildDefinitions.filter(definition => (definition.name && definition.name.startsWith(solution.name)))[0].id || 0,
+        buildDefinitions[0] && buildDefinitions[0].queue && buildDefinitions[0].queue.id || 0
+      )
+    )
+  ).catch(e => {
+    log(e);
+    return undefined;
+  });
+
+  return {
+    variableGroups,
+    repositories,
+    buildDefinitions,
+    releaseDefinitions
+  };
 }
 
 async function getYamlBuildFilesFromPackage(packageDirectory: string) {
