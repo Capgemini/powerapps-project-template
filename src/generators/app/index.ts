@@ -1,114 +1,120 @@
-import Generator from "yeoman-generator";
-import yosay from "yosay";
-import inquirer from "inquirer";
-import rimraf from "rimraf";
-import Renamer from "renamer";
-import ADO, { NewReleaseDefinition } from "./ado";
 import glob from "glob-promise";
+import rimraf from "rimraf";
+import inquirer from "inquirer";
+import Renamer from "renamer";
 import * as chalk from "chalk";
-import { GitRepositoryCreateOptions } from "azure-devops-node-api/interfaces/GitInterfaces";
 import Git from "simple-git/promise";
+import Generator from "yeoman-generator";
+import Ado from "./ado";
 
-const TEMPLATE_GIT_REPO = "https://capgeminiuk.visualstudio.com/Capgemini%20Reusable%20IP/_git/Capgemini.Xrm.Templates";
+const TEMPLATE_GIT_REPO =
+  "https://capgeminiuk.visualstudio.com/Capgemini%20Reusable%20IP/_git/Capgemini.Xrm.Templates";
 
-class main extends Generator {
-  answers!: inquirer.Answers;
-  async prompting(): Promise<void> {
-    this.log(yosay(`Welcome to the laudable ${chalk.default.red("cdspackage")} generator!`));
+class Main extends Generator {
+  private answers!: inquirer.Answers;
+  private ado?: Ado = undefined;
 
-    const prompts: Generator.Questions = [
+  public async prompting(): Promise<void> {
+    this.answers = await this.prompt([
       {
-        type: "input",
+        filter: filterNamespace,
+        message: "Name of the client?",
         name: "client",
-        message: "What is the name of the client?",
+        store: true,
         validate: validateNamespace,
-        filter: filterNamespace,
-        store: true
       },
       {
-        type: "input",
+        filter: filterNamespace,
+        message: "Name of the package?",
         name: "package",
-        message: "What is the name of the package?",
+        store: true,
         validate: validateNamespace,
-        filter: filterNamespace,
-        store: true
       },
       {
-        type: "input",
+        message: "Extract environment URL?",
         name: "devUrl",
-        message: "What is the dev URL?",
+        store: true,
         validate: validateUrl,
-        store: true
       },
       {
-        type: "input",
+        message: "Dynamics 365 service account email?",
         name: "devUsername",
-        message: "What is the dev admin email?",
+        store: true,
         validate: validateEmail,
-        store: true
       },
       {
-        type: "input",
+        mask: "*",
+        message: "Dynamics 365 service account password?",
         name: "devPassword",
-        message: "What is the dev admin password?",
-        store: true,
-        mask: "*"
+        type: "password",
       },
       {
-        type: "input",
+        message: "Azure DevOps URL?",
         name: "adoUrl",
-        message: "What is your AzureDevOps url?",
+        store: true,
         validate: validateUrl,
-        store: true
       },
       {
-        type: "input",
-        name: "adoProject",
-        message: "What is your project name on Azure DevOps?",
-        store: true
-      },
-      {
-        type: "input",
+        mask: "*",
+        message: "Azure Dev Ops auth token (manage)?",
         name: "adoToken",
-        message: "What is your auth token for Azure DevOps?",
-        store: true,
-        mask: "*"
+        type: "password",
       },
       {
-        type: "input",
-        name: "adoNugetKey",
-        message: "What is your Nuget key for Capgemini IP?",
-        store: true,
-        mask: "*"
+        choices: async (answers) => {
+          this.ado = new Ado(answers.adoUrl, answers.adoToken, this.log);
+          return this.ado
+            .getProjects()
+            .then((projects) => projects.map((project) => project.name!));
+        },
+        message: "Azure DevOps project?",
+        name: "adoProject",
+        type: "list",
       },
       {
-        type: "input",
+        mask: "*",
+        message: "Azure Dev Ops auth token (code)?",
         name: "adoGitToken",
-        message: "What is your Azure DevOps git auth token?",
-        store: true,
-        mask: "*"
-      }
-    ];
-
-    this.answers = await this.prompt(prompts);
+        type: "password",
+      },
+      {
+        mask: "*",
+        message: "Azure DevOps - Capgemini UK auth token (packages)?",
+        name: "adoNugetKey",
+        type: "password",
+      },
+    ]);
   }
 
-  async writing(): Promise<void> {
+  public async writing(): Promise<void> {
     this.log(`Downloading latest template to ${this.templatePath()}...`);
-    downloadLatestTemplate(TEMPLATE_GIT_REPO, this.templatePath(), this.spawnCommandSync);
+    downloadLatestTemplate(
+      TEMPLATE_GIT_REPO,
+      this.templatePath(),
+      this.spawnCommandSync,
+    );
 
-    this.log(`Building package from template...`)
-    copyAndTransformTemplate(this.templatePath(), this.destinationPath(), this.answers, this.fs);
-  };
+    this.log(`Building package from template...`);
+    copyAndTransformTemplate(
+      this.templatePath(),
+      this.destinationPath(),
+      this.answers,
+      this.fs,
+    );
+  }
 
-  async install() {
-    const rootNamespace = `${this.answers.client}.${this.answers.package}`
+  public async install() {
+    const rootNamespace = `${this.answers.client}.${this.answers.package}`;
 
     this.log(`Renaming file and folders...`);
-    renameFileAndFolders("Client.Package", rootNamespace, this.destinationPath());
+    renameFileAndFolders(
+      "Client.Package",
+      rootNamespace,
+      this.destinationPath(),
+    );
 
     this.log(`Setting up Azure DevOps...`);
-    const { reposResult } = await setupAzureDevOps(
+    const { repositories } = await setupAzureDevOps(
       this.answers.adoUrl,
       this.answers.adoProject,
       this.answers.adoToken,
@@ -116,18 +122,19 @@ class main extends Generator {
       this.answers.adoGitToken,
       this.destinationPath(),
       rootNamespace,
-      (msg: string) => this.log("  " + msg));
+      (msg?: string) => this.log("  " + msg),
+    );
 
     this.log(`Initalising Git repo and pushing to Azure DevOps...`);
-    if (reposResult && reposResult[0].remoteUrl) {
-      await pushNewGitRepo(this.destinationPath(), reposResult[0].remoteUrl || "");
+    if (repositories && repositories[0].remoteUrl) {
+      await pushNewGitRepo(this.destinationPath(), repositories[0].remoteUrl || "");
     } else {
       this.log(chalk.default.red(`Failed! Repo was not created in Azure DevOps.`));
     }
 
     this.log(`Complete! Open the directory in VS or VS Code.`);
   }
-};
+}
 
 //#region Input validation and filters
 function validateNamespace(input: string): boolean | string {
@@ -139,13 +146,13 @@ function validateNamespace(input: string): boolean | string {
 function filterNamespace(input: string): string {
   return input
     .split(" ")
-    .map(s => s.charAt(0).toUpperCase() + s.substring(1))
+    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
     .join();
 }
 
 function validateUrl(input: string): boolean | string {
   return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(
-    input
+    input,
   )
     ? true
     : "You must provide a valid URL.";
@@ -154,7 +161,7 @@ function validateUrl(input: string): boolean | string {
 function validateEmail(input: string): boolean | string {
   // tslint:disable-next-line:max-line-length
   return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-    input
+    input,
   )
     ? true
     : "You must provide a valid email.";
@@ -163,7 +170,11 @@ function validateEmail(input: string): boolean | string {
 //#endregion
 
 //#region Writing steps
-function downloadLatestTemplate(gitRepo: string, destination: string, spawnCommandSync: any) {
+function downloadLatestTemplate(
+  gitRepo: string,
+  destination: string,
+  spawnCommandSync: (command: string, args: string[]) => any,
+) {
   rimraf.sync(destination);
   spawnCommandSync("git", [
     "clone",
@@ -173,109 +184,122 @@ function downloadLatestTemplate(gitRepo: string, destination: string, spawnComma
     "sample-repository",
     "-q",
     gitRepo,
-    destination
+    destination,
   ]);
 
   rimraf.sync(`${destination}/.git`);
 }
 
-function copyAndTransformTemplate(from: string, to: string, map: object, fs: Generator.MemFsEditor) {
-  fs.copyTpl(
-    from,
-    to,
-    map,
-    {},
-    { globOptions: { dot: true } }
-  );
+function copyAndTransformTemplate(
+  from: string,
+  to: string,
+  map: object,
+  fs: Generator.MemFsEditor,
+) {
+  fs.copyTpl(from, to, map, {}, { globOptions: { dot: true } });
 }
 
 function renameFileAndFolders(from: string, to: string, location: string) {
   const renamer = new Renamer();
   renamer.rename({
+    dryRun: false,
     files: [`${location}/**/*`],
     find: from,
     replace: to,
-    dryRun: false
   });
 }
 
-async function setupAzureDevOps(url: string, project: string, token: string, nugetKey: string, gitToken: string, destination: string, repoName: string, log: any) {
+async function setupAzureDevOps(
+  url: string,
+  project: string,
+  token: string,
+  nugetKey: string,
+  gitToken: string,
+  destination: string,
+  repoName: string,
+  log: (message?: string) => void,
+) {
   try {
-    let azureDevOps = new ADO(url, project, token, log);
-    const projectId = await azureDevOps.getProjectId();
+    const azureDevOps = new Ado(url, token, log);
+    const variableGroups = await azureDevOps.createVariableGroups(
+      project,
+      [
+        {
+          name: "Azure DevOps - Capgemini UK",
+          variables: {
+            CapgeminiUkPackageReadKey: { value: nugetKey, isSecret: true },
+          },
+        },
+        {
+          name: "Azure DevOps",
+          variables: { GitAuthToken: { value: gitToken, isSecret: true } },
+        },
+      ],
+    );
 
-    if (projectId === undefined) throw "Project does not exist.";
+    const repositories = await azureDevOps.createRepos(project, [{ name: repoName }]);
 
-    let variableGroupsResult = await azureDevOps.createVariableGroups([
-      {
-        name: "Azure DevOps - Capgemini UK",
-        variables: { "CapgeminiUkPackageReadKey": { value: nugetKey, isSecret: true } }
-      },
-      {
-        name: "Azure DevOps",
-        variables: { "GitAuthToken": { value: gitToken, isSecret: true } }
-      }
-    ]);
+    const packageSolutions = await getYamlBuildFilesFromPackage(destination);
+    const variableGroupIds = variableGroups.map((group) => group.id || -1);
+    const projectId = await azureDevOps.getProjectId(project) || "";
 
-    let repos: GitRepositoryCreateOptions[] = [{ name: repoName }];
-    let reposResult = await azureDevOps.createRepos(repos);
+    const buildDefinitions = await azureDevOps.createBuildDefinitions(
+      project,
+      packageSolutions.map((solution) =>
+        azureDevOps.generateBuildDefinition(
+          solution.name,
+          solution.filePath,
+          repositories[0].id || "",
+          variableGroupIds,
+        )
+      )
+    );
 
-    let solutions = await getYamlBuildFilesFromPackage(destination);
-    let variableGroupIds = variableGroupsResult.map(group => group.id || -1);
-    let buildDefinitions = solutions.map(solution => azureDevOps.Helper.generateBuildDefinitionFromTemplate(
-      solution.name,
-      solution.filePath,
-      reposResult[0].id || "",
-      variableGroupIds));
-    let buildDefinitionsResult = await azureDevOps.createBuildDefinitions(buildDefinitions);
-
-    let releaseDefinitions: NewReleaseDefinition[] = solutions.map(solution => azureDevOps.Helper.generateReleaseDefinitionFromTemplate(
-      solution.name,
-      variableGroupIds,
-      projectId,
-      buildDefinitionsResult.filter(definition => (definition.name && definition.name.startsWith(solution.name)))[0].id || 0,
-      buildDefinitionsResult[0] && buildDefinitionsResult[0].queue && buildDefinitionsResult[0].queue.id || 0
-    ));
-    let releaseDefinitionsResult = await azureDevOps.createReleaseDefinitions(releaseDefinitions);
+    const releaseDefinitions = await azureDevOps.createReleaseDefinitions(
+      project,
+      packageSolutions.map(solution =>
+        azureDevOps.generateReleaseDefinitionFromTemplate(
+          solution.name,
+          variableGroupIds,
+          projectId,
+          buildDefinitions.filter(definition => (definition.name && definition.name.startsWith(solution.name)))[0].id || 0,
+          buildDefinitions[0] && buildDefinitions[0].queue && buildDefinitions[0].queue.id || 0
+        )
+      )
+    );
 
     return {
-      variableGroupsResult,
-      reposResult,
-      buildDefinitionsResult,
-      releaseDefinitionsResult
-    }
+      variableGroups,
+      repositories,
+      buildDefinitions,
+      releaseDefinitions
+    };
   } catch (e) {
-    console.error(e);
-
-    return {
-      variableGroupsResult: undefined,
-      reposResult: undefined,
-      buildDefinitionsResult: undefined,
-      releaseDefinitionsResult: undefined
-    }
+    log(e);
+    return {};
   }
-};
+}
 
 async function getYamlBuildFilesFromPackage(packageDirectory: string) {
-  return (await glob("**\\*.yml", { cwd: packageDirectory }))
-    .map(f => {
-      let parts = f.split("/").slice(-2);
-      return {
-        name: parts[0],
-        file: parts[1],
-        filePath: f
-      }
-    });
-};
+  return (await glob("**\\*.yml", { cwd: packageDirectory })).map((f) => {
+    const parts = f.split("/").slice(-2);
+    return {
+      file: parts[1],
+      filePath: f,
+      name: parts[0],
+    };
+  });
+}
 
 async function pushNewGitRepo(repoLocation: string, gitUrl: string) {
   const repo = Git(repoLocation);
-  await repo.init();
-  await repo.add(".");
-  await repo.commit("Init. Build from template.");
-  await repo.remote(["add", "origin", gitUrl]);
-  await repo.push("origin", "master", { "-u": true });
+  repo
+    .init()
+    .then(() => repo.add("."))
+    .then(() => repo.commit("Initial commit from template."))
+    .then(() => repo.remote(["add", "origin", gitUrl]))
+    .then(() => repo.push("origin", "master", { "-u": true }));
 }
 //#endregion
 
-module.exports = main;
+module.exports = Main;
