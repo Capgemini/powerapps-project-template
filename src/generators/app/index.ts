@@ -3,7 +3,7 @@ import yosay from "yosay";
 import inquirer from "inquirer";
 import rimraf from "rimraf";
 import Renamer from "renamer";
-import ADO from "./ado";
+import ADO, { NewReleaseDefinition } from "./ado";
 import glob from "glob-promise";
 import * as chalk from "chalk";
 import { GitRepositoryCreateOptions } from "azure-devops-node-api/interfaces/GitInterfaces";
@@ -108,7 +108,7 @@ class main extends Generator {
     renameFileAndFolders("Client.Package", rootNamespace, this.destinationPath());
 
     this.log(`Setting up Azure DevOps...`);
-    const { remoteGitUrl } = await setupAzureDevOps(
+    const { reposResult } = await setupAzureDevOps(
       this.answers.adoUrl,
       this.answers.adoProject,
       this.answers.adoToken,
@@ -119,7 +119,11 @@ class main extends Generator {
       (msg: string) => this.log("  " + msg));
 
     this.log(`Initalising Git repo and pushing to Azure DevOps...`);
-    await pushNewGitRepo(this.destinationPath(), remoteGitUrl || "");
+    if (reposResult && reposResult[0].remoteUrl) {
+      await pushNewGitRepo(this.destinationPath(), reposResult[0].remoteUrl || "");
+    } else {
+      this.log(chalk.default.red(`Failed! Repo was not created in Azure DevOps.`));
+    }
 
     this.log(`Complete! Open the directory in VS or VS Code.`);
   }
@@ -182,7 +186,7 @@ function copyAndTransformTemplate(from: string, to: string, map: object, fs: Gen
     map,
     {},
     { globOptions: { dot: true } }
-  );  
+  );
 }
 
 function renameFileAndFolders(from: string, to: string, location: string) {
@@ -195,9 +199,12 @@ function renameFileAndFolders(from: string, to: string, location: string) {
   });
 }
 
-async function setupAzureDevOps(url: string, project: string, token: string, nugetKey: string, gitToken: string, destination: string, repoName: string, log: any){
+async function setupAzureDevOps(url: string, project: string, token: string, nugetKey: string, gitToken: string, destination: string, repoName: string, log: any) {
   try {
     let azureDevOps = new ADO(url, project, token, log);
+    const projectId = await azureDevOps.getProjectId();
+
+    if (projectId === undefined) throw "Project does not exist.";
 
     let variableGroupsResult = await azureDevOps.createVariableGroups([
       {
@@ -215,18 +222,36 @@ async function setupAzureDevOps(url: string, project: string, token: string, nug
 
     let solutions = await getYamlBuildFilesFromPackage(destination);
     let variableGroupIds = variableGroupsResult.map(group => group.id || -1);
-    let buildDefinitions = solutions.map(solution => azureDevOps.createBuildDefinition(solution.name, solution.filePath, reposResult[0].id || "", variableGroupIds))
-
+    let buildDefinitions = solutions.map(solution => azureDevOps.Helper.generateBuildDefinitionFromTemplate(
+      solution.name,
+      solution.filePath,
+      reposResult[0].id || "",
+      variableGroupIds));
     let buildDefinitionsResult = await azureDevOps.createBuildDefinitions(buildDefinitions);
 
+    let releaseDefinitions: NewReleaseDefinition[] = solutions.map(solution => azureDevOps.Helper.generateReleaseDefinitionFromTemplate(
+      solution.name,
+      variableGroupIds,
+      projectId,
+      buildDefinitionsResult.filter(definition => (definition.name && definition.name.startsWith(solution.name)))[0].id || 0,
+      buildDefinitionsResult[0] && buildDefinitionsResult[0].queue && buildDefinitionsResult[0].queue.id || 0
+    ));
+    let releaseDefinitionsResult = await azureDevOps.createReleaseDefinitions(releaseDefinitions);
+
     return {
-      remoteGitUrl: reposResult[0].remoteUrl
+      variableGroupsResult,
+      reposResult,
+      buildDefinitionsResult,
+      releaseDefinitionsResult
     }
   } catch (e) {
     console.error(e);
 
     return {
-      remoteGitUrl: undefined
+      variableGroupsResult: undefined,
+      reposResult: undefined,
+      buildDefinitionsResult: undefined,
+      releaseDefinitionsResult: undefined
     }
   }
 };
@@ -243,13 +268,13 @@ async function getYamlBuildFilesFromPackage(packageDirectory: string) {
     });
 };
 
-async function pushNewGitRepo(repoLocation:string, gitUrl: string) {
+async function pushNewGitRepo(repoLocation: string, gitUrl: string) {
   const repo = Git(repoLocation);
   await repo.init();
   await repo.add(".");
   await repo.commit("Init. Build from template.");
   await repo.remote(["add", "origin", gitUrl]);
-  await repo.push("origin", "master", {"-u": true});
+  await repo.push("origin", "master", { "-u": true });
 }
 //#endregion
 
