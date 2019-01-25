@@ -30,17 +30,5 @@ steps:
 
     publishFeed: '25162f08-da5e-4c04-bac0-40216eaa4bf9'
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-  inputs:
-    Contents: 'dist/**/*'
-
-    TargetFolder: '$(build.artifactstagingdirectory)'
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-
 
 
