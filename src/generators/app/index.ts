@@ -1,11 +1,12 @@
+import * as chalk from "chalk";
 import glob from "glob-promise";
-import rimraf from "rimraf";
 import inquirer from "inquirer";
 import Renamer from "renamer";
-import * as chalk from "chalk";
+import rimraf from "rimraf";
 import Git from "simple-git/promise";
 import Generator from "yeoman-generator";
 import Ado from "./ado";
+import { generateBuildDefinition, generateReleaseDefinitionFromTemplate } from "./adoDefinitionGenerators";
 
 const TEMPLATE_GIT_REPO =
   "https://capgeminiuk.visualstudio.com/Capgemini%20Reusable%20IP/_git/Capgemini.Xrm.Templates";
@@ -234,7 +235,7 @@ async function setupAzureDevOps(
         variables: { GitAuthToken: { value: gitToken, isSecret: true } },
       },
     ],
-  ).catch(e => {
+  ).catch((e) => {
     log(e);
     return undefined;
   });
@@ -243,50 +244,52 @@ async function setupAzureDevOps(
   const packageSolutions = await getYamlBuildFilesFromPackage(destination);
   const projectId = await azureDevOps.getProjectId(project);
 
-  if (variableGroups === undefined)
-    throw "Cannot continue. Azure DevOps setup is stopping."
+  if (variableGroups === undefined) {
+    throw new Error("Cannot continue. Azure DevOps setup is stopping.");
+  }
 
-  const variableGroupIds = variableGroups.map(group => group.id!);
+  const variableGroupIds = variableGroups.map((group) => group.id!);
 
   const buildDefinitions = await azureDevOps.createBuildDefinitions(
     project,
     packageSolutions.map((solution) =>
-      azureDevOps.generateBuildDefinition(
+      generateBuildDefinition(
         solution.name,
         solution.filePath,
         repositories[0].id || "",
         variableGroupIds,
-      )
-    )
-  ).catch(e => {
+      ),
+    ),
+  ).catch((e) => {
     log(e);
     return undefined;
   });
 
-  if (buildDefinitions === undefined)
-    throw "Cannot continue. Azure DevOps setup is stopping."
+  if (buildDefinitions === undefined) {
+    throw new Error("Cannot continue. Azure DevOps setup is stopping.");
+  }
 
   const releaseDefinitions = await azureDevOps.createReleaseDefinitions(
     project,
-    packageSolutions.map(solution =>
-      azureDevOps.generateReleaseDefinitionFromTemplate(
+    packageSolutions.map((solution) =>
+      generateReleaseDefinitionFromTemplate(
         solution.name,
         variableGroupIds,
         projectId!,
-        buildDefinitions.filter(definition => (definition.name && definition.name.startsWith(solution.name)))[0].id || 0,
-        buildDefinitions[0] && buildDefinitions[0].queue && buildDefinitions[0].queue.id || 0
-      )
-    )
-  ).catch(e => {
+        buildDefinitions.filter((def) => (def.name && def.name.startsWith(solution.name)))[0].id || 0,
+        buildDefinitions[0] && buildDefinitions[0].queue && buildDefinitions[0].queue.id || 0,
+      ),
+    ),
+  ).catch((e) => {
     log(e);
     return undefined;
   });
 
   return {
-    variableGroups,
-    repositories,
     buildDefinitions,
-    releaseDefinitions
+    releaseDefinitions,
+    repositories,
+    variableGroups,
   };
 }
 
