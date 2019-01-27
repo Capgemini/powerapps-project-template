@@ -1,19 +1,19 @@
 {
   "name": "generator-cdspackage",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A generator for creating the entire package for CDS (MS Dynamics and Power Apps) solutions",
   "author": {
     "name": "Capgemini",
     "email": "tom.ashworth@capgemini.com"
   },
   "files": [
-    "dist/generators/"
+    "generators"
   ],
   "keywords": [
-    "",
     "yeoman-generator"
   ],
   "devDependencies": {
+    "@types/inquirer": "0.0.43",
     "@types/node": "^10.12.18",
     "@types/yeoman-generator": "^3.0.1",
     "@types/yosay": "0.0.29",
@@ -26,9 +26,11 @@
     "lint-staged": "^8.1.0",
     "prettier": "^1.15.2",
     "tslint": "^5.12.1",
+    "tslint-config-prettier": "^1.17.0",
     "typescript": "^3.2.4",
     "yeoman-assert": "^3.1.0",
-    "yeoman-test": "^1.7.0"
+    "yeoman-test": "^1.7.0",
+    "yo": "^2.0.5"
   },
   "engines": {
     "npm": ">= 4.0.0"
@@ -39,6 +41,7 @@
     "chalk": "^2.1.0",
     "glob": "^7.1.3",
     "glob-promise": "^3.4.0",
+    "inquirer": "^6.2.1",
     "renamer": "^1.1.1",
     "rimraf": "^2.6.3",
     "simple-git": "^1.107.0",
@@ -76,7 +79,9 @@
   },
   "scripts": {
     "pretest": "eslint .",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc && xcopy \"src\\generators\\app\\definitions\" \"generators\\app\\definitions\"",
+    "clean-debug": "del /S /q debug\\* && FOR /D %p IN (\"debug\\*\") DO rmdir \"%p\" /s /q"
   },
   "license": "unlicense"
 }

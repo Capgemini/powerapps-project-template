@@ -2,4 +2,6 @@ node_modules
 coverage
 dist
 generators
+debug
 !src/generators
+.vscode/settings.json

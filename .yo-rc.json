@@ -1,9 +1,0 @@
-{
-  "generator-node": {
-    "promptValues": {
-      "authorName": "Capgemini",
-      "authorEmail": "tom.ashworth@capgemini.com",
-      "authorUrl": ""
-    }
-  }
-}

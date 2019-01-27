@@ -1,0 +1,52 @@
+{
+  "name": "",
+  "tags": [""],
+  "buildNumberFormat": "$(date:yyyyMMdd)$(rev:.r)",
+  "path": "",
+  "process": {
+    "type": 2,
+    "yamlFilename": ""
+  },
+  "triggers": [
+    {
+      "branchFilters": [],
+      "pathFilters": [],
+      "settingsSourceType": 2,
+      "batchChanges": false,
+      "maxConcurrentBuildsPerBranch": 1,
+      "triggerType": 2
+    }
+  ],
+  "quality": 1,
+  "queue": { "name": "Hosted VS2017" },
+  "queueStatus": 0,
+  "repository": {
+    "checkoutSubmodules": false,
+    "clean": "true",
+    "defaultBranch": "refs/heads/master",
+    "id": "",
+    "properties": {
+      "checkoutNestedSubmodules": "false",
+      "cleanOptions": "3",
+      "fetchDepth": "0",
+      "gitLfsSupport": "false",
+      "labelSources": "0",
+      "labelSourcesFormat": "$(build.buildNumber)",
+      "reportBuildStatus": "true",
+      "skipSyncSource": "false"
+    },
+    "type": "TfsGit"
+  },
+  "type": 2,
+  "variableGroups": [{}],
+  "variables": {
+    "BuildConfiguration": {
+      "allowOverride": true,
+      "value": "release"
+    },
+    "BuildPlatform": {
+      "allowOverride": true,
+      "value": "any cpu"
+    }
+  }
+}
