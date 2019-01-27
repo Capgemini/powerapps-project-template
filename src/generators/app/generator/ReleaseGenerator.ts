@@ -75,11 +75,11 @@ export class ReleaseGenerator {
     def.environments![0].queueId = agentPoolQueueId;
     (def.environments![0]
       .deployPhases![0] as DeployPhase).deploymentInput!.queueId = agentPoolQueueId;
-    def!.artifacts![0].alias = solution;
+    def!.artifacts![0].alias = def.variables!.SolutionName.value;
     def!.artifacts![0].definitionReference!.definition.id = definitionId.toString();
     def!.artifacts![0].definitionReference!.project.id = projectId;
     const trigger: ArtifactSourceTrigger = def!.triggers![0];
-    trigger.artifactAlias = `${solution}`;
+    trigger.artifactAlias = def!.artifacts![0].alias;
     return def;
   }
 }

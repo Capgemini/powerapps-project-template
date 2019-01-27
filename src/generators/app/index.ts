@@ -8,6 +8,7 @@ import { BuildGenerator } from "./generator/BuildGenerator";
 import { ExtensionGenerator } from "./generator/ExtensionGenerator";
 import { ReleaseGenerator } from "./generator/ReleaseGenerator";
 import { RepoGenerator } from "./generator/RepoGenerator";
+import { ServiceEndpointGenerator } from "./generator/ServiceEndpointGenerator";
 import { VarGroupGenerator } from "./generator/VarGroupGenerator";
 import {
   filterNamespace,
@@ -61,6 +62,7 @@ class Main extends Generator {
         mask: "*",
         message: "Dynamics 365 service account password?",
         name: "devPassword",
+        store: true,
         type: "password"
       },
       {
@@ -73,6 +75,7 @@ class Main extends Generator {
         mask: "*",
         message: "Azure Dev Ops auth token (manage)?",
         name: "adoToken",
+        store: true,
         type: "password"
       },
       {
@@ -94,12 +97,14 @@ class Main extends Generator {
         mask: "*",
         message: "Azure Dev Ops auth token (code)?",
         name: "adoGitToken",
+        store: true,
         type: "password"
       },
       {
         mask: "*",
         message: "Azure DevOps - Capgemini UK auth token (packages)?",
         name: "adoNugetKey",
+        store: true,
         type: "password"
       }
     ]);
@@ -117,9 +122,12 @@ class Main extends Generator {
   }
 
   private setupAzureDevOps = async (rootNamespace: string) => {
+    const taskAgentApi = this.conn!.getTaskAgentApi();
+
     return new AzureDevOpsScaffolder(
       await this.conn!.getCoreApi(),
-      new VarGroupGenerator(await this.conn!.getTaskAgentApi(), this.log),
+      new VarGroupGenerator(await taskAgentApi, this.log),
+      new ServiceEndpointGenerator(await taskAgentApi, this.log),
       new RepoGenerator(await this.conn!.getGitApi(), this.log),
       new BuildGenerator(await this.conn!.getBuildApi(), this.log),
       new ExtensionGenerator(
@@ -131,7 +139,7 @@ class Main extends Generator {
     ).scaffold({
       ciConnectionString: `Url=${this.answers.ciUrl}; Username=${
         this.answers.devUsername
-      }; Password=${this.answers.devPassword}; AuthType=Office365;"`,
+      }; Password=${this.answers.devPassword}; AuthType=Office365;`,
       gitToken: this.answers.adoGitToken,
       nugetFeedToken: this.answers.adoNugetKey,
       packageName: this.answers.package,

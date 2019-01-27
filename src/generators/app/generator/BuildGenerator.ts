@@ -1,9 +1,5 @@
 import { BuildApi } from "azure-devops-node-api/BuildApi";
-import {
-  BuildDefinition,
-  ContinuousIntegrationTrigger,
-  DefinitionTriggerType
-} from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import glob from "glob-promise";
 import buildDef from "../definitions/build/solution-ci.json";
 

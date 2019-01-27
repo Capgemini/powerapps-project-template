@@ -79,7 +79,7 @@
               "enabled": true,
               "inputs": {
                 "crmConnectionString": "$(ConnectionString)",
-                "solutionFile": "$(System.DefaultWorkingDirectory)/Core/Solutions/$(SolutionName)_managed.zip",
+                "solutionFile": "$(System.DefaultWorkingDirectory)/$(SolutionName)/Solutions/$(SolutionName)_managed.zip",
                 "publishWorkflows": "false",
                 "overwriteUnmanagedCustomizations": "false",
                 "skipProductUpdateDependencies": "false",
@@ -107,5 +107,6 @@
       },
       "type": "Build"
     }
-  ]
+  ],
+  "releaseNameFormat": "CI release $(Rev:r) for $(SolutionName) - $(Build.BuildNumber)"
 }
