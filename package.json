@@ -1,5 +1,5 @@
 {
-  "name": "generator-cdspackage",
+  "name": "@capgemini/generator-cdspackage",
   "version": "0.2.0",
   "description": "A generator for creating the entire package for CDS (MS Dynamics and Power Apps) solutions",
   "author": {
