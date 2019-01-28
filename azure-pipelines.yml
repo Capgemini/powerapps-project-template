@@ -4,31 +4,29 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  - master
 
 resources:
-- repo: self
+  - repo: self
 
 queue:
   name: Hosted VS2017
   demands: npm
 
 steps:
-- task: Npm@1
-  displayName: 'npm install'
-  inputs:
-    verbose: false
-
-- task: Npm@1
-  displayName: 'npm publish'
-  inputs:
-    command: publish
-
-    verbose: false
-
-    publishRegistry: useFeed
-
-    publishFeed: '25162f08-da5e-4c04-bac0-40216eaa4bf9'
-
-
-
+  - task: Npm@1
+    displayName: "npm install"
+    inputs:
+      verbose: false
+  - task: Npm@1
+    displayName: "npm run build"
+    inputs:
+      command: custom
+      customCommand: run build
+  - task: Npm@1
+    displayName: "npm publish"
+    inputs:
+      command: publish
+      verbose: false
+      publishRegistry: useFeed
+      publishFeed: "25162f08-da5e-4c04-bac0-40216eaa4bf9"
