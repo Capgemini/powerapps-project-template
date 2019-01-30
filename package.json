@@ -80,7 +80,7 @@
   "scripts": {
     "pretest": "eslint .",
     "test": "jest",
-    "build": "tsc && xcopy \"src\\generators\\app\\definitions\" \"generators\\app\\definitions\"",
+    "build": "tsc && xcopy \"src\\generators\\app\\definitions\" \"generators\\app\\definitions\" /y",
     "clean-debug": "del /S /q debug\\* && FOR /D %p IN (\"debug\\*\") DO rmdir \"%p\" /s /q"
   },
   "license": "unlicense"
