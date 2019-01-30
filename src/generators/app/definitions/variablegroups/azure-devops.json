@@ -1,0 +1,6 @@
+{
+  "name": "Azure DevOps",
+  "variables": {
+    "GitAuthToken": { "value": "", "isSecret": true }
+  }
+}

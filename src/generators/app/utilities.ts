@@ -16,14 +16,7 @@ export function validateEmail(input: string): boolean | string {
 }
 
 export function validateNamespace(input: string): boolean | string {
-  return /^[a-zA-Z]+$/.test(input)
+  return /^[ a-zA-Z]+$/.test(input)
     ? true
     : `Answer must not contain spaces, numeric characters or special characters.`;
-}
-
-export function filterNamespace(input: string): string {
-  return input
-    .split(" ")
-    .map(s => s.charAt(0).toUpperCase() + s.substring(1))
-    .join();
 }

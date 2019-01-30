@@ -1,9 +1,12 @@
+import { IPackageDetails } from "./IPackageDetails";
+
 export interface IScaffoldSettings {
-  projectName: string;
-  packageName: string;
-  nugetFeedToken: string;
-  gitToken: string;
-  packagePath: string;
-  repoName: string;
-  ciConnectionString: string;
+  project: string;
+  package: IPackageDetails;
+  repo: string;
+  connections: {
+    ci?: string;
+  };
+  git?: string;
+  nuget?: string;
 }

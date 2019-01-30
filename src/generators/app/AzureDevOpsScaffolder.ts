@@ -1,6 +1,8 @@
 import { CoreApi } from "azure-devops-node-api/CoreApi";
+import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { BuildGenerator } from "./generator/BuildGenerator";
 import { ExtensionGenerator } from "./generator/ExtensionGenerator";
+import { IGenerator } from "./generator/IGenerator";
 import { ReleaseGenerator } from "./generator/ReleaseGenerator";
 import { RepoGenerator } from "./generator/RepoGenerator";
 import { ServiceEndpointGenerator } from "./generator/ServiceEndpointGenerator";
@@ -43,42 +45,51 @@ export class AzureDevOpsScaffolder {
     this.log("Setting up Azure DevOps...");
 
     const varGroups = await this.varGroupGenerator.generate(
-      settings.projectName,
-      settings.packageName,
-      settings.nugetFeedToken,
-      settings.gitToken,
-      settings.ciConnectionString
+      settings.project,
+      settings.package.name,
+      settings.connections.ci,
+      settings.nuget,
+      settings.git
     );
 
     const repo = await this.repoGenerator.generate(
-      settings.projectName,
-      settings.repoName,
-      settings.packagePath
+      settings.project,
+      settings.repo,
+      settings.package.path
     );
 
     const varGroupIds = varGroups.map(group => group.id!);
 
     const serviceEndpoints = await this.serviceEndpointGenerator.generate(
-      settings.projectName,
-      settings.nugetFeedToken
+      settings.project,
+      settings.nuget
     );
 
     const buildDefs = await this.buildGenerator.generate(
-      settings.packagePath,
-      settings.projectName,
-      settings.packageName,
+      settings.package.path,
+      settings.project,
+      settings.package.name,
       repo.id!,
       varGroupIds
     );
 
-    this.extensionGenerator.generate();
+    const releaseDefs: ReleaseDefinition[] = [];
+    try {
+      this.extensionGenerator.generate();
 
-    const releaseDefs = await this.releaseGenerator.generate(
-      settings.projectName,
-      await this.getProjectId(settings.projectName),
-      buildDefs.filter(def => def.path!.includes("Solutions")),
-      varGroupIds
-    );
+      releaseDefs.push(
+        ...(await this.releaseGenerator.generate(
+          settings.project,
+          await this.getProjectId(settings.project),
+          buildDefs.filter(def => def.path!.includes("Solutions")),
+          varGroupIds
+        ))
+      );
+    } catch (e) {
+      throw new Error(
+        "Failed to create release definitions. Please ensure you have permission to install extensions in your target organisation"
+      );
+    }
 
     this.log(`Finished setting up Azure DevOps.`);
     return {
@@ -88,6 +99,20 @@ export class AzureDevOpsScaffolder {
       serviceEndpoints,
       variableGroups: varGroups
     };
+  }
+
+  public async rollback(project: string): Promise<void> {
+    this.log(`Rolling back all generated objects in ${project}...`);
+    const generators: Array<IGenerator<any>> = [
+      this.repoGenerator,
+      this.buildGenerator,
+      this.releaseGenerator,
+      this.varGroupGenerator,
+      this.extensionGenerator,
+      this.serviceEndpointGenerator
+    ];
+    await Promise.all(generators.map(gen => gen.rollback(project)));
+    return;
   }
 
   private async getProjectId(projectName: string): Promise<string> {

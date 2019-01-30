@@ -2,14 +2,18 @@ import { BuildApi } from "azure-devops-node-api/BuildApi";
 import { BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import glob from "glob-promise";
 import buildDef from "../definitions/build/solution-ci.json";
+import { IGenerator } from "./IGenerator.js";
 
-export class BuildGenerator {
+export class BuildGenerator implements IGenerator<BuildDefinition> {
+  public readonly createdObjects: BuildDefinition[];
+
   private readonly conn: BuildApi;
   private readonly log: (msg: string) => void;
 
   constructor(conn: BuildApi, log: (msg: string) => void) {
     this.conn = conn;
     this.log = log;
+    this.createdObjects = [];
   }
 
   public async generate(
@@ -32,7 +36,21 @@ export class BuildGenerator {
       throw new Error("An error occured while creating build definitions.");
     }
 
+    this.createdObjects.push(...buildDefs);
+
     return buildDefs;
+  }
+
+  public async rollback(project: string): Promise<void> {
+    this.log(`Rolling back ${this.createdObjects.length} build definitions...`);
+
+    await Promise.all(
+      this.createdObjects.map(obj =>
+        this.conn.deleteDefinition(obj.id!, project)
+      )
+    );
+    this.createdObjects.length = 0;
+    return;
   }
 
   private async getYamlDetails(packageDirectory: string) {
@@ -78,7 +96,7 @@ export class BuildGenerator {
       id: groupId
     }));
     def.repository!.id = repoId;
-    def.path = `${packageName}\\${yamlDetails.root}`;
+    def.path = `${packageName.replace(/\s/g, "")}\\${yamlDetails.root}`;
 
     return def;
   }

@@ -13,9 +13,11 @@
       "sourceMaps": true,
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "smartStep": true,
       "cwd": "${workspaceFolder}/debug",
-      "preLaunchTask": "clean-debug"
+      "preLaunchTask": "clean-debug",
+      "env": {
+        "DEBUG": "yeoman:generator"
+      }
     }
   ]
 }

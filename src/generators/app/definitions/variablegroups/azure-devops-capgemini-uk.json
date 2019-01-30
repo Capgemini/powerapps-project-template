@@ -1,0 +1,9 @@
+{
+  "name": "Azure DevOps - Capgemini UK",
+  "variables": {
+    "CapgeminiUkPackageReadKey": {
+      "isSecret": true,
+      "value": ""
+    }
+  }
+}

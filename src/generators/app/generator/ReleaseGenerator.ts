@@ -5,14 +5,18 @@ import {
 } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { ReleaseApi } from "azure-devops-node-api/ReleaseApi";
 import releaseDefinition from "../definitions/release/solution-cd.json";
+import { IGenerator } from "./IGenerator.js";
 
-export class ReleaseGenerator {
+export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
+  public readonly createdObjects: ReleaseDefinition[];
+
   private readonly conn: ReleaseApi;
   private readonly log: (msg: string) => void;
 
   constructor(conn: ReleaseApi, log: (msg: string) => void) {
     this.conn = conn;
     this.log = log;
+    this.createdObjects = [];
   }
 
   public async generate(
@@ -41,7 +45,23 @@ export class ReleaseGenerator {
       throw new Error("An error occurred while creating release definitions.");
     }
 
+    this.createdObjects.push(...defs);
+
     return defs;
+  }
+
+  public async rollback(project: string): Promise<void> {
+    this.log(
+      `Rolling back ${this.createdObjects.length} releases definitions...`
+    );
+
+    await Promise.all(
+      this.createdObjects.map(obj =>
+        this.conn.deleteReleaseDefinition(project, obj.id!)
+      )
+    );
+    this.createdObjects.length = 0;
+    return;
   }
 
   private async createReleaseDefinitions(
