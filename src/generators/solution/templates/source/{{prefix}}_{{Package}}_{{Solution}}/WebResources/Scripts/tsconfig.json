@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "none",
+    "moduleResolution": "node",
+    "target": "es5",
+    "outDir": "dist/",
+    "rootDir": "src/",
+    "sourceMap": true,
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.promise"
+    ]
+  },
+  "include": [
+    "src/"
+  ],
+  "references": []
+}

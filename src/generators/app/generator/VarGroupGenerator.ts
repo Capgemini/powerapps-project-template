@@ -2,8 +2,8 @@ import { VariableGroup } from "azure-devops-node-api/interfaces/BuildInterfaces"
 import { VariableGroupParameters } from "azure-devops-node-api/interfaces/TaskAgentInterfaces";
 import { ITaskAgentApi } from "azure-devops-node-api/TaskAgentApi";
 import azDevCapUk from "../definitions/variablegroups/azure-devops-capgemini-uk.json";
-import azDev from "../definitions/variablegroups/azure-devops.json";
-import env from "../definitions/variablegroups/environment.json";
+import envCi from "../definitions/variablegroups/environment-ci.json";
+import envStaging from "../definitions/variablegroups/environment-staging.json";
 import pkg from "../definitions/variablegroups/pkg.json";
 import { IGenerator } from "./IGenerator.js";
 
@@ -23,35 +23,35 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     project: string,
     packageName: string,
     ciConn?: string,
+    stagingConn?: string,
     nuget?: string,
-    git?: string
   ): Promise<VariableGroup[]> {
     this.log("Generating variable groups...");
 
     const groupsToCreate = this.generateVariableGroups(
       packageName,
       ciConn,
+      stagingConn,
       nuget,
-      git
     );
 
     const varGroups = await this.createVariableGroups(project, groupsToCreate);
     this.createdObjects.push(...varGroups);
 
-    if (ciConn && nuget && git) {
+    if (ciConn && nuget) {
       return varGroups;
     }
 
     const existingGroups: string[] = [];
 
     if (!ciConn) {
-      existingGroups.push(env.name);
+      existingGroups.push(envCi.name);
+    }
+    if (!stagingConn) {
+      existingGroups.push(envStaging.name);
     }
     if (!nuget) {
       existingGroups.push(azDevCapUk.name);
-    }
-    if (!git) {
-      existingGroups.push(azDev.name);
     }
 
     varGroups.push(...(await this.getExistingGroups(project, existingGroups)));
@@ -83,22 +83,22 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
   private generateVariableGroups(
     packageName: string,
     ciConn?: string,
+    stagingConn?: string,
     nuget?: string,
-    git?: string
   ): VariableGroup[] {
     const groups: VariableGroup[] = [pkg];
     pkg.name = `Package - ${packageName}`;
     if (ciConn) {
-      env.variables.ConnectionString.value = ciConn;
-      groups.push(env);
+      envCi.variables.ConnectionString.value = ciConn;
+      groups.push(envCi);
+    }
+    if (stagingConn) {
+      envStaging.variables.ConnectionString.value = stagingConn;
+      groups.push(envStaging);
     }
     if (nuget) {
       azDevCapUk.variables.CapgeminiUkPackageReadKey.value = nuget;
       groups.push(azDevCapUk);
-    }
-    if (git) {
-      azDev.variables.GitAuthToken.value = git;
-      groups.push(azDev);
     }
     return groups;
   }

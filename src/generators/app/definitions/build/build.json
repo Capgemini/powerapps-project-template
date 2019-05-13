@@ -12,7 +12,7 @@
       "branchFilters": [],
       "pathFilters": [],
       "settingsSourceType": 2,
-      "batchChanges": false,
+      "batchChanges": true,
       "maxConcurrentBuildsPerBranch": 1,
       "triggerType": 2
     }

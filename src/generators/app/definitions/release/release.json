@@ -1,0 +1,259 @@
+{
+  "variables": {},
+  "variableGroups": [],
+  "environments": [
+    {
+      "name": "CI",
+      "variables": {},
+      "variableGroups": [],
+      "preDeployApprovals": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": true,
+            "isNotificationOn": false
+          }
+        ],
+        "approvalOptions": {
+          "requiredApproverCount": null,
+          "releaseCreatorCanBeApprover": false,
+          "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+          "enforceIdentityRevalidation": false,
+          "timeoutInMinutes": 0,
+          "executionOrder": 1
+        }
+      },
+      "postDeployApprovals": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": true,
+            "isNotificationOn": false
+          }
+        ],
+        "approvalOptions": {
+          "requiredApproverCount": null,
+          "releaseCreatorCanBeApprover": false,
+          "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+          "enforceIdentityRevalidation": false,
+          "timeoutInMinutes": 0,
+          "executionOrder": 2
+        }
+      },
+      "deployPhases": [
+        {
+          "deploymentInput": {
+            "parallelExecution": { "parallelExecutionType": 0 },
+            "agentSpecification": null,
+            "skipArtifactsDownload": false,
+            "demands": [],
+            "enableAccessToken": false,
+            "timeoutInMinutes": 0,
+            "jobCancelTimeoutInMinutes": 1,
+            "condition": "succeeded()",
+            "overrideInputs": {}
+          },
+          "rank": 1,
+          "phaseType": 1,
+          "name": "Agent job",
+          "refName": null,
+          "workflowTasks": [
+            {
+              "environment": {},
+              "taskId": "2aec407f-7763-43a5-a27f-bf45a58e4f1d",
+              "version": "1.*",
+              "name": "Deploy Package",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "workingDir": "",
+                "packageName": "",
+                "connectionString": "$(ConnectionString)",
+                "timeOut": "1:00:00",
+                "logOutputFolder": "$(Agent.ReleaseDirectory)",
+                "configSubfolder": "",
+                "syncTimeoutMinutes": "60"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "10c12437-f11b-4f9b-976b-f54255516d56",
+              "version": "1.*",
+              "name": "Verify Package",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "workingDir": "",
+                "connectionString": "$(ConnectionString)"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "c7518b7b-6ac7-4610-b403-c3a57665615c",
+              "version": "0.*",
+              "name": "Import Configuration Data",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "jsonFolderPath": "",
+                "connectionString": "$(ConnectionString)",
+                "maxThreads": "1",
+                "savePageSize": "100",
+                "ignoreSystemFields": "true",
+                "ignoreStatuses": "false",
+                "useCsv": "false",
+                "schemaFilePath": "",
+                "configFilePath": "",
+                "csvFilesToImport": "",
+                "filesFilter": "",
+                "treatWarningsAsErrors": "false"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "c7518b7b-6ac7-4610-b403-c3a57665615c",
+              "version": "0.*",
+              "name": "Import Reference Data",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "jsonFolderPath": "",
+                "connectionString": "$(ConnectionString)",
+                "maxThreads": "1",
+                "savePageSize": "100",
+                "ignoreSystemFields": "true",
+                "ignoreStatuses": "false",
+                "useCsv": "false",
+                "schemaFilePath": "",
+                "configFilePath": "",
+                "csvFilesToImport": "",
+                "filesFilter": "",
+                "treatWarningsAsErrors": "false"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "7be3f190-3500-42fb-9ea2-0744d730c546",
+              "version": "2.*",
+              "name": "Activate/Deactivate Processes",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "connectionString": "$(ConnectionString)",
+                "pkgFolderPath": ""
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "bd4d515f-a13f-46fe-95b2-73ae781224cb",
+              "version": "2.*",
+              "name": "Import Word Templates",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "connectionString": "$(ConnectionString)",
+                "pkgFolderPath": ""
+              }
+            }
+          ]
+        }
+      ],
+      "environmentOptions": {
+        "emailNotificationType": "OnlyOnFailure",
+        "emailRecipients": "release.environment.owner;release.creator",
+        "skipArtifactsDownload": false,
+        "timeoutInMinutes": 0,
+        "enableAccessToken": false,
+        "publishDeploymentStatus": true,
+        "badgeEnabled": true,
+        "autoLinkWorkItems": false,
+        "pullRequestDeploymentEnabled": false
+      },
+      "demands": [],
+      "conditions": [
+        { "name": "ReleaseStarted", "conditionType": 1, "value": "" }
+      ],
+      "executionPolicy": { "concurrencyCount": 1, "queueDepthCount": 1 },
+      "schedules": [],
+      "retentionPolicy": {
+        "daysToKeep": 30,
+        "releasesToKeep": 3,
+        "retainBuild": true
+      },
+      "processParameters": {},
+      "properties": {},
+      "preDeploymentGates": { "id": 0, "gatesOptions": null, "gates": [] },
+      "postDeploymentGates": { "id": 0, "gatesOptions": null, "gates": [] },
+      "environmentTriggers": []
+    }
+  ],
+  "artifacts": [
+    {
+      "alias": "",
+      "definitionReference": {
+        "defaultVersionType": { "id": "latestType" },
+        "definition": { "id": "" },
+        "project": { "id": "" }
+      },
+      "type": "Build"
+    }
+  ],
+  "triggers": [
+    {
+      "artifactAlias": "",
+      "triggerConditions": [
+        {
+          "sourceBranch": "",
+          "tags": [],
+          "useBuildDefinitionBranch": true,
+          "createReleaseOnBuildTagging": false
+        }
+      ],
+      "triggerType": 1
+    }
+  ],
+  "releaseNameFormat": "",
+  "tags": [],
+  "pipelineProcess": { "type": 1 },
+  "properties": {
+    "DefinitionCreationSource": { "$type": "System.String", "$value": "Other" }
+  },
+  "name": "",
+  "path": ""
+}

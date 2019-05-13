@@ -1,10 +1,13 @@
 import { BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import {
   ArtifactSourceTrigger,
-  ReleaseDefinition
+  ReleaseDefinition,
+  ReleaseDefinitionEnvironment,
+  WorkflowTask,
+  Artifact
 } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { ReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import releaseDefinition from "../definitions/release/solution-cd.json";
+import releaseDefinition from "../definitions/release/release.json";
 import { IGenerator } from "./IGenerator.js";
 
 export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
@@ -20,34 +23,34 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
   }
 
   public async generate(
-    projectName: string,
+    project: string,
+    packageName: string,
+    client: string,
     projectId: string,
-    buildDefs: BuildDefinition[],
+    buildDef: BuildDefinition,
     varGroupIds: number[]
-  ): Promise<ReleaseDefinition[]> {
-    this.log("Generating release definitions...");
-    const defs = await this.createReleaseDefinitions(
-      projectName,
-
-      buildDefs.map(buildDef =>
-        this.generateReleaseDefinition(
-          buildDef.name!,
-          varGroupIds,
-          projectId,
-          `${buildDef.path!.split("\\")[1]}\\CD`,
-          buildDef.id!,
-          (buildDefs[0] && buildDefs[0].queue && buildDefs[0].queue.id) || 0
-        )
+  ): Promise<ReleaseDefinition> {
+    this.log("Generating release definition...");
+    const def = await this.createReleaseDefinition(
+      project,
+      this.generateReleaseDefinition(
+        packageName,
+        varGroupIds,
+        projectId,
+        client,
+        `${buildDef.path!.split("\\")[1]}\\CD`,
+        buildDef.id!,
+        (buildDef && buildDef.queue && buildDef.queue.id) || 0
       )
     ).catch(this.log);
 
-    if (defs === undefined) {
+    if (def === undefined) {
       throw new Error("An error occurred while creating release definitions.");
     }
 
-    this.createdObjects.push(...defs);
+    this.createdObjects.push(def);
 
-    return defs;
+    return def;
   }
 
   public async rollback(project: string): Promise<void> {
@@ -64,42 +67,98 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     return;
   }
 
-  private async createReleaseDefinitions(
+  private async createReleaseDefinition(
     project: string,
-    definitions: ReleaseDefinition[]
-  ): Promise<ReleaseDefinition[]> {
-    const defs: ReleaseDefinition[] = [];
-    for (const def of definitions) {
-      defs.push(await this.conn.createReleaseDefinition(def, project));
-    }
-    return defs;
+    def: ReleaseDefinition
+  ): Promise<ReleaseDefinition> {
+    return this.conn.createReleaseDefinition(def, project);
   }
 
   private generateReleaseDefinition(
-    solution: string,
+    packageName: string,
     variableGroupIds: number[],
     projectId: string,
+    client: string,
     path: string,
     definitionId: number,
     agentPoolQueueId: number
   ): ReleaseDefinition {
-    this.log(`Creating ${solution} release...`);
+    this.log(`Creating ${packageName} release...`);
 
     const def: ReleaseDefinition = JSON.parse(
       JSON.stringify(releaseDefinition)
     );
-    def.name = `${solution} Release`;
-    def.path = path;
-    def.variables!.SolutionName.value = solution.replace(/\./g, "_");
-    def.variableGroups = variableGroupIds;
-    def.environments![0].queueId = agentPoolQueueId;
-    (def.environments![0]
-      .deployPhases![0] as DeployPhase).deploymentInput!.queueId = agentPoolQueueId;
-    def!.artifacts![0].alias = def.variables!.SolutionName.value;
-    def!.artifacts![0].definitionReference!.definition.id = definitionId.toString();
-    def!.artifacts![0].definitionReference!.project.id = projectId;
+    this.configureDefinition(def, packageName, path, variableGroupIds);
+    this.configureEnvironment(def.environments![0], agentPoolQueueId);
+    const packageArtifact = def!.artifacts![0];
+    this.configureArtifact(
+      packageArtifact,
+      packageName,
+      definitionId,
+      projectId
+    );
     const trigger: ArtifactSourceTrigger = def!.triggers![0];
     trigger.artifactAlias = def!.artifacts![0].alias;
+    const packageFolder = `$(System.DefaultWorkingDirectory)/${packageName}/${packageName}`;
+    const ciDeploymentTasks = def.environments![0].deployPhases![0]
+      .workflowTasks!;
+    this.configureTasks(ciDeploymentTasks, packageFolder, client, packageName);
+    
     return def;
+  }
+
+  private configureTasks(
+    ciDeploymentTasks: WorkflowTask[],
+    packageFolder: string,
+    client: string,
+    packageName: string
+  ) {
+    const deployPackageTask = ciDeploymentTasks[0];
+    deployPackageTask.inputs!.workingDir = packageFolder;
+    deployPackageTask.inputs!.packageName = `${client}.${packageName}.Deployment.dll`;
+    deployPackageTask.inputs!.configSubFolder = packageFolder;
+    const verifyPackageTask = ciDeploymentTasks[1];
+    verifyPackageTask.inputs!.workingDir = packageFolder;
+    const importConfigDataTask = ciDeploymentTasks[2];
+    importConfigDataTask.inputs!.jsonFolderPath = `${packageFolder}/PkgFolder/Data/Configuration/Extract`;
+    importConfigDataTask.inputs!.configFilePath = `${packageFolder}/PkgFolder/Data/Configuration/ConfigurationDataImport.json`;
+    const importReferenceDataTask = ciDeploymentTasks[3];
+    importReferenceDataTask.inputs!.jsonFolderPath = `${packageFolder}/PkgFolder/Data/Reference/Extract`;
+    importReferenceDataTask.inputs!.configFilePath = `${packageFolder}/PkgFolder/Data/Reference/ReferenceDataImport.json`;
+    const activateProcessesTask = ciDeploymentTasks[4];
+    activateProcessesTask.inputs!.pkgFolderPath = `${packageFolder}/PkgFolder`;
+    const importWordTemplateTask = ciDeploymentTasks[5];
+    importWordTemplateTask.inputs!.pkgFolderPath = `${packageFolder}/PkgFolder`;
+  }
+
+  private configureArtifact(
+    packageArtifact: Artifact,
+    packageName: string,
+    definitionId: number,
+    projectId: string
+  ) {
+    packageArtifact.alias = packageName;
+    packageArtifact.definitionReference!.definition.id = definitionId.toString();
+    packageArtifact.definitionReference!.project.id = projectId;
+  }
+
+  private configureEnvironment(
+    environment: ReleaseDefinitionEnvironment,
+    agentPoolQueueId: number
+  ) {
+    environment.queueId = agentPoolQueueId;
+    (environment.deployPhases![0] as DeployPhase).deploymentInput!.queueId = agentPoolQueueId;
+  }
+
+  private configureDefinition(
+    def: ReleaseDefinition,
+    packageName: string,
+    path: string,
+    variableGroupIds: number[]
+  ) {
+    def.name = `${packageName} Release`;
+    def.path = path;
+    def.releaseNameFormat = `${packageName} $(Build.BuildNumber) - Release $(Rev:r)`;
+    def.variableGroups = variableGroupIds;
   }
 }

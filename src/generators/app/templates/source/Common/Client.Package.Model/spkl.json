@@ -1,0 +1,14 @@
+{
+  "earlyboundtypes": [
+    {
+      "entities": "",
+      "actions": "",
+      "generateOptionsetEnums": true,
+      "generateStateEnums": true,
+      "generateGlobalOptionsets": true,
+      "filename": "<%= package %>Context.cs",
+      "classNamespace": "<%= client %>.<%= package %>.Model",
+      "serviceContextName": "<%= package %>Context"
+    }
+  ]
+}

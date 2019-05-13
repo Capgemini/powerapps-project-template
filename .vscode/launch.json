@@ -18,6 +18,22 @@
       "env": {
         "DEBUG": "yeoman:generator"
       }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Yeoman generator - solution",
+      "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
+      "args": [
+        "cdspackage:solution"
+      ],
+      "sourceMaps": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "cwd": "${workspaceFolder}/debug",
+      "env": {
+        "DEBUG": "yeoman:generator"
+      }
     }
   ]
 }

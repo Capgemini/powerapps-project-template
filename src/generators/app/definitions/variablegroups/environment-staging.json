@@ -1,0 +1,8 @@
+{
+  "name": "Environment - Staging",
+  "variables": {
+    "ConnectionString": {
+      "value": ""
+    }
+  }
+}

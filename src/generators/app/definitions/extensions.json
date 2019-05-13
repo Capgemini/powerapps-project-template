@@ -1,4 +1,6 @@
-[{
-  "publisher": "WaelHamze",
-  "name": "xrm-ci-framework-build-tasks"
-}]
+[
+  {
+    "publisher": "capgemini-msft-uk",
+    "name": "capgemini-xrm-release-extension"
+  }
+]

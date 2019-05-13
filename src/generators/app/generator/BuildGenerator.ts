@@ -1,7 +1,7 @@
 import { BuildApi } from "azure-devops-node-api/BuildApi";
 import { BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import glob from "glob-promise";
-import buildDef from "../definitions/build/solution-ci.json";
+import buildDef from "../definitions/build/build.json";
 import { IGenerator } from "./IGenerator.js";
 
 export class BuildGenerator implements IGenerator<BuildDefinition> {
@@ -56,14 +56,7 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
   private async getYamlDetails(packageDirectory: string) {
     return glob("**\\*.yml", { cwd: packageDirectory }).then(files => {
       this.log(`Found ${files.length} YAML builds.`);
-      return files.map(f => {
-        const parts = f.split("/");
-        return {
-          folder: parts[1],
-          path: f,
-          root: parts[0]
-        };
-      });
+      return files;
     });
   }
 
@@ -79,25 +72,38 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
   }
 
   private generateBuildDefinition(
-    yamlDetails: { path: string; folder: string; root: string },
+    yamlPath: string,
     packageName: string,
     repoId: string,
     variableGroupIds: number[]
   ): BuildDefinition {
-    this.log(`Creating ${yamlDetails.folder} build...`);
+    this.log(`Creating ${yamlPath} build...`);
     const def: BuildDefinition = JSON.parse(JSON.stringify(buildDef));
-    def.name = `${yamlDetails.folder}`;
+    const buildDefinitionName = getBuildDefinitionName(yamlPath);
+    def.name = `${packageName} - ${buildDefinitionName}`;
     const process: BuildProcess = {
       type: 2,
-      yamlFilename: yamlDetails.path
+      yamlFilename: yamlPath
     };
     def.process = process;
     def.variableGroups = variableGroupIds.map(groupId => ({
       id: groupId
     }));
     def.repository!.id = repoId;
-    def.path = `${packageName.replace(/\s/g, "")}\\${yamlDetails.root}`;
+    def.path = packageName.replace(/\s/g, "");
 
     return def;
   }
 }
+function getBuildDefinitionName(yamlPath: string) {
+  return yamlPath === "azure-pipelines.yml" ? "Package Build" : yamlPath
+    .split("azure-pipelines-")[1]
+    .replace(".yml", "")
+    .replace("-", " ")
+    .replace(/\w\S*/g, (txt) => {
+      return txt
+        .charAt(0)
+        .toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+

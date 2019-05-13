@@ -9,7 +9,7 @@ import { GitRepository } from "azure-devops-node-api/interfaces/TfvcInterfaces";
 export interface IScaffoldResult {
   serviceEndpoints: ServiceEndpoint[];
   buildDefinitions: BuildDefinition[];
-  releaseDefinitions: ReleaseDefinition[];
+  releaseDefinition: ReleaseDefinition;
   repositories: GitRepository;
   variableGroups: VariableGroup[];
 }

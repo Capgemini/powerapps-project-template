@@ -1,4 +1,5 @@
 import { CoreApi } from "azure-devops-node-api/CoreApi";
+import { YamlProcess } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { BuildGenerator } from "./generator/BuildGenerator";
 import { ExtensionGenerator } from "./generator/ExtensionGenerator";
@@ -48,8 +49,8 @@ export class AzureDevOpsScaffolder {
       settings.project,
       settings.package.name,
       settings.connections.ci,
+      settings.connections.staging,
       settings.nuget,
-      settings.git
     );
 
     const repo = await this.repoGenerator.generate(
@@ -73,28 +74,30 @@ export class AzureDevOpsScaffolder {
       varGroupIds
     );
 
-    const releaseDefs: ReleaseDefinition[] = [];
+    let releaseDef: ReleaseDefinition;
     try {
-      this.extensionGenerator.generate();
-
-      releaseDefs.push(
-        ...(await this.releaseGenerator.generate(
-          settings.project,
-          await this.getProjectId(settings.project),
-          buildDefs.filter(def => def.path!.includes("Solutions")),
-          varGroupIds
-        ))
+      await this.extensionGenerator.generate();
+      releaseDef = await this.releaseGenerator.generate(
+        settings.project,
+        settings.package.name,
+        settings.client,
+        await this.getProjectId(settings.project),
+        buildDefs.find(
+          def =>
+            (def.process as YamlProcess).yamlFilename === "azure-pipelines.yml"
+        )!,
+        varGroupIds
       );
     } catch (e) {
       throw new Error(
-        "Failed to create release definitions. Please ensure you have permission to install extensions in your target organisation"
+        "Failed to create release definition. Please ensure you have permission to install extensions in your target organisation"
       );
     }
 
     this.log(`Finished setting up Azure DevOps.`);
     return {
       buildDefinitions: buildDefs,
-      releaseDefinitions: releaseDefs,
+      releaseDefinition: releaseDef,
       repositories: repo,
       serviceEndpoints,
       variableGroups: varGroups

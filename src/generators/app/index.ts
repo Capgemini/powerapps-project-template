@@ -1,7 +1,6 @@
 import { getPersonalAccessTokenHandler, WebApi } from "azure-devops-node-api";
 import inquirer from "inquirer";
 import Renamer from "renamer";
-import rimraf from "rimraf";
 import Generator from "yeoman-generator";
 import { AzureDevOpsScaffolder } from "./AzureDevOpsScaffolder";
 import { BuildGenerator } from "./generator/BuildGenerator";
@@ -10,16 +9,9 @@ import { ReleaseGenerator } from "./generator/ReleaseGenerator";
 import { RepoGenerator } from "./generator/RepoGenerator";
 import { ServiceEndpointGenerator } from "./generator/ServiceEndpointGenerator";
 import { VarGroupGenerator } from "./generator/VarGroupGenerator";
-import {
-  validateEmail,
-  validateNamespace,
-  validateUrl
-} from "./utilities";
+import { validateEmail, validateNamespace, validateUrl } from "./utilities";
 
 class Main extends Generator {
-  private static readonly templateGitRepo =
-    "https://capgeminiuk.visualstudio.com/Capgemini%20Reusable%20IP/_git/Capgemini.Xrm.Templates";
-
   private answers!: inquirer.Answers;
   private conn?: WebApi = undefined;
 
@@ -33,11 +25,11 @@ class Main extends Generator {
       },
       {
         mask: "*",
-        message: "Azure Dev Ops auth token (manage)?",
+        message: "Azure DevOps auth token (manage)?",
         name: "adoToken",
         store: true,
         type: "password"
-      },
+      }
     ]);
 
     this.conn = new WebApi(
@@ -55,7 +47,7 @@ class Main extends Generator {
         choices: projects,
         message: "Azure DevOps project?",
         name: "adoProject",
-        type: "list",
+        type: "list"
       },
       {
         message: "Name of the client?",
@@ -67,22 +59,25 @@ class Main extends Generator {
         message: "Name of the package?",
         name: "package",
         store: true,
-        validate: (input, answers) => this.validatePackage(input, answers!, adoAnswers)
-      },
-      {
-        message: "Extract environment URL?",
-        name: "devUrl",
-        store: true,
-        validate: validateUrl
-      }]);
+        validate: (input, answers) =>
+          this.validatePackage(input, answers!, adoAnswers)
+      }
+    ]);
 
-    packageAnswers.repositoryName = packageAnswers.package.toLowerCase().replace(/\s/g, "-");
+    packageAnswers.repositoryName = packageAnswers.package
+      .toLowerCase()
+      .replace(/\s/g, "-");
     packageAnswers.package = packageAnswers.package.replace(/\s/g, "");
     packageAnswers.client = packageAnswers.client.replace(/\s/g, "");
 
     const ciGroupExists = await this.conn!.getTaskAgentApi()
       .then(api => api.getVariableGroups(packageAnswers.adoProject))
       .then(grps => grps.find(grp => grp.name === "Environment - CI"))
+      .then(grp => grp !== undefined);
+
+    const stagingGroupExists = await this.conn!.getTaskAgentApi()
+      .then(api => api.getVariableGroups(packageAnswers.adoProject))
+      .then(grps => grps.find(grp => grp.name === "Environment - Staging"))
       .then(grp => grp !== undefined);
 
     const azDevOpsGroupExists = await this.conn!.getTaskAgentApi()
@@ -101,13 +96,19 @@ class Main extends Generator {
       .then(grps => grps.length > 0);
 
     const connectionAnswers = await this.prompt([
-
       {
         message: "CI environment URL?",
         name: "ciUrl",
         store: true,
         validate: validateUrl,
         when: !ciGroupExists
+      },
+      {
+        message: "Staging environment URL?",
+        name: "stagingUrl",
+        store: true,
+        validate: validateUrl,
+        when: !stagingGroupExists
       },
       {
         message: "Dynamics 365 service account email?",
@@ -124,13 +125,6 @@ class Main extends Generator {
       },
       {
         mask: "*",
-        message: "Azure Dev Ops auth token (code)?",
-        name: "adoGitToken",
-        type: "password",
-        when: !azDevOpsGroupExists
-      },
-      {
-        mask: "*",
         message: "Azure DevOps - Capgemini UK auth token (packages)?",
         name: "adoNugetKey",
         type: "password",
@@ -141,24 +135,26 @@ class Main extends Generator {
     this.answers = {
       ...adoAnswers,
       ...packageAnswers,
-      ...connectionAnswers,
-    }
+      ...connectionAnswers
+    };
   }
 
   public writing(): void {
-    this.cloneTemplate();
     this.writePackage();
   }
 
   public async install() {
-    const rootNamespace = `${this.answers.client.replace(/\s/g, "")}.${this.answers.package.replace(/\s/g, "")}`;
+    const rootNamespace = `${this.answers.client.replace(
+      /\s/g,
+      ""
+    )}.${this.answers.package.replace(/\s/g, "")}`;
     this.renameFileAndFolders("Client.Package", rootNamespace);
     return this.setupAzureDevOps();
   }
 
   private setupAzureDevOps = async () => {
     const taskAgentApi = this.conn!.getTaskAgentApi();
-
+    
     const scaffolder = new AzureDevOpsScaffolder(
       await this.conn!.getCoreApi(),
       new VarGroupGenerator(await taskAgentApi, this.log),
@@ -174,14 +170,23 @@ class Main extends Generator {
     );
     try {
       await scaffolder.scaffold({
+        client: this.answers.client,
         connections: {
           ci: this.answers.ciUrl
             ? `Url=${this.answers.ciUrl}; Username=${
-            this.answers.devUsername
-            }; Password=${this.answers.devPassword}; AuthType=Office365;`
+                this.answers.devUsername
+              }; Password=${
+                this.answers.devPassword
+              }; AuthType=Office365;`
+            : undefined,
+          staging: this.answers.stagingUrl
+            ? `Url=${this.answers.stagingUrl}; Username=${
+                this.answers.devUsername
+              }; Password=${
+                this.answers.devPassword
+              }; AuthType=Office365;`
             : undefined
         },
-        git: this.answers.adoGitToken,
         nuget: this.answers.adoNugetKey,
         package: {
           name: this.answers.package,
@@ -191,32 +196,16 @@ class Main extends Generator {
         repo: this.answers.repositoryName
       });
     } catch (e) {
-      this.log("Package generator encourted an error.");
+      this.log("Package generator encountered an error.");
       await scaffolder.rollback(this.answers.adoProject);
       this.log(e);
     }
   };
 
-  private cloneTemplate = () => {
-    this.log("Cloning latest template...");
-    rimraf.sync(this.templatePath());
-    this.spawnCommandSync("git", [
-      "clone",
-      "--depth=1",
-      "--single-branch",
-      "--branch",
-      "sample-repository",
-      "-q",
-      Main.templateGitRepo,
-      this.templatePath()
-    ]);
-    rimraf.sync(this.templatePath(".git"));
-  };
-
   private writePackage = () => {
     this.log(`Writing package from template...`);
     this.fs.copyTpl(
-      this.templatePath(),
+      this.templatePath("source"),
       this.destinationPath(),
       this.answers,
       {},
@@ -238,7 +227,7 @@ class Main extends Generator {
   private validatePackage = async (
     packageName: string,
     answers: inquirer.Answers,
-    adoAnswers: inquirer.Answers,
+    adoAnswers: inquirer.Answers
   ): Promise<boolean | string> => {
     const nameResult = validateNamespace(answers.package);
     if (typeof nameResult === "string") {
@@ -246,9 +235,7 @@ class Main extends Generator {
     }
     const gitApi = await this.conn!.getGitApi();
     const repos = await gitApi.getRepositories(adoAnswers.adoProject);
-    return repos.find(
-      repo => repo.name === answers.repositoryName
-    )
+    return repos.find(repo => repo.name === answers.repositoryName)
       ? "Package already exists. Please choose a new package name."
       : true;
   };
