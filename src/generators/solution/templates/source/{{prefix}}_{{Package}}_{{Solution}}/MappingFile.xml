@@ -1,5 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Mapping>
-  <FileToFile map="<%= client %><%= package %><%= solution %>.dll" to="..\PluginAssemblies\<%= client %>.<%= package %>.<%= solution %>\bin\Deploy\<%= client %>.<%= package %>.<%= solution %>.dll" />
-  <FileToPath map="WebResources\**\*.*" to="..\WebResources\**" />
-</Mapping>
+<Mapping/>

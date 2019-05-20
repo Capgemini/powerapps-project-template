@@ -11,7 +11,7 @@
       "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
       "args": ["cdspackage"],
       "sourceMaps": true,
-      "console": "integratedTerminal",
+      "console": "externalTerminal",
       "internalConsoleOptions": "neverOpen",
       "cwd": "${workspaceFolder}/debug",
       "preLaunchTask": "clean-debug",
@@ -28,7 +28,39 @@
         "cdspackage:solution"
       ],
       "sourceMaps": true,
-      "console": "integratedTerminal",
+      "console": "externalTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "cwd": "${workspaceFolder}/debug",
+      "env": {
+        "DEBUG": "yeoman:generator"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Yeoman generator - scripts",
+      "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
+      "args": [
+        "cdspackage:scripts"
+      ],
+      "sourceMaps": true,
+      "console": "externalTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "cwd": "${workspaceFolder}/debug",
+      "env": {
+        "DEBUG": "yeoman:generator"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Yeoman generator - pluginassembly",
+      "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
+      "args": [
+        "cdspackage:pluginassembly"
+      ],
+      "sourceMaps": true,
+      "console": "externalTerminal",
       "internalConsoleOptions": "neverOpen",
       "cwd": "${workspaceFolder}/debug",
       "env": {

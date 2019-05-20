@@ -1,6 +1,7 @@
 node_modules
 coverage
 dist
+/common
 generators
 debug
 !src/generators

@@ -1,0 +1,8 @@
+{
+  "plugins": [
+    {
+      "assemblypath": "PluginAssemblies\\<%= client %>.<%= package %>.<%= solution %>\\bin\\Deploy\\<%= client %>.<%= package %>.<%= solution %>.dll",
+      "solution": "<%= prefix %>_<%= package %>_<%= solution %>"
+    }
+  ]
+}

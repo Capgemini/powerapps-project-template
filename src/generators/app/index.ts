@@ -27,7 +27,7 @@ class Main extends Generator {
         mask: "*",
         message: "Azure DevOps auth token (manage)?",
         name: "adoToken",
-        store: true,
+        store: false,
         type: "password"
       }
     ]);
@@ -80,12 +80,6 @@ class Main extends Generator {
       .then(grps => grps.find(grp => grp.name === "Environment - Staging"))
       .then(grp => grp !== undefined);
 
-    const azDevOpsGroupExists = await this.conn!.getTaskAgentApi()
-      .then(api =>
-        api.getVariableGroups(packageAnswers.adoProject, "Azure DevOps")
-      )
-      .then(grps => grps.length > 0);
-
     const capUkGroupExists = await this.conn!.getTaskAgentApi()
       .then(api =>
         api.getVariableGroups(
@@ -120,13 +114,14 @@ class Main extends Generator {
         mask: "*",
         message: "Dynamics 365 service account password?",
         name: "devPassword",
-        store: true,
+        store: false,
         type: "password"
       },
       {
         mask: "*",
         message: "Azure DevOps - Capgemini UK auth token (packages)?",
         name: "adoNugetKey",
+        store: false,
         type: "password",
         when: !capUkGroupExists
       }

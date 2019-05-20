@@ -1,18 +1,20 @@
 {
   "name": "@capgemini/generator-cdspackage",
-  "version": "0.4.0",
-  "description": "A generator to scaffold Dynamics 365 packages with associated Azure DevOps pipelines.",
+  "version": "0.5.0",
+  "description": "A generator to scaffold Dynamics 365 packages and associated Azure DevOps project.",
   "author": {
     "name": "Capgemini",
     "email": "tom.ashworth@capgemini.com"
   },
   "files": [
+    "common",
     "generators"
   ],
   "keywords": [
     "yeoman-generator"
   ],
   "devDependencies": {
+    "@types/ejs": "^2.6.3",
     "@types/guid": "^1.0.0",
     "@types/inquirer": "0.0.43",
     "@types/node": "^10.12.18",
@@ -42,6 +44,7 @@
     "@types/rimraf": "^2.0.2",
     "azure-devops-node-api": "^7.0.0",
     "chalk": "^2.1.0",
+    "ejs": "^2.6.1",
     "glob": "^7.1.3",
     "glob-promise": "^3.4.0",
     "guid": "0.0.12",
@@ -86,7 +89,7 @@
   "scripts": {
     "pretest": "eslint .",
     "test": "jest",
-    "build": "tsc && xcopy \"src\\generators\\app\\definitions\" \"generators\\app\\definitions\" /I /y && xcopy \"src\\generators\\app\\templates\\source\" \"generators\\app\\templates\\source\" /I /S /y && xcopy \"src\\generators\\solution\\templates\\source\" \"generators\\solution\\templates\\source\" /I /S /y",
+    "build": "tsc && xcopy \"src\\generators\\app\\definitions\" \"generators\\app\\definitions\" /I /y && xcopy \"src\\generators\\app\\templates\" \"generators\\app\\templates\" /I /S /y && xcopy \"src\\generators\\solution\\templates\" \"generators\\solution\\templates\" /I /S /y && xcopy \"src\\generators\\pluginassembly\\templates\" \"generators\\pluginassembly\\templates\" /I /S /y && xcopy \"src\\generators\\scripts\\templates\" \"generators\\scripts\\templates\" /I /S /y",
     "clean-debug": "del /S /q debug\\* && FOR /D %p IN (\"debug\\*\") DO rmdir \"%p\" /s /q"
   },
   "license": "unlicense"
