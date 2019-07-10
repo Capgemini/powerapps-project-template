@@ -1,10 +1,28 @@
-﻿namespace <%= client %>.<%= package %>.BusinessLogic.Logging
+namespace <%= client %>.<%= package %>.BusinessLogic.Logging
 {
+    /// <summary>
+    /// Log severity.
+    /// </summary>
     public enum Severity
     {
+        /// <summary>
+        /// Verbose log entry.
+        /// </summary>
         Verbose,
+
+        /// <summary>
+        /// Information log entry.
+        /// </summary>
         Info,
+
+        /// <summary>
+        /// Warning log entry.
+        /// </summary>
         Warning,
-        Error
+
+        /// <summary>
+        /// Error log entry.
+        /// </summary>
+        Error,
     }
 }

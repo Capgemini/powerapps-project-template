@@ -1,4 +1,4 @@
-﻿namespace <%= client %>.<%= package %>.BusinessLogic.Logging
+namespace <%= client %>.<%= package %>.BusinessLogic.Logging
 {
     using System;
     using System.Globalization;

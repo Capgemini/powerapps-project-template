@@ -12,13 +12,14 @@ steps:
    
        foreach ($_ in $resultArray)
        {
-           if ($_.StartsWith("Solutions")) 
+           if ($_.StartsWith("Solutions") -and $_.Contains("Extract")) 
            {
              $solutionName = $_.Split("/")[1]
 
              if (!$solutionList.Contains($solutionName)) 
              {
                $solutionList += $solutionName + ";"
+               Write-Host "##vso[build.addbuildtag]$solutionName" 
              }
            }
        }
@@ -34,6 +35,7 @@ steps:
     env:
       CAPGEMINI_UK_PACKAGE_READ_KEY: $(CapgeminiUkPackageReadKey)
       CAKE_CONN_STAGING: $(ConnectionString)
+      CAKE_DYNAMICS_PASSWORD: $(DynamicsPassword)
   - task: VSTest@2
     displayName: 'Test Assemblies'
     inputs:
@@ -73,3 +75,4 @@ variables:
   - group: Azure DevOps - Capgemini UK
   - group: Package - <%= package %>
   - group: Environment - Staging
+  - group: Environment - Common

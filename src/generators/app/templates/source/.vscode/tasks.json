@@ -1,6 +1,4 @@
 {
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
   "version": "2.0.0",
   "tasks": [
     {
@@ -33,7 +31,8 @@
         "powershell",
         "-ExecutionPolicy ByPass",
         "-File build.ps1",
-        "-Target \"GenerateModel\""
+        "-Target \"GenerateModel\"",
+        "-ScriptArgs \"--solution=${input:solution}\""
       ],
       "problemMatcher": []
     },
@@ -115,13 +114,17 @@
       "id": "solution",
       "description": "The solution to execute the task for.",
       "type": "pickString",
-      "options": []
+      "options": [
+      ]
     },
     {
       "id": "dataType",
       "description": "Type of data.",
       "type": "pickString",
-      "options": ["Reference", "Configuration"]
+      "options": [
+        "PreDeployment",
+        "PostDeployment"
+      ]
     }
   ]
 }

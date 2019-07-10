@@ -7,12 +7,13 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace><%= client %>.<%= package %>.Repositories</Import_RootNamespace>
-</PropertyGroup>
-<ItemGroup>
-<Compile Include="$(MSBuildThisFileDirectory)CrmRepository.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)CrmRepository{TContext,TEntity}.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)ICrmRepository.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)ICrmRepository{TEntity}.cs" />
-      <Compile Include="$(MSBuildThisFileDirectory)OrganizationServiceExtensions.cs" />
-    </ItemGroup>
-  </Project>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CrmRepository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CrmRepository{TContext,TEntity}.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ICrmRepository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ICrmRepository{TEntity}.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OrganizationServiceExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SandboxWebClient.cs" />
+  </ItemGroup>
+</Project>

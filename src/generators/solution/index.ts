@@ -29,17 +29,36 @@ class Main extends Generator {
         message: "Name of the solution?",
         name: "solution",
         store: true
+      },
+      {
+        message: "Development environment URL?",
+        name: "environment",
+        store: false
+      },
+      {
+        message: "Are changes to this solution promoted using a staging environment?",
+        name: "hasStagingEnvironment",
+        store: false,
+        type: "confirm"
+      },
+      {
+        message: "Staging environment URL?",
+        name: "stagingEnvironment",
+        store: false,
+        when: (answers) => answers.hasStagingEnvironment
       }
     ]);
 
     this.answers.client = this.answers.client.replace(/\s/g, "");
     this.answers.package = this.answers.package.replace(/\s/g, "");
     this.answers.solution = this.answers.solution.replace(/\s/g, "");
+    this.answers.solutionUniqueName = `${this.answers.prefix}_${this.answers.package}_${this.answers.solution}`;
     this.answers.projectGuid = raw();
   }
 
   public writing(): void {
     this.writeSource();
+    this.writeEnvConfig();
     this.updateTasks();
     this.updateImportConfig();
   }
@@ -64,6 +83,22 @@ class Main extends Generator {
     );
   };
 
+  private writeEnvConfig = () => {
+    this.log(`Writing environment configuration...`);
+
+    const envConfig: any = {
+      environment: this.answers.environment
+    };
+
+    if (this.answers.hasStagingEnvironment) {
+      envConfig.stagingEnvironment = this.answers.stagingEnvironment;
+    }
+
+    this.fs.writeJSON(
+      this.destinationPath("Solutions", this.answers.solutionUniqueName, "env.json"),
+      envConfig)
+  };
+
   private updateTasks = () => {
     this.log(`Updating tasks.json...`);
     const tasksString = this.fs.read(
@@ -74,7 +109,7 @@ class Main extends Generator {
       .find((input: { id: string }) => input.id === "solution")
       .options.push(
         `${this.answers.prefix}_${this.answers.package}_${
-          this.answers.solution
+        this.answers.solution
         }`
       );
     this.fs.writeJSON(this.destinationPath(".vscode", "tasks.json"), tasks);
@@ -104,7 +139,7 @@ class Main extends Generator {
             publishworkflowsandactivateplugins: true,
             solutionpackagefilename: `${this.answers.prefix}_${
               this.answers.package
-            }_${this.answers.solution}_managed.zip`,
+              }_${this.answers.solution}_managed.zip`,
             useAsync: "true"
           }
         };

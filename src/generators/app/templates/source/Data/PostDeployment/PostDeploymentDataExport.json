@@ -1,5 +1,5 @@
 {
-  "CrmMigrationToolSchemaPaths": ["ConfigurationDataSchema.xml"],
+  "CrmMigrationToolSchemaPaths": ["PostDeploymentDataSchema.xml"],
   "CrmMigrationToolSchemaFilters": {},
   "PageSize": 1000,
   "BatchSize": 1000,
