@@ -49,7 +49,6 @@ export class AzureDevOpsScaffolder {
       settings.project,
       settings.package.name,
       settings.connections.ci,
-      settings.connections.staging,
       settings.nuget,
     );
 

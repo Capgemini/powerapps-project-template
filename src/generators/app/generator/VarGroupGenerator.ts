@@ -3,7 +3,6 @@ import { VariableGroupParameters } from "azure-devops-node-api/interfaces/TaskAg
 import { ITaskAgentApi } from "azure-devops-node-api/TaskAgentApi";
 import azDevCapUk from "../definitions/variablegroups/azure-devops-capgemini-uk.json";
 import envCi from "../definitions/variablegroups/environment-ci.json";
-import envStaging from "../definitions/variablegroups/environment-staging.json";
 import pkg from "../definitions/variablegroups/pkg.json";
 import { IGenerator } from "./IGenerator.js";
 
@@ -23,7 +22,6 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     project: string,
     packageName: string,
     ciConn?: string,
-    stagingConn?: string,
     nuget?: string,
   ): Promise<VariableGroup[]> {
     this.log("Generating variable groups...");
@@ -31,7 +29,6 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     const groupsToCreate = this.generateVariableGroups(
       packageName,
       ciConn,
-      stagingConn,
       nuget,
     );
 
@@ -46,9 +43,6 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
 
     if (!ciConn) {
       existingGroups.push(envCi.name);
-    }
-    if (!stagingConn) {
-      existingGroups.push(envStaging.name);
     }
     if (!nuget) {
       existingGroups.push(azDevCapUk.name);
@@ -83,7 +77,6 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
   private generateVariableGroups(
     packageName: string,
     ciConn?: string,
-    stagingConn?: string,
     nuget?: string,
   ): VariableGroup[] {
     const groups: VariableGroup[] = [pkg];
@@ -91,10 +84,6 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     if (ciConn) {
       envCi.variables.ConnectionString.value = ciConn;
       groups.push(envCi);
-    }
-    if (stagingConn) {
-      envStaging.variables.ConnectionString.value = stagingConn;
-      groups.push(envStaging);
     }
     if (nuget) {
       azDevCapUk.variables.CapgeminiUkPackageReadKey.value = nuget;

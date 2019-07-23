@@ -75,11 +75,6 @@ class Main extends Generator {
       .then(grps => grps.find(grp => grp.name === "Environment - CI"))
       .then(grp => grp !== undefined);
 
-    const stagingGroupExists = await this.conn!.getTaskAgentApi()
-      .then(api => api.getVariableGroups(packageAnswers.adoProject))
-      .then(grps => grps.find(grp => grp.name === "Environment - Staging"))
-      .then(grp => grp !== undefined);
-
     const capUkGroupExists = await this.conn!.getTaskAgentApi()
       .then(api =>
         api.getVariableGroups(
@@ -96,13 +91,6 @@ class Main extends Generator {
         store: true,
         validate: validateUrl,
         when: !ciGroupExists
-      },
-      {
-        message: "Staging environment URL?",
-        name: "stagingUrl",
-        store: true,
-        validate: validateUrl,
-        when: !stagingGroupExists
       },
       {
         message: "Dynamics 365 service account email?",
@@ -169,13 +157,6 @@ class Main extends Generator {
         connections: {
           ci: this.answers.ciUrl
             ? `Url=${this.answers.ciUrl}; Username=${
-                this.answers.devUsername
-              }; Password=${
-                this.answers.devPassword
-              }; AuthType=Office365;`
-            : undefined,
-          staging: this.answers.stagingUrl
-            ? `Url=${this.answers.stagingUrl}; Username=${
                 this.answers.devUsername
               }; Password=${
                 this.answers.devPassword

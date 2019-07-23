@@ -1,10 +1,10 @@
 import { BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import {
+  Artifact,
   ArtifactSourceTrigger,
   ReleaseDefinition,
   ReleaseDefinitionEnvironment,
-  WorkflowTask,
-  Artifact
+  WorkflowTask
 } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { ReleaseApi } from "azure-devops-node-api/ReleaseApi";
 import releaseDefinition from "../definitions/release/release.json";
@@ -113,18 +113,18 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     client: string,
     packageName: string
   ) {
-    const deployPackageTask = ciDeploymentTasks[0];
+    const importPreDeploymentDataTask = ciDeploymentTasks[0];
+    importPreDeploymentDataTask.inputs!.jsonFolderPath = `${packageFolder}/PkgFolder/Data/PreDeployment/Extract`;
+    importPreDeploymentDataTask.inputs!.configFilePath = `${packageFolder}/PkgFolder/Data/PreDeployment/PreDeploymentDataImport.json`;
+    const deployPackageTask = ciDeploymentTasks[1];
     deployPackageTask.inputs!.workingDir = packageFolder;
     deployPackageTask.inputs!.packageName = `${client}.${packageName}.Deployment.dll`;
     deployPackageTask.inputs!.configSubFolder = packageFolder;
-    const verifyPackageTask = ciDeploymentTasks[1];
+    const verifyPackageTask = ciDeploymentTasks[2];
     verifyPackageTask.inputs!.workingDir = packageFolder;
-    const importConfigDataTask = ciDeploymentTasks[2];
-    importConfigDataTask.inputs!.jsonFolderPath = `${packageFolder}/PkgFolder/Data/Configuration/Extract`;
-    importConfigDataTask.inputs!.configFilePath = `${packageFolder}/PkgFolder/Data/Configuration/ConfigurationDataImport.json`;
-    const importReferenceDataTask = ciDeploymentTasks[3];
-    importReferenceDataTask.inputs!.jsonFolderPath = `${packageFolder}/PkgFolder/Data/Reference/Extract`;
-    importReferenceDataTask.inputs!.configFilePath = `${packageFolder}/PkgFolder/Data/Reference/ReferenceDataImport.json`;
+    const importPostDeploymentDataTask = ciDeploymentTasks[3];
+    importPostDeploymentDataTask.inputs!.jsonFolderPath = `${packageFolder}/PkgFolder/Data/PostDeployment/Extract`;
+    importPostDeploymentDataTask.inputs!.configFilePath = `${packageFolder}/PkgFolder/Data/PostDeployment/PostDeploymentDataImport.json`;
     const activateProcessesTask = ciDeploymentTasks[4];
     activateProcessesTask.inputs!.pkgFolderPath = `${packageFolder}/PkgFolder`;
     const importWordTemplateTask = ciDeploymentTasks[5];

@@ -95,7 +95,7 @@ class Main extends Generator {
     }
 
     this.fs.writeJSON(
-      this.destinationPath("Solutions", this.answers.solutionUniqueName, "env.json"),
+      this.destinationPath("Solutions", "{{prefix}}_{{Package}}_{{Solution}}", "env.json"),
       envConfig)
   };
 
