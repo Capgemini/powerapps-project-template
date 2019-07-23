@@ -4,18 +4,6 @@
 
 <%= package %> Dynamics 365 package - generated using the [package generator](https://capgeminiuk.visualstudio.com/Capgemini%20Reusable%20IP/_git/generator-cdspackage).
 
-## What is a Dynamics 365 package?
-
-A Dynamics 365 package is comprised of:
-
-- One or more solutions and associated source code
-- Data
-- A PackageDeployer import config
-
-A greater number of more granular solutions is beneficial when working in shared development environments and having a monolithic repository per package allows for greater productivity and more atomic pull requests.
-
-Dynamics 365 packages are deployed using the [PackageDeployer](https://docs.microsoft.com/en-us/dynamics365/customer-engagement/admin/deploy-packages-using-package-deployer-windows-powershell)
-
 ## Contributing
 
 Please ensure that pull requests are atomic and do not contain partially built functionality. This allows for holistic code reviews, cleaner git history and a more stable package. The repository contains all of the dependencies required to develop Dynamics 365 functionality.
@@ -24,10 +12,8 @@ Please ensure that pull requests are atomic and do not contain partially built f
 
 Two environment variables are required to enable you to authenticate with the development and staging environments:
 
-- CAKE_CONN_DEV: `Url=https://<org>.<region>.dynamics.com; Username=<email>; Password=<password>; AuthType=Office365;`
-- CAKE_CONN_STAGING: `Url=https://<org>.<region>.dynamics.com; Username=<email>; Password=<password>; AuthType=Office365;`
-
-Ensure you have replaced `<email>` and `<password>` with your own details.
+- CAKE_DYNAMICS_USERNAME
+- CAKE_DYNAMICS_PASSWORD
 
 ### Create a git branch
 
@@ -38,7 +24,7 @@ Create a git branch from master using the following naming convention:
 - All characters should be lowercase and spaces should be separated by hyphens.
 - Category should be either: `feature` for new functionality, `bug` for bug fixes, or `tech` for any technical changes (e.g. updating builds etc.).
 - Key will be the numeric portion of the story, bug, or task's key/ID (e.g. 1722).
-- Description will be a summary of the story, bug or task. This will possibly be the same as the Jira issue name but it may have to be made more succinct.
+- Description will be a summary of the story, bug or task. This will possibly be the same as the issue name but it may have to be made more succinct.
 
 For example, `feature/1722-view-and-maintain-accounts`.
 
@@ -59,25 +45,14 @@ The following rules need to be adhered to when working in your development solut
 - Only one development solution can make changes to a component (e.g. relationship, field, view, form, assembly or process) at a time. Check other development solutions if you are unsure. Multiple development solutions modifying the same components will mean that either:
   - Unfinished customisations will be added to the build
   - Developent solutions cannot be merged because of dependencies added by other development solutions
-- Avoid locking out shared components by modifying them last if possible (e.g. add your components to the app as the last step in your story)
+- Avoid locking out shared components for longer than required by modifying them last if possible
 - Add only the components that you require to your solution. Do not check 'Add all assets' or 'Include entity metadata' when adding entities.
 - Do not add dependencies when prompted. These should already exist in the target system (the staging environment).
 - Avoid changes to managed components where possible. There may be a couple of exceptions.
 
 ### Processes and plugins
 
-- Workflows should generally be created with scope set to Parent: Child Business Units. This allows us to isolate our processes to <%= package %> - especially important when dealing with out-of-the-box entities.
 - Plugin steps can't be scoped so alternatives should be considered when dealing with out-of-the-box entities and messsages.
-
-### Deleting components
-
-To delete a component:
-
-- Ensure that any dependencies are removed in your development solution (e.g. remove a field from any forms or views that reference it)
-- Delete any dependent components if no longer required and make a note of these components
-- Delete the component
-- Import the development solution into the staging environment when ready
-- Delete the component from the staging environment
 
 ## Tools
 
@@ -91,7 +66,6 @@ Visual Studio is recommended for .NET development (i.e. plugins assemblies) whil
 
 - Visual Studio Code
 
-  - Cake
   - npm
   - Azure Repos
 

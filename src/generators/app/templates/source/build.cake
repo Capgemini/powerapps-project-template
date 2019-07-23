@@ -157,7 +157,7 @@ string GetConnectionString(string solution, bool stagingEnvironment) {
   
   var targetEnvironment = stagingEnvironment && envConfig["stagingEnvironment"] != null ? "stagingEnvironment" : "environment";
   var url = envConfig[targetEnvironment].ToString();
-  var username = envConfig["username"].ToString();
+  var username = EnvironmentVariable("CAKE_DYNAMICS_USERNAME");
   var password = EnvironmentVariable("CAKE_DYNAMICS_PASSWORD");
 
   return $"Url={url}; Username={username}; Password={password}; AuthType=Office365;";
