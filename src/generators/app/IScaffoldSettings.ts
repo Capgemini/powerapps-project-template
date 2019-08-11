@@ -1,13 +1,12 @@
 import { IPackageDetails } from "./IPackageDetails";
 
 export interface IScaffoldSettings {
-  project: string;
-  client: string;
+  projectName: string;
+  clientName: string;
   package: IPackageDetails;
-  repo: string;
-  connections: {
-    ci?: string;
-    staging?: string;
-  };
-  nuget?: string;
+  gitRepository: string;
+  serviceAccountUsername?: string;
+  serviceAccountPassword?: string;
+  ciEnvironmentUrl?: string;
+  capgeminiUkPackageReadKey?: string;
 }

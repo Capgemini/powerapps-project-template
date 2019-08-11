@@ -71,17 +71,15 @@ class Main extends Generator {
     packageAnswers.client = packageAnswers.client.replace(/\s/g, "");
 
     const ciGroupExists = await this.conn!.getTaskAgentApi()
-      .then(api => api.getVariableGroups(packageAnswers.adoProject))
-      .then(grps => grps.find(grp => grp.name === "Environment - CI"))
-      .then(grp => grp !== undefined);
+      .then(api => api.getVariableGroups(packageAnswers.adoProject, "Environment - CI"))
+      .then(grps => grps.length > 0);
 
     const capUkGroupExists = await this.conn!.getTaskAgentApi()
-      .then(api =>
-        api.getVariableGroups(
-          packageAnswers.adoProject,
-          "Azure DevOps - Capgemini UK"
-        )
-      )
+      .then(api => api.getVariableGroups(packageAnswers.adoProject, "Azure DevOps - Capgemini UK"))
+      .then(grps => grps.length > 0);
+
+    const cakeGroupExists = await this.conn!.getTaskAgentApi()
+      .then(api => api.getVariableGroups(packageAnswers.adoProject, "Cake"))
       .then(grps => grps.length > 0);
 
     const connectionAnswers = await this.prompt([
@@ -94,16 +92,18 @@ class Main extends Generator {
       },
       {
         message: "Dynamics 365 service account email?",
-        name: "devUsername",
+        name: "serviceAccountUsername",
         store: true,
-        validate: validateEmail
+        validate: validateEmail,
+        when: !ciGroupExists
       },
       {
         mask: "*",
         message: "Dynamics 365 service account password?",
-        name: "devPassword",
+        name: "serviceAccountPassword",
         store: false,
-        type: "password"
+        type: "password",
+        when: !cakeGroupExists || !ciGroupExists
       },
       {
         mask: "*",
@@ -151,25 +151,20 @@ class Main extends Generator {
       new ReleaseGenerator(await this.conn!.getReleaseApi(), this.log),
       this.log
     );
+
     try {
       await scaffolder.scaffold({
-        client: this.answers.client,
-        connections: {
-          ci: this.answers.ciUrl
-            ? `Url=${this.answers.ciUrl}; Username=${
-                this.answers.devUsername
-              }; Password=${
-                this.answers.devPassword
-              }; AuthType=Office365;`
-            : undefined
-        },
-        nuget: this.answers.adoNugetKey,
+        capgeminiUkPackageReadKey: this.answers.adoNugetKey,
+        ciEnvironmentUrl: this.answers.ciUrl,
+        clientName: this.answers.client,
+        gitRepository: this.answers.repositoryName,
         package: {
           name: this.answers.package,
           path: this.destinationPath()
         },
-        project: this.answers.adoProject,
-        repo: this.answers.repositoryName
+        projectName: this.answers.adoProject,
+        serviceAccountPassword: this.answers.serviceAccountPassword,
+        serviceAccountUsername: this.answers.serviceAccountUsername,
       });
     } catch (e) {
       this.log("Package generator encountered an error.");

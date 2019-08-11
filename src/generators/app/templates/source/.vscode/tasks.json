@@ -80,7 +80,7 @@
         "-ExecutionPolicy ByPass",
         "-File build.ps1",
         "-Target \"StageData\"",
-        "-ScriptArgs \"--dataType=${input:dataType}\""
+        "-ScriptArgs \"--dataType=${input:dataType}\",\"--solution=${input:solution}\""
       ],
       "problemMatcher": []
     },

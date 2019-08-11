@@ -24,15 +24,13 @@ export class RepoGenerator implements IGenerator<GitRepository> {
     repoLocation: string
   ): Promise<GitRepository> {
     this.log("Generating repository...");
-    const repo = await this.createRepos(projectName, {
+    const repo = await this.createRepo(projectName, {
       name: repoName
     });
 
     if (repo === undefined) {
       throw new Error("An error occurred while creating repository.");
     }
-
-    this.createdObjects.push(repo);
 
     await this.pushRepo(repoLocation, repo.remoteUrl!);
 
@@ -51,12 +49,15 @@ export class RepoGenerator implements IGenerator<GitRepository> {
     return;
   }
 
-  private async createRepos(
+  private async createRepo(
     project: string,
     repo: GitRepositoryCreateOptions
   ): Promise<GitRepository> {
     this.log(`Creating ${repo.name} repository...`);
-    return this.conn.createRepository(repo, project);
+    const repository = await this.conn.createRepository(repo, project);
+    this.createdObjects.push(repository);
+
+    return repository;
   }
 
   private async pushRepo(repoLocation: string, gitUrl: string) {

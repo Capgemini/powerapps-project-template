@@ -73,7 +73,7 @@
               "condition": "succeeded()",
               "inputs": {
                 "jsonFolderPath": "",
-                "connectionString": "$(ConnectionString)",
+                "connectionString": "$(connectionString)",
                 "maxThreads": "1",
                 "savePageSize": "100",
                 "ignoreSystemFields": "true",
@@ -102,7 +102,7 @@
               "inputs": {
                 "workingDir": "",
                 "packageName": "",
-                "connectionString": "$(ConnectionString)",
+                "connectionString": "$(connectionString)",
                 "timeOut": "1:00:00",
                 "logOutputFolder": "$(Agent.ReleaseDirectory)",
                 "configSubfolder": "",
@@ -124,7 +124,7 @@
               "condition": "succeeded()",
               "inputs": {
                 "workingDir": "",
-                "connectionString": "$(ConnectionString)"
+                "connectionString": "$(connectionString)"
               }
             },
             {
@@ -142,7 +142,7 @@
               "condition": "succeeded()",
               "inputs": {
                 "jsonFolderPath": "",
-                "connectionString": "$(ConnectionString)",
+                "connectionString": "$(connectionString)",
                 "maxThreads": "1",
                 "savePageSize": "100",
                 "ignoreSystemFields": "true",
@@ -169,7 +169,7 @@
               "overrideInputs": {},
               "condition": "succeeded()",
               "inputs": {
-                "connectionString": "$(ConnectionString)",
+                "connectionString": "$(connectionString)",
                 "pkgFolderPath": ""
               }
             },
@@ -187,7 +187,7 @@
               "overrideInputs": {},
               "condition": "succeeded()",
               "inputs": {
-                "connectionString": "$(ConnectionString)",
+                "connectionString": "$(connectionString)",
                 "pkgFolderPath": ""
               }
             }

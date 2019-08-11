@@ -1,0 +1,10 @@
+{
+    "name": "Cake",
+    "variables": {
+      "dynamicsPassword": {
+        "value": "",
+        "isSecret": true
+      }
+    }
+  }
+  

@@ -8,7 +8,7 @@ steps:
       -Verbosity Diagnostic"
     displayName: Cake - Build Package
     env:
-      CAPGEMINI_UK_PACKAGE_READ_KEY: $(CapgeminiUkPackageReadKey)
+      CAPGEMINI_UK_PACKAGE_READ_KEY: $(capgeminiUkPackageReadKey)
   - task: VSTest@2
     displayName: 'Test Assemblies'
     inputs:
@@ -19,4 +19,3 @@ steps:
       codeCoverageEnabled: true
 variables:
   - group: Azure DevOps - Capgemini UK
-  - group: Package - <%= package %>

@@ -46,28 +46,30 @@ export class AzureDevOpsScaffolder {
     this.log("Setting up Azure DevOps...");
 
     const varGroups = await this.varGroupGenerator.generate(
-      settings.project,
+      settings.projectName,
       settings.package.name,
-      settings.connections.ci,
-      settings.nuget,
+      settings.ciEnvironmentUrl,
+      settings.capgeminiUkPackageReadKey,
+      settings.serviceAccountUsername,
+      settings.serviceAccountPassword
     );
 
     const repo = await this.repoGenerator.generate(
-      settings.project,
-      settings.repo,
+      settings.projectName,
+      settings.gitRepository,
       settings.package.path
     );
 
     const varGroupIds = varGroups.map(group => group.id!);
 
     const serviceEndpoints = await this.serviceEndpointGenerator.generate(
-      settings.project,
-      settings.nuget
+      settings.projectName,
+      settings.capgeminiUkPackageReadKey
     );
 
     const buildDefs = await this.buildGenerator.generate(
       settings.package.path,
-      settings.project,
+      settings.projectName,
       settings.package.name,
       repo.id!,
       varGroupIds
@@ -77,10 +79,10 @@ export class AzureDevOpsScaffolder {
     try {
       await this.extensionGenerator.generate();
       releaseDef = await this.releaseGenerator.generate(
-        settings.project,
+        settings.projectName,
         settings.package.name,
-        settings.client,
-        await this.getProjectId(settings.project),
+        settings.clientName,
+        await this.getProjectId(settings.projectName),
         buildDefs.find(
           def =>
             (def.process as YamlProcess).yamlFilename === "azure-pipelines.yml"

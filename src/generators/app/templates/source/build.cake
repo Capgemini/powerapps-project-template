@@ -154,10 +154,9 @@ void BuildCSharpProject(FilePath projectPath, NuGetRestoreSettings nugetSettings
 
 string GetConnectionString(string solution, bool stagingEnvironment) {
   var envConfig = ParseJsonFromFile(File($"{SolutionsFolder}/{solution}/env.json"));
-  
   var targetEnvironment = stagingEnvironment && envConfig["stagingEnvironment"] != null ? "stagingEnvironment" : "environment";
   var url = envConfig[targetEnvironment].ToString();
-  var username = EnvironmentVariable("CAKE_DYNAMICS_USERNAME");
+  var username = envConfig["username"] ?? EnvironmentVariable("CAKE_DYNAMICS_USERNAME");
   var password = EnvironmentVariable("CAKE_DYNAMICS_PASSWORD");
 
   return $"Url={url}; Username={username}; Password={password}; AuthType=Office365;";
@@ -175,14 +174,7 @@ void ExportData(DirectoryPath extractFolder, FilePath exportConfigPath) {
   XrmExportData(new DataMigrationExportSettings(GetConnectionString(solution, false), exportConfigPath));
 }
 
-void PackSolution(string projectFolder, string solutionName, string solutionVersion) {
-  var changedSolutions = Argument<string>("solutions", "");
-  if (!String.IsNullOrEmpty(solutionVersion) && !String.IsNullOrEmpty(changedSolutions) && changedSolutions.Contains(solutionName)) {
-    var versionParts = solutionVersion.Split('.');
-    versionParts[2] = (int.Parse(versionParts[2]) + 1).ToString();
-    XrmUpdateSolutionVersion(GetConnectionString(solution, true), solutionName, String.Join(".", versionParts));
-  }
-    
+void PackSolution(string projectFolder, string solutionName, string solutionVersion) {    
   SolutionPackagerPack(new SolutionPackagerPackSettings(
     Directory(projectFolder).Path.CombineWithFilePath($"bin\\Release\\{solutionName}.zip"),
     Directory(projectFolder).Path.Combine("Extract"),

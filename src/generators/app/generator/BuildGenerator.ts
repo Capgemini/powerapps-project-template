@@ -64,11 +64,11 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
     project: string,
     definitions: BuildDefinition[]
   ) {
-    return Promise.all(
-      definitions.map(async definition =>
-        this.conn.createDefinition(definition, project)
-      )
-    );
+    const createdDefinitions: BuildDefinition[] = [];
+    for (const definition of definitions) {
+      createdDefinitions.push(await this.conn.createDefinition(definition, project));
+    }
+    return createdDefinitions;
   }
 
   private generateBuildDefinition(
@@ -99,11 +99,9 @@ function getBuildDefinitionName(yamlPath: string) {
   return yamlPath === "azure-pipelines.yml" ? "Package Build" : yamlPath
     .split("azure-pipelines-")[1]
     .replace(".yml", "")
-    .replace("-", " ")
+    .replace(/-/g, " ")
     .replace(/\w\S*/g, (txt) => {
-      return txt
-        .charAt(0)
-        .toUpperCase() + txt.substr(1).toLowerCase();
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 }
 

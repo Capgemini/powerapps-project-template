@@ -1,7 +1,17 @@
 {
   "name": "Environment - CI",
   "variables": {
-    "ConnectionString": {
+    "username": {
+      "value": ""
+    },
+    "password": {
+      "value": "",
+      "isSecret": true
+    },
+    "url": {
+      "value": ""
+    },
+    "connectionString": {
       "value": ""
     }
   }
