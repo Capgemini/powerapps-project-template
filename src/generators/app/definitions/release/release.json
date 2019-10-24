@@ -60,34 +60,6 @@
           "workflowTasks": [
             {
               "environment": {},
-              "taskId": "c7518b7b-6ac7-4610-b403-c3a57665615c",
-              "version": "0.*",
-              "name": "Import Pre-Deployment Data",
-              "refName": "",
-              "enabled": true,
-              "alwaysRun": false,
-              "continueOnError": false,
-              "timeoutInMinutes": 0,
-              "definitionType": "task",
-              "overrideInputs": {},
-              "condition": "succeeded()",
-              "inputs": {
-                "jsonFolderPath": "",
-                "connectionString": "$(connectionString)",
-                "maxThreads": "1",
-                "savePageSize": "100",
-                "ignoreSystemFields": "true",
-                "ignoreStatuses": "false",
-                "useCsv": "false",
-                "schemaFilePath": "",
-                "configFilePath": "",
-                "csvFilesToImport": "",
-                "filesFilter": "",
-                "treatWarningsAsErrors": "false"
-              }
-            },
-            {
-              "environment": {},
               "taskId": "2aec407f-7763-43a5-a27f-bf45a58e4f1d",
               "version": "1.*",
               "name": "Deploy Package",
@@ -107,88 +79,6 @@
                 "logOutputFolder": "$(Agent.ReleaseDirectory)",
                 "configSubfolder": "",
                 "syncTimeoutMinutes": "60"
-              }
-            },
-            {
-              "environment": {},
-              "taskId": "10c12437-f11b-4f9b-976b-f54255516d56",
-              "version": "1.*",
-              "name": "Verify Package",
-              "refName": "",
-              "enabled": true,
-              "alwaysRun": false,
-              "continueOnError": false,
-              "timeoutInMinutes": 0,
-              "definitionType": "task",
-              "overrideInputs": {},
-              "condition": "succeeded()",
-              "inputs": {
-                "workingDir": "",
-                "connectionString": "$(connectionString)"
-              }
-            },
-            {
-              "environment": {},
-              "taskId": "c7518b7b-6ac7-4610-b403-c3a57665615c",
-              "version": "0.*",
-              "name": "Import Post-Deployment Data",
-              "refName": "",
-              "enabled": true,
-              "alwaysRun": false,
-              "continueOnError": false,
-              "timeoutInMinutes": 0,
-              "definitionType": "task",
-              "overrideInputs": {},
-              "condition": "succeeded()",
-              "inputs": {
-                "jsonFolderPath": "",
-                "connectionString": "$(connectionString)",
-                "maxThreads": "1",
-                "savePageSize": "100",
-                "ignoreSystemFields": "true",
-                "ignoreStatuses": "false",
-                "useCsv": "false",
-                "schemaFilePath": "",
-                "configFilePath": "",
-                "csvFilesToImport": "",
-                "filesFilter": "",
-                "treatWarningsAsErrors": "false"
-              }
-            },
-            {
-              "environment": {},
-              "taskId": "7be3f190-3500-42fb-9ea2-0744d730c546",
-              "version": "2.*",
-              "name": "Activate/Deactivate Processes",
-              "refName": "",
-              "enabled": true,
-              "alwaysRun": false,
-              "continueOnError": false,
-              "timeoutInMinutes": 0,
-              "definitionType": "task",
-              "overrideInputs": {},
-              "condition": "succeeded()",
-              "inputs": {
-                "connectionString": "$(connectionString)",
-                "pkgFolderPath": ""
-              }
-            },
-            {
-              "environment": {},
-              "taskId": "bd4d515f-a13f-46fe-95b2-73ae781224cb",
-              "version": "2.*",
-              "name": "Import Word Templates",
-              "refName": "",
-              "enabled": true,
-              "alwaysRun": false,
-              "continueOnError": false,
-              "timeoutInMinutes": 0,
-              "definitionType": "task",
-              "overrideInputs": {},
-              "condition": "succeeded()",
-              "inputs": {
-                "connectionString": "$(connectionString)",
-                "pkgFolderPath": ""
               }
             }
           ]

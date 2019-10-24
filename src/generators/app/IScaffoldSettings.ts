@@ -8,5 +8,4 @@ export interface IScaffoldSettings {
   serviceAccountUsername?: string;
   serviceAccountPassword?: string;
   ciEnvironmentUrl?: string;
-  capgeminiUkPackageReadKey?: string;
 }

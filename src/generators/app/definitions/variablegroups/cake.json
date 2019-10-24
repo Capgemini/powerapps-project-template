@@ -1,6 +1,10 @@
 {
     "name": "Cake",
     "variables": {
+      "dynamicsUsername": {
+        "value": "",
+        "isSecret": false
+      },
       "dynamicsPassword": {
         "value": "",
         "isSecret": true

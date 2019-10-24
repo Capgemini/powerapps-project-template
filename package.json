@@ -1,6 +1,6 @@
 {
   "name": "@capgemini/generator-cdspackage",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "A generator to scaffold Dynamics 365 packages and associated Azure DevOps project.",
   "author": {
     "name": "Capgemini",
@@ -89,7 +89,7 @@
   "scripts": {
     "pretest": "eslint .",
     "test": "jest",
-    "build": "tsc && xcopy \"src\\generators\\app\\definitions\" \"generators\\app\\definitions\" /I /y && xcopy \"src\\generators\\app\\templates\" \"generators\\app\\templates\" /I /S /y && xcopy \"src\\generators\\solution\\templates\" \"generators\\solution\\templates\" /I /S /y && xcopy \"src\\generators\\pluginassembly\\templates\" \"generators\\pluginassembly\\templates\" /I /S /y && xcopy \"src\\generators\\scripts\\templates\" \"generators\\scripts\\templates\" /I /S /y",
+    "build": "tsc && xcopy \"src\\generators\\app\\definitions\" \"generators\\app\\definitions\" /I /y && xcopy \"src\\generators\\app\\templates\" \"generators\\app\\templates\" /I /S /y && xcopy \"src\\generators\\solution\\templates\" \"generators\\solution\\templates\" /I /S /y && xcopy \"src\\generators\\pluginassembly\\templates\" \"generators\\pluginassembly\\templates\" /I /S /y && xcopy \"src\\generators\\scripts\\templates\" \"generators\\scripts\\templates\" /I /S /y && xcopy \"src\\generators\\data\\templates\" \"generators\\data\\templates\" /I /S /y",
     "clean-debug": "del /S /q debug\\* && FOR /D %p IN (\"debug\\*\") DO rmdir \"%p\" /s /q"
   }
 }

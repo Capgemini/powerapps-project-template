@@ -7,7 +7,6 @@ import { BuildGenerator } from "./generator/BuildGenerator";
 import { ExtensionGenerator } from "./generator/ExtensionGenerator";
 import { ReleaseGenerator } from "./generator/ReleaseGenerator";
 import { RepoGenerator } from "./generator/RepoGenerator";
-import { ServiceEndpointGenerator } from "./generator/ServiceEndpointGenerator";
 import { VarGroupGenerator } from "./generator/VarGroupGenerator";
 import { validateEmail, validateNamespace, validateUrl } from "./utilities";
 
@@ -74,10 +73,6 @@ class Main extends Generator {
       .then(api => api.getVariableGroups(packageAnswers.adoProject, "Environment - CI"))
       .then(grps => grps.length > 0);
 
-    const capUkGroupExists = await this.conn!.getTaskAgentApi()
-      .then(api => api.getVariableGroups(packageAnswers.adoProject, "Azure DevOps - Capgemini UK"))
-      .then(grps => grps.length > 0);
-
     const cakeGroupExists = await this.conn!.getTaskAgentApi()
       .then(api => api.getVariableGroups(packageAnswers.adoProject, "Cake"))
       .then(grps => grps.length > 0);
@@ -95,7 +90,7 @@ class Main extends Generator {
         name: "serviceAccountUsername",
         store: true,
         validate: validateEmail,
-        when: !ciGroupExists
+        when: !cakeGroupExists || !ciGroupExists
       },
       {
         mask: "*",
@@ -104,14 +99,6 @@ class Main extends Generator {
         store: false,
         type: "password",
         when: !cakeGroupExists || !ciGroupExists
-      },
-      {
-        mask: "*",
-        message: "Azure DevOps - Capgemini UK auth token (packages)?",
-        name: "adoNugetKey",
-        store: false,
-        type: "password",
-        when: !capUkGroupExists
       }
     ]);
 
@@ -137,11 +124,10 @@ class Main extends Generator {
 
   private setupAzureDevOps = async () => {
     const taskAgentApi = this.conn!.getTaskAgentApi();
-    
+
     const scaffolder = new AzureDevOpsScaffolder(
       await this.conn!.getCoreApi(),
       new VarGroupGenerator(await taskAgentApi, this.log),
-      new ServiceEndpointGenerator(await taskAgentApi, this.log),
       new RepoGenerator(await this.conn!.getGitApi(), this.log),
       new BuildGenerator(await this.conn!.getBuildApi(), this.log),
       new ExtensionGenerator(
@@ -154,7 +140,6 @@ class Main extends Generator {
 
     try {
       await scaffolder.scaffold({
-        capgeminiUkPackageReadKey: this.answers.adoNugetKey,
         ciEnvironmentUrl: this.answers.ciUrl,
         clientName: this.answers.client,
         gitRepository: this.answers.repositoryName,

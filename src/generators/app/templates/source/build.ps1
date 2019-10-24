@@ -47,7 +47,6 @@ Param(
     [string]$Target,
     [string]$Configuration,
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")] [string]$Verbosity,
-    [string]$NuGetCredentials,
     [switch]$ShowDescription,
     [Alias("WhatIf", "Noop")] [switch]$DryRun,
     [switch]$Experimental,
@@ -149,18 +148,6 @@ if (!(Test-Path $NUGET_EXE)) {
 # Save nuget.exe path to environment to be available to child processed
 $ENV:NUGET_EXE = $NUGET_EXE
 
-# Add NuGet sources
-if($NuGetCredentials) {
-    $NuGetConfig = "$PSScriptRoot\NuGet.config"
-    $NuGetCredentialsArray = $NuGetCredentials -split ','
-    foreach ($NuGetCredentialsString in $NuGetCredentialsArray) {
-        $NuGetCredential = $NuGetCredentialsString -split ';'
-        Write-Verbose -Message "Updating $($NuGetCredential[0]) source with credentials..."
-        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" sources update -Name `"$($NuGetCredential[0])`" -Username PAT -Password `"$($NuGetCredential[1])`" -ConfigFile `"$NuGetConfig`""
-        Write-Verbose -Message $NuGetOutput
-    }
-}
-
 # Restore tools from NuGet?
 if(-Not $SkipToolPackageRestore.IsPresent) {
     Push-Location
@@ -176,12 +163,8 @@ if(-Not $SkipToolPackageRestore.IsPresent) {
     }
 
     Write-Verbose -Message "Restoring tools from NuGet..."
-
-    if ($NuGetCredentials) {
-        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$TOOLS_DIR`" -ConfigFile `"$NuGetConfig`""
-    } else {
-        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$TOOLS_DIR`""
-    }    
+    
+    $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$TOOLS_DIR`""
 
     if ($LASTEXITCODE -ne 0) {
         Throw "An error occurred while restoring NuGet tools."
@@ -201,12 +184,8 @@ if (Test-Path $ADDINS_PACKAGES_CONFIG) {
     Set-Location $ADDINS_DIR
 
     Write-Verbose -Message "Restoring addins from NuGet..."
-
-    if ($NuGetCredentials) {
-        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$ADDINS_DIR`" -ConfigFile `"$NuGetConfig`""
-    } else {
-        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$ADDINS_DIR`""
-    }    
+    
+    $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$ADDINS_DIR`""
 
     if ($LASTEXITCODE -ne 0) {
         Throw "An error occurred while restoring NuGet addins."
@@ -223,12 +202,9 @@ if (Test-Path $MODULES_PACKAGES_CONFIG) {
     Set-Location $MODULES_DIR
 
     Write-Verbose -Message "Restoring modules from NuGet..."
-        
-    if ($NuGetCredentials) {
-        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$MODULES_DIR`" -ConfigFile `"$NuGetConfig`""
-    } else {
-        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$MODULES_DIR`""
-    }  
+    
+    $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$MODULES_DIR`""
+    
 
     if ($LASTEXITCODE -ne 0) {
         Throw "An error occurred while restoring NuGet modules."
@@ -258,10 +234,5 @@ $cakeArguments += $ScriptArgs
 # Start Cake
 Write-Host "Running build script..."
 &$CAKE_EXE $cakeArguments
-
-# Delete NuGet.config if credentials have been injected
-if ($NuGetCredentials) {
-    Remove-Item $NuGetConfig
-}
 
 exit $LASTEXITCODE

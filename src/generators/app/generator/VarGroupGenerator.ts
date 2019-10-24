@@ -1,9 +1,9 @@
 import { VariableGroup } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { VariableGroupParameters } from "azure-devops-node-api/interfaces/TaskAgentInterfaces";
 import { ITaskAgentApi } from "azure-devops-node-api/TaskAgentApi";
-import azDevCapUk from "../definitions/variablegroups/azure-devops-capgemini-uk.json";
 import cake from "../definitions/variablegroups/cake.json";
 import envCi from "../definitions/variablegroups/environment-ci.json";
+import pkg from "../definitions/variablegroups/pkg.json";
 import { IGenerator } from "./IGenerator.js";
 
 export class VarGroupGenerator implements IGenerator<VariableGroup> {
@@ -22,7 +22,6 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     project: string,
     packageName: string,
     ciEnvironmentUrl?: string,
-    capUkPackageReadKey?: string,
     serviceAccountUsername?: string,
     serviceAccountPassword?: string,
   ): Promise<VariableGroup[]> {
@@ -31,7 +30,6 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     const groupsToCreate = this.generateVariableGroups(
       packageName,
       ciEnvironmentUrl,
-      capUkPackageReadKey,
       serviceAccountUsername,
       serviceAccountPassword
     );
@@ -39,7 +37,7 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     const varGroups = await this.createVariableGroups(project, groupsToCreate);
     this.createdObjects.push(...varGroups);
 
-    if (ciEnvironmentUrl && capUkPackageReadKey && serviceAccountPassword && serviceAccountUsername) {
+    if (ciEnvironmentUrl && serviceAccountPassword && serviceAccountUsername) {
       return varGroups;
     }
 
@@ -47,9 +45,6 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
 
     if (!ciEnvironmentUrl) {
       existingGroups.push(envCi.name);
-    }
-    if (!capUkPackageReadKey) {
-      existingGroups.push(azDevCapUk.name);
     }
     if (!serviceAccountPassword) {
       existingGroups.push(cake.name)
@@ -84,11 +79,11 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
   private generateVariableGroups(
     packageName: string,
     ciEnvironmentUrl?: string,
-    capUkPackageReadKey?: string,
     serviceAccountUsername?: string,
     serviceAccountPassword?: string
   ): VariableGroup[] {
-    const groups: VariableGroup[] = [];
+    const groups: VariableGroup[] = [pkg];
+    pkg.name = `Package - ${packageName}`;
 
     if (ciEnvironmentUrl) {
       envCi.variables.url.value = ciEnvironmentUrl;
@@ -98,13 +93,9 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
       groups.push(envCi);
     }
 
-    if (capUkPackageReadKey) {
-      azDevCapUk.variables.capgeminiUkPackageReadKey.value = capUkPackageReadKey;
-      groups.push(azDevCapUk);
-    }
-
-    if (serviceAccountPassword) {
+    if (serviceAccountPassword && serviceAccountUsername) {
       cake.variables.dynamicsPassword.value = serviceAccountPassword;
+      cake.variables.dynamicsUsername.value = serviceAccountUsername;
       groups.push(cake);
     }
 

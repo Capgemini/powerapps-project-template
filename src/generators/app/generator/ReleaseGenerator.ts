@@ -113,22 +113,9 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     client: string,
     packageName: string
   ) {
-    const importPreDeploymentDataTask = ciDeploymentTasks[0];
-    importPreDeploymentDataTask.inputs!.jsonFolderPath = `${packageFolder}/PkgFolder/Data/PreDeployment/Extract`;
-    importPreDeploymentDataTask.inputs!.configFilePath = `${packageFolder}/PkgFolder/Data/PreDeployment/PreDeploymentDataImport.json`;
-    const deployPackageTask = ciDeploymentTasks[1];
+    const deployPackageTask = ciDeploymentTasks[0];
     deployPackageTask.inputs!.workingDir = packageFolder;
     deployPackageTask.inputs!.packageName = `${client}.${packageName}.Deployment.dll`;
-    deployPackageTask.inputs!.configSubFolder = packageFolder;
-    const verifyPackageTask = ciDeploymentTasks[2];
-    verifyPackageTask.inputs!.workingDir = packageFolder;
-    const importPostDeploymentDataTask = ciDeploymentTasks[3];
-    importPostDeploymentDataTask.inputs!.jsonFolderPath = `${packageFolder}/PkgFolder/Data/PostDeployment/Extract`;
-    importPostDeploymentDataTask.inputs!.configFilePath = `${packageFolder}/PkgFolder/Data/PostDeployment/PostDeploymentDataImport.json`;
-    const activateProcessesTask = ciDeploymentTasks[4];
-    activateProcessesTask.inputs!.pkgFolderPath = `${packageFolder}/PkgFolder`;
-    const importWordTemplateTask = ciDeploymentTasks[5];
-    importWordTemplateTask.inputs!.pkgFolderPath = `${packageFolder}/PkgFolder`;
   }
 
   private configureArtifact(

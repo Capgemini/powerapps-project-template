@@ -1,5 +1,5 @@
 {
-  "CrmMigrationToolSchemaPaths": ["PostDeploymentDataSchema.xml"],
+  "CrmMigrationToolSchemaPaths": ["<%= solution %>DataSchema.xml"],
   "CrmMigrationToolSchemaFilters": {},
   "PageSize": 1000,
   "BatchSize": 1000,
@@ -7,7 +7,7 @@
   "OnlyActiveRecords": false,
   "JsonFolderPath": "Extract",
   "OneEntityPerBatch": true,
-  "FilePrefix": "0.1",
+  "FilePrefix": "<%= prefix %>",
   "SeperateFilesPerEntity": true,
   "LookupMapping": {
     "teamroles": {

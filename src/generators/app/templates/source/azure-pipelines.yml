@@ -26,12 +26,11 @@ steps:
     displayName: 'Configure Build Orchestration'
   - powershell: >-
       Invoke-Expression "&$(Build.SourcesDirectory)\build.ps1 
-      -Target Default 
-      -NuGetCredentials `"Capgemini IP;$env:CAPGEMINI_UK_PACKAGE_READ_KEY`"  
+      -Target Default   
       -Verbosity Diagnostic"
     displayName: Cake - Build Package
     env:
-      CAPGEMINI_UK_PACKAGE_READ_KEY: $(capgeminiUkPackageReadKey)
+      CAKE_DYNAMICS_USERNAME: $(dynamicsUsername)
       CAKE_DYNAMICS_PASSWORD: $(dynamicsPassword)
   - task: VSTest@2
     displayName: 'Test Assemblies'
@@ -69,5 +68,5 @@ trigger:
 variables:
   - name: solutionList
     value: ''
-  - group: Azure DevOps - Capgemini UK
   - group: Cake
+  - group: Package - <%= package %>

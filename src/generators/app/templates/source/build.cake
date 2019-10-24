@@ -1,10 +1,9 @@
 using System.Text.RegularExpressions;
 
-#addin nuget:?package=Cake.Xrm.Sdk&version=0.1.7
-#addin nuget:?package=Cake.Xrm.SolutionPackager&version=0.1.7
-#addin nuget:?package=Cake.Xrm.DataMigration&version=0.1.6
-#addin nuget:?package=Cake.Xrm.Spkl&version=0.1.6
-#addin nuget:?package=Cake.Xrm.XrmDefinitelyTyped&version=0.1.6
+#addin nuget:?package=Cake.Xrm.Sdk&version=0.1.9
+#addin nuget:?package=Cake.Xrm.SolutionPackager&version=0.1.9
+#addin nuget:?package=Cake.Xrm.DataMigration&version=0.1.8
+#addin nuget:?package=Cake.Xrm.Spkl&version=0.1.7
 #addin nuget:?package=Cake.Npm&version=0.17.0
 #addin nuget:?package=Cake.Json&version=3.0.0
 
@@ -28,14 +27,15 @@ Task("BuildDeploymentProject")
       File($"{DeployProjectFolder}/<%= client %>.<%= package %>.Deployment.csproj"), 
       new NuGetRestoreSettings { ConfigFile = "NuGet.config" }, 
       new MSBuildSettings { Configuration = "Release" });
-    DeleteFiles($"{DeployProjectFolder}/bin/Release/PkgFolder/Data/**/*");
-    DeleteFiles($"{DeployProjectFolder}/bin/Release/PkgFolder/*.zip");
-    EnsureDirectoryExists($"{DeployProjectFolder}/bin/Release/PkgFolder/Data");
     EnsureDirectoryExists($"{DeployProjectFolder}/bin/Release/PowerShell");
     CopyFiles($"{PackagesFolder}/Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*/tools/**/*", Directory($"{DeployProjectFolder}/bin/Release"), true);
     CopyFiles($"{PackagesFolder}/Microsoft.CrmSdk.XrmTooling.PackageDeployment.PowerShell.*/tools/**/*", Directory($"{DeployProjectFolder}/bin/Release/PowerShell"));
-    CopyFiles($"{SolutionsFolder}/**/*.zip", Directory("Deploy/bin/Release/PkgFolder"));
-    CopyDirectory(Directory(DataFolder), Directory($"{DeployProjectFolder}/bin/Release/PkgFolder/Data"));
+    foreach (var solutionDir in GetDirectories($"{SolutionsFolder}/*"))
+    {
+      EnsureDirectoryExists($"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}");
+      DeleteFiles($"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}/**/*");
+      CopyDirectory(solutionDir.Combine("bin/Release").FullPath, $"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}");  
+    } 
   });
 
 Task("PackAll")
@@ -61,6 +61,17 @@ Task("ExtractSolution")
       GetConnectionString(solution, true), 
       solution, 
       Directory($"{SolutionsFolder}/{solution}").Path.Combine("Extract"));
+  });
+
+Task("ExtractSolutionFromDevelopmentHub")
+  .Does(() => {
+    var connectionString = GetConnectionString(solution, false);
+    var tempDirectory = Directory(EnvironmentVariable("TEMP"));
+    var unmanagedSolution = XrmDownloadAttachment(connectionString, Guid.Parse(Argument<string>("unmanagedNoteId")), tempDirectory);
+    var managedSolution = XrmDownloadAttachment(connectionString, Guid.Parse(Argument<string>("managedNoteId")), tempDirectory);
+    var outputPath = Directory($"{SolutionsFolder}/{solution}").Path.Combine("Extract");
+    
+    SolutionPackagerExtract(unmanagedSolution, outputPath, SolutionPackageType.Both);
   });
 
 // build targets 
@@ -95,25 +106,35 @@ Task("BuildSolution")
 Task("PackSolution")
   .IsDependentOn("BuildSolution")
   .Does(() => {
+    DeleteFiles($"{SolutionsFolder}/bin/Release/**/*");
     PackSolution($"{SolutionsFolder}/{solution}", solution, Argument<string>("solutionVersion", ""));
+    var solutionFolder = Directory(SolutionsFolder).Path.Combine(solution);
+    var dataFolder = solutionFolder.Combine("Data");
+    var outputDataFolder = solutionFolder.Combine("bin/Release/Data");
+    if (DirectoryExists(dataFolder))
+    {
+      CopyDirectory(dataFolder, solutionFolder.Combine("bin/Release/Data"));
+      DeleteFiles($"{outputDataFolder}/**/*Export.json");
+    }
   });
 
 // data targets 
 Task("ExportData")
   .Does(() => {
-    var dataType = Argument<string>("dataType");
+    var solutionDataFolder = Directory($"{SolutionsFolder}/{solution}/Data");
+    EnsureDirectoryExists(solutionDataFolder.Path.Combine("Extract"));
     ExportData(
-      Directory(DataFolder).Path.Combine($"{dataType}\\Extract"),
-      Directory(DataFolder).Path.MakeAbsolute(Context.Environment).CombineWithFilePath($"{dataType}\\{dataType}DataExport.json"));
+      solutionDataFolder.Path.Combine("Data/Extract"),
+      solutionDataFolder.Path.CombineWithFilePath($"{solution.Split('_')[2]}DataExport.json"));
   });
 
 Task("StageData")
   .Does(() => {
-    var dataType = Argument<string>("dataType");
+    var solutionDataFolder = Directory($"{SolutionsFolder}/{solution}/Data");
     XrmImportData(
       new DataMigrationImportSettings(
         GetConnectionString(solution, true), 
-        Directory(DataFolder).Path.MakeAbsolute(Context.Environment).CombineWithFilePath($"{dataType}\\{dataType}DataImport.json")));
+        Directory($"{SolutionsFolder}/{solution}/Data").Path.CombineWithFilePath($"{solution.Split('_')[2]}DataImport.json")));
   });
   
 // deploy targets

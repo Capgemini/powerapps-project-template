@@ -6,7 +6,6 @@ import { ExtensionGenerator } from "./generator/ExtensionGenerator";
 import { IGenerator } from "./generator/IGenerator";
 import { ReleaseGenerator } from "./generator/ReleaseGenerator";
 import { RepoGenerator } from "./generator/RepoGenerator";
-import { ServiceEndpointGenerator } from "./generator/ServiceEndpointGenerator";
 import { VarGroupGenerator } from "./generator/VarGroupGenerator";
 import { IScaffoldResult } from "./IScaffoldResult";
 import { IScaffoldSettings } from "./IScaffoldSettings";
@@ -14,7 +13,6 @@ import { IScaffoldSettings } from "./IScaffoldSettings";
 export class AzureDevOpsScaffolder {
   private readonly coreApi: CoreApi;
   private readonly varGroupGenerator: VarGroupGenerator;
-  private readonly serviceEndpointGenerator: ServiceEndpointGenerator;
   private readonly repoGenerator: RepoGenerator;
   private readonly buildGenerator: BuildGenerator;
   private readonly extensionGenerator: ExtensionGenerator;
@@ -25,7 +23,6 @@ export class AzureDevOpsScaffolder {
   constructor(
     coreApi: CoreApi,
     varGroupGenerator: VarGroupGenerator,
-    serviceEndpointGenerator: ServiceEndpointGenerator,
     repoGenerator: RepoGenerator,
     buildGenerator: BuildGenerator,
     extensionGenerator: ExtensionGenerator,
@@ -34,7 +31,6 @@ export class AzureDevOpsScaffolder {
   ) {
     this.coreApi = coreApi;
     this.varGroupGenerator = varGroupGenerator;
-    this.serviceEndpointGenerator = serviceEndpointGenerator;
     this.repoGenerator = repoGenerator;
     this.buildGenerator = buildGenerator;
     this.extensionGenerator = extensionGenerator;
@@ -49,7 +45,6 @@ export class AzureDevOpsScaffolder {
       settings.projectName,
       settings.package.name,
       settings.ciEnvironmentUrl,
-      settings.capgeminiUkPackageReadKey,
       settings.serviceAccountUsername,
       settings.serviceAccountPassword
     );
@@ -61,11 +56,6 @@ export class AzureDevOpsScaffolder {
     );
 
     const varGroupIds = varGroups.map(group => group.id!);
-
-    const serviceEndpoints = await this.serviceEndpointGenerator.generate(
-      settings.projectName,
-      settings.capgeminiUkPackageReadKey
-    );
 
     const buildDefs = await this.buildGenerator.generate(
       settings.package.path,
@@ -100,7 +90,6 @@ export class AzureDevOpsScaffolder {
       buildDefinitions: buildDefs,
       releaseDefinition: releaseDef,
       repositories: repo,
-      serviceEndpoints,
       variableGroups: varGroups
     };
   }
@@ -113,7 +102,6 @@ export class AzureDevOpsScaffolder {
       this.releaseGenerator,
       this.varGroupGenerator,
       this.extensionGenerator,
-      this.serviceEndpointGenerator
     ];
     await Promise.all(generators.map(gen => gen.rollback(project)));
     return;

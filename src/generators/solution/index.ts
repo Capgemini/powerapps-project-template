@@ -131,15 +131,14 @@ class Main extends Generator {
           throw err;
         }
         const solutions = res.configdatastorage.solutions[0];
+        const solutionFullName = `${this.answers.prefix}_${this.answers.package}_${this.answers.solution}`;
         const solutionElement = {
           $: {
             deleteonly: "false",
             forceUpgrade: "false",
             overwriteunmanagedcustomizations: true,
             publishworkflowsandactivateplugins: true,
-            solutionpackagefilename: `${this.answers.prefix}_${
-              this.answers.package
-              }_${this.answers.solution}_managed.zip`,
+            solutionpackagefilename: `${solutionFullName}/${solutionFullName}_managed.zip`,
             useAsync: "true"
           }
         };
