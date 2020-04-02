@@ -24,14 +24,12 @@ steps:
            }
        }
     displayName: 'Configure Build Orchestration'
-  - powershell: >-
-      Invoke-Expression "&$(Build.SourcesDirectory)\build.ps1 
-      -Target Default   
-      -Verbosity Diagnostic"
-    displayName: Cake - Build Package
-    env:
-      CAKE_DYNAMICS_USERNAME: $(dynamicsUsername)
-      CAKE_DYNAMICS_PASSWORD: $(dynamicsPassword)
+  - task: PowerShell@2
+    displayName: 'Run BuildTestProjects Cake target via bootstrapper'
+    inputs:
+      targetType: filePath
+      filePath: ./build.ps1
+      arguments: '-Target BuildTestProjects -Verbosity Quiet'
   - task: VSTest@2
     displayName: 'Test Assemblies'
     inputs:
@@ -40,6 +38,15 @@ steps:
         !**\*TestAdapter.dll
         !**\obj\**
       codeCoverageEnabled: true
+  - task: PowerShell@2
+    displayName: 'Run Default Cake target via bootstrapper'
+    inputs:
+      targetType: filePath
+      filePath: ./build.ps1
+      arguments: '-Target Default -Verbosity Quiet'
+    env:
+      CAKE_DYNAMICS_USERNAME: $(dynamicsUsername)
+      CAKE_DYNAMICS_PASSWORD: $(dynamicsPassword)
   - task: CopyFiles@2
     displayName: "Copy package to artifact staging directory"
     inputs:
