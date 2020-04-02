@@ -109,7 +109,7 @@ Worklow activities can be deployed using the `Deploy Workflow Activities` task. 
 
 ### Generating the early-bound model classes
 
-The early-bound model classes can be generated using the `Generate Model` Cake task. It will use the configuration file located at _Common\Client.Package.Model\DLaB.EarlyBoundGenerator.DefaultSettings.xml_. It is recommended to use the early-bound generator XrmToolbox plugin to update this configuration file.
+The early-bound model classes can be generated for solutions using the `Generate Model` Cake task. It will use the early-bound configuration located in the spkl.json file in the root of the solution folder.
 
 ### Building the package
 
