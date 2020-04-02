@@ -15,6 +15,7 @@ const string TestsFolder = "./Tests";
 
 var target = Argument("target", "Default");
 var solution = Argument<string>("solution", "");
+var packedSolutions = new List<string>();
 
 // Build package
 Task("Default")
@@ -29,7 +30,7 @@ Task("BuildDeploymentProject")
       new MSBuildSettings { Configuration = "Release" });
     EnsureDirectoryExists($"{DeployProjectFolder}/bin/Release/PowerShell");
     CopyFiles($"{PackagesFolder}/Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*/tools/**/*", Directory($"{DeployProjectFolder}/bin/Release"), true);
-    CopyFiles($"{PackagesFolder}/Microsoft.CrmSdk.XrmTooling.PackageDeployment.PowerShell.*/tools/**/*", Directory($"{DeployProjectFolder}/bin/Release/PowerShell"));
+    CopyFiles($"{PackagesFolder}/Microsoft.CrmSdk.XrmTooling.PackageDeployment.PowerShell.*/tools/**/*", Directory($"{DeployProjectFolder}/bin/Release/PowerShell"), true);
     foreach (var solutionDir in GetDirectories($"{SolutionsFolder}/*"))
     {
       EnsureDirectoryExists($"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}");
@@ -40,11 +41,12 @@ Task("BuildDeploymentProject")
 
 Task("PackAll")
   .Does(() => {
-    var solutionDirectories = GetDirectories($"{SolutionsFolder}/*");
-    foreach (var solutionDirectory in solutionDirectories)
+    foreach (var solutionDirectory in GetDirectories($"{SolutionsFolder}/*"))
     {
       solution = solutionDirectory.GetDirectoryName();
-      RunTarget("PackSolution");
+      if (!packedSolutions.Contains(solution)){
+        RunTarget("PackSolution");
+      }
     }
   });
 
@@ -106,16 +108,15 @@ Task("BuildSolution")
 Task("PackSolution")
   .IsDependentOn("BuildSolution")
   .Does(() => {
-    DeleteFiles($"{SolutionsFolder}/bin/Release/**/*");
-    PackSolution($"{SolutionsFolder}/{solution}", solution, Argument<string>("solutionVersion", ""));
-    var solutionFolder = Directory(SolutionsFolder).Path.Combine(solution);
-    var dataFolder = solutionFolder.Combine("Data");
-    var outputDataFolder = solutionFolder.Combine("bin/Release/Data");
-    if (DirectoryExists(dataFolder))
-    {
-      CopyDirectory(dataFolder, solutionFolder.Combine("bin/Release/Data"));
-      DeleteFiles($"{outputDataFolder}/**/*Export.json");
-    }
+    var solutionFolder = Directory($"{SolutionsFolder}/{solution}");
+    
+    SolutionPackagerPack(
+      new SolutionPackagerPackSettings(
+        solutionFolder.Path.CombineWithFilePath($"bin\\Release\\{solution}.zip"),
+        solutionFolder.Path.Combine("Extract"),
+        SolutionPackageType.Both,
+        solutionFolder.Path.CombineWithFilePath("MappingFile.xml")));
+    packedSolutions.Add(solution);
   });
 
 // data targets 
