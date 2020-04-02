@@ -10,9 +10,9 @@ steps:
       git config --global user.email "$(triggeredByEmail)";
       git config --global user.name "$(triggeredBy)";
       git checkout master;
-      if($env:EXTRACT_SOURCE_BRANCH)
+      if ($env:SOURCEBRANCH)
       {
-        git merge origin/$env:EXTRACT_SOURCE_BRANCH --no-commit;
+        git merge origin/$env:SOURCEBRANCH --no-commit;
       }
       Invoke-Expression "&$(Build.SourcesDirectory)\build.ps1 -Target ExtractSolutionFromDevelopmentHub -ScriptArgs `"--solution=$(solution)`",`"--unmanagedNoteId=$(unmanagedNoteId)`",`"--managedNoteId=$(managedNoteId)`" -Verbosity Diagnostic";
       git add .;
@@ -23,6 +23,5 @@ steps:
     env:
       CAKE_DYNAMICS_PASSWORD: $(dynamicsPassword)
       CAKE_DYNAMICS_USERNAME: $(dynamicsUsername)
-      EXTRACT_SOURCE_BRANCH: $(sourceBranch) 
 variables:
   - group: Cake
