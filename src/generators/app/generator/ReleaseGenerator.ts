@@ -42,7 +42,7 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
         buildDef.id!,
         (buildDef && buildDef.queue && buildDef.queue.id) || 0
       )
-    ).catch(this.log);
+    );
 
     if (def === undefined) {
       throw new Error("An error occurred while creating release definitions.");
