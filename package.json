@@ -1,6 +1,6 @@
 {
   "name": "@capgemini/generator-cdspackage",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "A generator to scaffold Dynamics 365 packages and associated Azure DevOps project.",
   "author": {
     "name": "Capgemini",
