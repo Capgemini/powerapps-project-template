@@ -116,15 +116,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Steps\CommandSteps.cs" />
-    <Compile Include="Steps\DataSteps.cs" />
-    <Compile Include="Steps\FormSteps.cs" />
-    <Compile Include="Steps\LoginSteps.cs" />
-    <Compile Include="Steps\NavigationSteps.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
     <None Include="<%= client %>.<%= package %>.Tests.Ui.ruleset" />
     <None Include="spec-xrm.yaml" />
