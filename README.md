@@ -3,19 +3,50 @@
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and generator-cdspackage using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
-
+1.	Install the latest version of node from https://nodejs.org/en/
+2.	Install yeoman globally by running the following command 
 ```bash
 npm install -g yo
-npm install -g generator-cdspackage
+```
+3.	Edit your user .npmrc file (located at “C:\Users\{username}\.npmrc”) to include the Capgemini npm package source. Add the following lines:
+```bash
+registry=https://capgeminiuk.pkgs.visualstudio.com/_packaging/CapgeminiIp/npm/registry/
+always-auth=true
 ```
 
-Then generate your new project:
+4.	Run the following command from a powershell or command prompt window
 
 ```bash
-yo cdspackage
+vsts-npm-auth -config .npmrc
+```
+5.	Then run the following command to install the “CDS Package Generator” 
+```bash
+npm install -g @capgemini/generator-cdspackage 
 ```
 
+## Running the generators
+Once the cdspackage generator has been installed the following commands be run from a command prompt:
+
+Scaffold a project
+```bash
+yo @capgemini/cdspackage
+```
+Add a solution to scaffolded project
+```bash
+yo @capgemini/cdspackage:solution
+```
+Add a web resource project to a chosen solution
+```bash
+yo @capgemini/cdspackage:scripts
+```
+Add a CWA/plugin assembly to a chosen solution
+```bash
+yo @capgemini/cdspackage:pluginassembly
+```
+Add a capgemini data migrator setup for a chosen solution
+```bash
+yo @capgemini/cdspackage:data
+```
 ## Getting To Know Yeoman
 
  * Yeoman has a heart of gold.
