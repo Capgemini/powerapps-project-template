@@ -35,7 +35,9 @@ Task("BuildDeploymentProject")
     {
       EnsureDirectoryExists($"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}");
       DeleteFiles($"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}/**/*");
-      CopyDirectory(solutionDir.Combine("bin/Release").FullPath, $"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}");  
+      CopyDirectory(solutionDir.Combine("bin/Release").FullPath, $"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}");
+      EnsureDirectoryExists(solutionDir.Combine("Data").FullPath);
+      CopyDirectory(solutionDir.Combine("Data").FullPath, $"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}/Data");
     } 
   });
 
