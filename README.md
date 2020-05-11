@@ -1,4 +1,7 @@
-# generator-cdspackage [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# generator-cdspackage 
+[![Build Status](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_apis/build/status/generator-cdspackage?branchName=master)](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_build/latest?definitionId=115&branchName=master)
+[![NPM version](https://feeds.dev.azure.com/capgeminiuk/_apis/public/Packaging/Feeds/25162f08-da5e-4c04-bac0-40216eaa4bf9/Packages/48ba9982-c47a-4df2-bc62-3f560c69391d/badge?api-version=5.1-preview.1)](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_packaging?_a=package&feed=CapgeminiIp&package=%40capgemini%2Fgenerator-cdspackage&protocolType=Npm)
+
 > A generator for creating the entire package for CDS (MS Dynamics and Power Apps) solutions
 
 ## Installation
@@ -54,14 +57,7 @@ yo @capgemini/cdspackage:data
  * Yeoman can be too opinionated at times but is easily convinced not to be.
  * Feel free to [learn more about Yeoman](http://yeoman.io/).
 
+
 ## License
 
-unlicense © [Capgemini]()
-
-
-[npm-image]: https://badge.fury.io/js/generator-cdspackage.svg
-[npm-url]: https://npmjs.org/package/generator-cdspackage
-[travis-image]: https://travis-ci.org//generator-cdspackage.svg?branch=master
-[travis-url]: https://travis-ci.org//generator-cdspackage
-[daviddm-image]: https://david-dm.org//generator-cdspackage.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org//generator-cdspackage
+Unlicense © [Capgemini](https://cpagemini.com)
