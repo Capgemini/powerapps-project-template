@@ -99,4 +99,4 @@ The `MappingFile.xml` file is updated to include a file mapping of the `.dll` fo
 
 ## License
 
-Unlicense © [Capgemini](https://cpagemini.com)
+Unlicense © [Capgemini](https://capgemini.com)
