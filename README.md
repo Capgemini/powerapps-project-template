@@ -2,7 +2,7 @@
 [![Build Status](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_apis/build/status/generator-cdspackage?branchName=master)](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_build/latest?definitionId=115&branchName=master)
 [![NPM version](https://feeds.dev.azure.com/capgeminiuk/_apis/public/Packaging/Feeds/25162f08-da5e-4c04-bac0-40216eaa4bf9/Packages/48ba9982-c47a-4df2-bc62-3f560c69391d/badge?api-version=5.1-preview.1)](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_packaging?_a=package&feed=CapgeminiIp&package=%40capgemini%2Fgenerator-cdspackage&protocolType=Npm)
 
-> A generator for creating the entire package for CDS (MS Dynamics and Power Apps) solutions
+> A generator for creating the entire package for CDS (MS Dynamics and Power Apps) solutions.
 
 ## Table of Contents
 1. [Installation and setup](#installation)
@@ -18,37 +18,39 @@ Before using this tool, it must first be installed. As the generator package is 
 
 1.	Install the latest version of node from https://nodejs.org/en/.
 2.	Install [yeoman](https://yeoman.io/) globally by running the following command .
-```bash
-npm install -g yo
-```
+    ```bash
+    npm install -g yo
+    ```
 3.	Install [vsts-npm-auth](https://www.npmjs.com/package/vsts-npm-auth) which provides a means to authenticate a private npm Azure Artifacts feed.
-```bash
+    ```bash
     npm install -g vsts-npm-auth --registry https://registry.npmjs.com --always-auth false
     ```
 4.  Navigate to your user directory and edit the .npmrc file (`C:\Users\{username}\.npmrc`) to include the CapgeminiIp npm package source. Add the following lines:
     ```text
-registry=https://capgeminiuk.pkgs.visualstudio.com/_packaging/CapgeminiIp/npm/registry/
-always-auth=true
-```
+    registry=https://capgeminiuk.pkgs.visualstudio.com/_packaging/CapgeminiIp/npm/registry/
+    always-auth=true
+    ```
 4.	Still within you user directory, run the previously intalled tool to authenticate the feed with a personal PAC token.
-```bash
-vsts-npm-auth -config .npmrc
-```
+    ```bash
+    vsts-npm-auth -config .npmrc
+    ```
 5.	Now the feed is registered and you're authenticated, install the [@capgemini/generate-cdspackage](https://dev.azure.com/capgeminiuk/Microsoft%20Community/_packaging?_a=package&feed=CapgeminiIp&package=%40capgemini%2Fgenerator-cdspackage&protocolType=Npm).
-```bash
-npm install -g @capgemini/generator-cdspackage 
-```
+    ```bash
+    npm install -g @capgemini/generator-cdspackage 
+    ```
 
 ---
 
 ## Usage
-Once the cdspackage generator has been installed the following commands be run from a command prompt:
+Once the generator has been installed, a number of generators will be available to run. Before running these, please make sure you the `@capgemini/generate-cdspackage` is updated and your command prompt/shell/terminal is within your (current or new) project directory. 
+
+> Note that this section does not explain the usage of the Cake tasks which can be found within the README of the generated package instead.
 
 ### Scaffold a project
 ```bash
 yo @capgemini/cdspackage
 ```
-Downloads the base package (found `./src/generators/app/templates/source`), injecting in the provided names. This includes:
+This instanciates a new project and should be run in a completely clean folder where it will download the base package (found `./src/generators/app/templates/source`), injecting in the provided names. This includes:
 - Cake scripts and required dependencies
 - A set of VS projects to support the separation of business logic
 - A 'Deploy' VS project as a custom PackageDeployer dll
@@ -60,6 +62,8 @@ Afterwards, the first commit is made and pushed to a newly created Azure Repo wi
 - Adding variable libraries and values
 - Creating service connections
 - Configuring build and release pipelines.
+
+> This should not be run over the top of an existing package. Due to the current coupling with configuring Azure DevOps, this means you can't get any "source" updates made to the generator.   
 
 ### Add a Power Apps/Automate solution to scaffolded project
 ```bash
