@@ -7,7 +7,7 @@
 ## Table of Contents
 1. [Installation and setup](#installation)
 2. [Usage](#usage)
-3. [Contributating](./CONTRIBUTING.md)
+3. [Contributing](./CONTRIBUTING.md)
 4. [Licence](#license)
 
 ---
@@ -17,7 +17,7 @@
 Before using this tool, it must first be installed. As the generator package is published to a private npm feed, follow the below steps to connect to the feed or visit [here](https://dev.azure.com/capgeminiuk/Microsoft%20Community/_packaging?_a=connect&feed=CapgeminiIp) if you still need a hand. 
 
 1.	Install the latest version of node from https://nodejs.org/en/.
-2.	Install [yeoman](https://yeoman.io/) globally by running the following command .
+2.	Install [yeoman](https://yeoman.io/) globally by running the following command.
     ```bash
     npm install -g yo
     ```
@@ -30,7 +30,7 @@ Before using this tool, it must first be installed. As the generator package is 
     registry=https://capgeminiuk.pkgs.visualstudio.com/_packaging/CapgeminiIp/npm/registry/
     always-auth=true
     ```
-4.	Still within you user directory, run the previously intalled tool to authenticate the feed with a personal PAC token.
+4.	Staying within your user directory, run the previously installed tool to authenticate the feed with a personal PAC token.
     ```bash
     vsts-npm-auth -config .npmrc
     ```
@@ -42,7 +42,7 @@ Before using this tool, it must first be installed. As the generator package is 
 ---
 
 ## Usage
-Once the generator has been installed, a number of generators will be available to run. Before running these, please make sure you the `@capgemini/generate-cdspackage` is updated and your command prompt/shell/terminal is within your (current or new) project directory. 
+Once the package has been installed, several generators will be available to run from the `yo` CLI. Before running these, please make sure you the `@capgemini/generate-cdspackage` is updated and your command prompt/shell/terminal is within your (current or new) project directory. 
 
 > Note that this section does not explain the usage of the Cake tasks which can be found within the README of the generated package instead.
 
@@ -50,7 +50,7 @@ Once the generator has been installed, a number of generators will be available 
 ```bash
 yo @capgemini/cdspackage
 ```
-This instanciates a new project and should be run in a completely clean folder where it will download the base package (found `./src/generators/app/templates/source`), injecting in the provided names. This includes:
+This instantiates a new project and should be run in a completely clean folder where it will download the base package (found `./src/generators/app/templates/source`), injecting in the provided names. This includes:
 - Cake scripts and required dependencies
 - A set of VS projects to support the separation of business logic
 - A 'Deploy' VS project as a custom PackageDeployer dll
@@ -69,7 +69,7 @@ Afterwards, the first commit is made and pushed to a newly created Azure Repo wi
 ```bash
 yo @capgemini/cdspackage:solution
 ```
-Creates a folder within the `Solutions` directory which simply contains a `MappingFile.xml`, a `spkl.json` and an `environment.json` file. The `environment.json` file stores the environment URL and it's staging environment, if one exists. Next, the VS Code tasks configuration and the import configuration of the Deploy project are updated to include the newly registered solution.
+Creates a folder within the `Solutions` directory which simply contains a `MappingFile.xml`, a `spkl.json` and an `environment.json` file. The `environment.json` file stores the environment URL and it's staging environment if one provided. Next, the VS Code tasks configuration and the import configuration of the Deploy project are updated to include the newly registered solution.
 
 This __does not create a Power Apps solution__ within the given environment, nor does it automatically extract the solution. To now extract the solution, within VS Code:
 1. Open the command palette 
@@ -97,7 +97,7 @@ The `spkl.json` file is updated to include the newly created assembly which is u
 
 The `MappingFile.xml` file is updated to include a file mapping of the `.dll` for the extracted solution. This means the assembly built locally (or in a pipeline) is used when packing the solution rather than the download within the solution.
 
-### Add a capgemini data migrator setup for a chosen solution
+### Add a Capgemini Data Migrator set up for a chosen solution
 ```bash
 yo @capgemini/cdspackage:data
 ```
