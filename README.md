@@ -4,6 +4,12 @@
 
 > A generator for creating the entire package for CDS (MS Dynamics and Power Apps) solutions
 
+## Table of Contents
+1. [Installation and setup](#installation)
+2. [Usage](#usage)
+3. [Contributating](#contributing)
+4. [Licence](#license)
+
 
 ## Installation
 
@@ -27,7 +33,7 @@ npm install -g @capgemini/generator-cdspackage
 ```
 
 
-## Running the generators
+## Usage
 Once the cdspackage generator has been installed the following commands be run from a command prompt:
 
 ### Scaffold a project
@@ -89,7 +95,7 @@ The `MappingFile.xml` file is updated to include a file mapping of the `.dll` fo
 
 ---
 
-## Getting To Know Yeoman
+## Contributing
 
  * Yeoman has a heart of gold.
  * Yeoman is a person with feelings and opinions, but is very easy to work with.
@@ -99,4 +105,4 @@ The `MappingFile.xml` file is updated to include a file mapping of the `.dll` fo
 
 ## License
 
-Unlicense © [Capgemini](https://capgemini.com)
+Unlicensed © [Capgemini](https://capgemini.com)
