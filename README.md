@@ -14,25 +14,32 @@
 
 ## Installation
 
-1.	Install the latest version of node from https://nodejs.org/en/
-2.	Install yeoman globally by running the following command 
+Before using this tool, it must first be installed. As the generator package is published to a private npm feed, follow the below steps to connect to the feed or visit [here](https://dev.azure.com/capgeminiuk/Microsoft%20Community/_packaging?_a=connect&feed=CapgeminiIp) if you still need a hand. 
+
+1.	Install the latest version of node from https://nodejs.org/en/.
+2.	Install [yeoman](https://yeoman.io/) globally by running the following command .
 ```bash
 npm install -g yo
 ```
-3.	Edit your user .npmrc file (located at “C:\Users\\{username}\\.npmrc”) to include the Capgemini npm package source. Add the following lines:
+3.	Install [vsts-npm-auth](https://www.npmjs.com/package/vsts-npm-auth) which provides a means to authenticate a private npm Azure Artifacts feed.
 ```bash
+    npm install -g vsts-npm-auth --registry https://registry.npmjs.com --always-auth false
+    ```
+4.  Navigate to your user directory and edit the .npmrc file (`C:\Users\{username}\.npmrc`) to include the CapgeminiIp npm package source. Add the following lines:
+    ```text
 registry=https://capgeminiuk.pkgs.visualstudio.com/_packaging/CapgeminiIp/npm/registry/
 always-auth=true
 ```
-4.	Run the following command from a powershell or command prompt window
+4.	Still within you user directory, run the previously intalled tool to authenticate the feed with a personal PAC token.
 ```bash
 vsts-npm-auth -config .npmrc
 ```
-5.	Then run the following command to install the “CDS Package Generator” 
+5.	Now the feed is registered and you're authenticated, install the [@capgemini/generate-cdspackage](https://dev.azure.com/capgeminiuk/Microsoft%20Community/_packaging?_a=package&feed=CapgeminiIp&package=%40capgemini%2Fgenerator-cdspackage&protocolType=Npm).
 ```bash
 npm install -g @capgemini/generator-cdspackage 
 ```
 
+---
 
 ## Usage
 Once the cdspackage generator has been installed the following commands be run from a command prompt:
