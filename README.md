@@ -7,9 +7,10 @@
 ## Table of Contents
 1. [Installation and setup](#installation)
 2. [Usage](#usage)
-3. [Contributating](#contributing)
+3. [Contributating](./CONTRIBUTING.md)
 4. [Licence](#license)
 
+---
 
 ## Installation
 
@@ -94,14 +95,6 @@ Creates a `Data/` folder which contains the `DataExport.json`, `DataImport.json`
 The `MappingFile.xml` file is updated to include a file mapping of the `.dll` for the extracted solution. This means the assembly built locally (or in a pipeline) is used when packing rather than the file downloaded within the solution.
 
 ---
-
-## Contributing
-
- * Yeoman has a heart of gold.
- * Yeoman is a person with feelings and opinions, but is very easy to work with.
- * Yeoman can be too opinionated at times but is easily convinced not to be.
- * Feel free to [learn more about Yeoman](http://yeoman.io/).
-
 
 ## License
 
