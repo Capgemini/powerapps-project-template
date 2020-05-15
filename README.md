@@ -1,111 +1,134 @@
-# generator-cdspackage 
+# Power Apps Project Generator 
 [![Build Status](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_apis/build/status/generator-cdspackage?branchName=master)](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_build/latest?definitionId=115&branchName=master)
 [![NPM version](https://feeds.dev.azure.com/capgeminiuk/_apis/public/Packaging/Feeds/25162f08-da5e-4c04-bac0-40216eaa4bf9/Packages/48ba9982-c47a-4df2-bc62-3f560c69391d/badge?api-version=5.1-preview.1)](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_packaging?_a=package&feed=CapgeminiIp&package=%40capgemini%2Fgenerator-cdspackage&protocolType=Npm)
 
-> A generator for creating the entire package for CDS (MS Dynamics and Power Apps) solutions.
+This Yeoman generator scaffolds Power Apps projects. This includes:
+
+- Source code
+- Build pipelines
+- Release pipelines
 
 ## Table of Contents
-1. [Installation and setup](#installation)
-2. [Usage](#usage)
-3. [Contributing](./CONTRIBUTING.md)
-4. [Licence](#license)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+    - [Connect to the Capgemini UK npm feed](#connect-to-the-capgemini-uk-npm-feed)
+    - [Install the generator package](#install-the-generator-package)
+- [Usage](#usage)
+    - [Scaffold a project](#scaffold-a-project)
+    - [Scaffold a solution](#scaffold-a-solution)
+    - [Scaffold a web resource project for a solution](#scaffold-a-web-resource-project-for-a-solution)
+    - [Scaffold a custom workflow activity/plug-in assembly for a solution](#scaffold-a-custom-workflow-activity/plug-in-assembly-for-a-solution)
+    - [Scaffold reference/configuration data migration for a solution](#scaffold-reference/configuration-data-migration-for-a-solution)
+- [Contributing](./CONTRIBUTING.md)
+- [Licence](#license)
 
----
+## Prerequisites
+
+You must have [Node](https://nodejs.org/en/) and [Yeoman](https://yeoman.io/) installed globally before you can use this generator.
+
+If you already have Node installed, install Yeoman: 
+
+```
+npm install -g yo
+```
 
 ## Installation
 
-Before using this tool, it must first be installed. As the generator package is published to a private npm feed, follow the below steps to connect to the feed or visit [here](https://dev.azure.com/capgeminiuk/Microsoft%20Community/_packaging?_a=connect&feed=CapgeminiIp) if you still need a hand. 
+### Connect to the Capgemini UK npm feed
 
-1.	Install the latest version of node from https://nodejs.org/en/.
-2.	Install [yeoman](https://yeoman.io/) globally by running the following command.
-    ```bash
-    npm install -g yo
-    ```
-3.	Install [vsts-npm-auth](https://www.npmjs.com/package/vsts-npm-auth) which provides a means to authenticate a private npm Azure Artifacts feed.
-    ```bash
-    npm install -g vsts-npm-auth --registry https://registry.npmjs.com --always-auth false
-    ```
-4.  Navigate to your user directory and edit the .npmrc file (`C:\Users\{username}\.npmrc`) to include the CapgeminiIp npm package source. Add the following lines:
-    ```text
-    registry=https://capgeminiuk.pkgs.visualstudio.com/_packaging/CapgeminiIp/npm/registry/
-    always-auth=true
-    ```
-4.	Staying within your user directory, run the previously installed tool to authenticate the feed with a personal PAC token.
-    ```bash
-    vsts-npm-auth -config .npmrc
-    ```
-5.	Now the feed is registered and you're authenticated, install the [@capgemini/generate-cdspackage](https://dev.azure.com/capgeminiuk/Microsoft%20Community/_packaging?_a=package&feed=CapgeminiIp&package=%40capgemini%2Fgenerator-cdspackage&protocolType=Npm).
-    ```bash
-    npm install -g @capgemini/generator-cdspackage 
-    ```
+The generator is currently published to a private npm feed hosted on Azure Artifacts. You can connect to the feed by following this [link](https://capgeminiuk.visualstudio.com/Microsoft%20Community/_packaging?_a=connect&feed=CapgeminiIp) and then selecting 'npm' from the list of available package managers. You should add the the registry to your user-scoped .npmrc file i.e. `C:\Users\\USERNAME\\.npmrc`.
 
----
+### Install the generator package
+
+Install the [@capgemini/generate-cdspackage](https://dev.azure.com/capgeminiuk/Microsoft%20Community/_packaging?_a=package&feed=CapgeminiIp&package=%40capgemini%2Fgenerator-cdspackage&protocolType=Npm) package globally: 
+
+```
+npm install -g @capgemini/generator-cdspackage
+```
 
 ## Usage
-Once the package has been installed, several generators will be available to run from the `yo` CLI. Before running these, please make sure you the `@capgemini/generate-cdspackage` is updated and your command prompt/shell/terminal is within your (current or new) project directory. 
 
-> Note that this section does not explain the usage of the Cake tasks which can be found within the README of the generated package instead.
+Ensure that you have updated to the latest version of the generator and that your shell's current working directory is an empty folder (when running the generator for the first time) or your scaffolded repository (when using sub-generators).
 
 ### Scaffold a project
+
+A new project can be scaffolded using the main generator:
+
 ```bash
 yo @capgemini/cdspackage
 ```
-This instantiates a new project and should be run in a completely clean folder where it will download the base package (found `./src/generators/app/templates/source`), injecting in the provided names. This includes:
-- Cake scripts and required dependencies
-- A set of VS projects to support the separation of business logic
-- A 'Deploy' VS project as a custom PackageDeployer dll
-- A set of VS projects for Unit, UI, and Integration testing
-- A set of ADO pipeline definitions for PR validation, build and extract.
 
-Afterwards, the first commit is made and pushed to a newly created Azure Repo within your chosen project. This is followed by configuring the ADO project through:
-- Installing extensions
-- Adding variable libraries and values
-- Creating service connections
-- Configuring build and release pipelines.
+This generator requires you to enter some information about your project as well as an Azure DevOps personal access token. The scaffolded artifacts include:
 
-> This should not be run over the top of an existing package. Due to the current coupling with configuring Azure DevOps, this means you can't get any "source" updates made to the generator.   
+- IDE configuration files
+- Boilerplate source code
+- Azure DevOps repository
+- Azure DevOps extensions
+- Azure DevOps variables
+- Azure DevOps build pipelines
+- Azure DevOps release pipeline
 
-### Add a Power Apps/Automate solution to scaffolded project
+### Scaffold a solution
+
+A new solution within the package can be scaffolded using the `solution` sub-generator:
+
 ```bash
 yo @capgemini/cdspackage:solution
 ```
-Creates a folder within the `Solutions` directory which simply contains a `MappingFile.xml`, a `spkl.json` and an `environment.json` file. The `environment.json` file stores the environment URL and it's staging environment if one provided. Next, the VS Code tasks configuration and the import configuration of the Deploy project are updated to include the newly registered solution.
 
-This __does not create a Power Apps solution__ within the given environment, nor does it automatically extract the solution. To now extract the solution, within VS Code:
-1. Open the command palette 
-2. Search "Run Task"
-3. Select "Extract"
-4. Select the new solution listed.
+This sub-generator requires some information about your solution and generates the source code required to support the source control, build, and deployment of this solution.
 
-### Add a web resource project (scripts) to a chosen solution
+> This does __not__ create a solution within the Common Data Service environment. The corresponding solution must be created manually and extracted after scaffolding.
+
+Running this sub-generator:
+
+- Creates a corresponding folder within the `solutions` directory. This folder contains:
+    - A `MappingFile.xml` file which is used when packing the solution with the solution packager
+    - A `spkl.json` file which is used to contain [spkl task runner](https://github.com/scottdurow/SparkleXrm/wiki/spkl) configuration 
+    - An `environment.json` file which stores information regarding the development and staging (if applicable) environments for the solution
+- Updates the `ImportConfig.xml` file within the deployment project is updated to include the scaffolded solution in the deployment
+- Updates the `.vscode/tasks.json` file to allow for build tasks to be ran against the new solution
+
+### Scaffold a web resource project for a solution
+
+This sub-generator generates the source code required to support the development of script web resources. A new web resource project can be generated within a solution using the `scripts` sub-generator:
+
 ```bash
 yo @capgemini/cdspackage:scripts
 ```
-Creates an NPM package within a given solution which includes the standard dev dependencies and `tsconfig` and `tslint` configuration.
 
-The `spkl.json` file is updated to include an empty webresource array which can be used to deploy them to the environment using the spkl CLI. 
+Running this sub-generator:
 
-The `MappingFile.xml` file is updated to include a wildcard file mapping of all WebResources files. This means the script built locally (or in a pipeline) are used when packing rather than those downloaded within the solution.
+- Creates a `WebResources/Scripts` folder within the specified solution folder. This folder contains:
+    - A `tsconfig.json` file for TypeScript configuration
+    - A `tslint.json` file for TSLint configuration
+    - A `package.json` file for managing npm dependencies
+- Updates the `spkl.json` file to include an empty `webresource` array which can be used to deploy the web resources with the spkl task runner
+- Updates the `MappingFile.xml` file to include a wildcard file mapping of all WebResources files. This will cause the Solution Packager to replace the web resources with the TypeScript compilation output when packing the solution
 
-### Add a CWA/plugin assembly to a chosen solution
+### Scaffold a custom workflow activity/plug-in assembly for a solution
+
+This sub-generator generates the source code required to support the development of custom workflow activities and plug-ins. A new custom workflow activity/plug-in project can be generated within a solution using the `pluginassembly` sub-generator:
+
 ```bash
 yo @capgemini/cdspackage:pluginassembly
 ```
-Creates a CS project within a given solution which includes the standard Nuget packages, analyzers and a maintained ruleset definition.
 
-The `spkl.json` file is updated to include the newly created assembly which is used to deploy to the environment. 
+Running this sub-generator:
 
-The `MappingFile.xml` file is updated to include a file mapping of the `.dll` for the extracted solution. This means the assembly built locally (or in a pipeline) is used when packing the solution rather than the download within the solution.
+- Creates a C# class library project targeting .NET Framework 4.6.2 within the specified solution folder. This project is pre-configured with required packages and code analysers.
+- Updates the `spkl.json` file to include the assembly built by the newly created project. This allows the assembly to be deployed using the spkl task runner.
+- Updates the `MappingFile.xml` file to include a file mapping of the plug-in assembly `.dll`. This will cause the Solution Packager to replace the assembly with the class library project build output when packing the solution
 
-### Add a Capgemini Data Migrator set up for a chosen solution
+### Scaffold reference/configuration data migration for a solution
+
+This sub-generator generates the source code required to support the migration of reference or configuration data. This can be done using the `data` sub-generator:
+
 ```bash
 yo @capgemini/cdspackage:data
 ```
-Creates a `Data/` folder which contains the `DataExport.json`, `DataImport.json`, and `DataSchema.xml` files for use with the Capgemini XRM Data Migrator tool.
 
-The `MappingFile.xml` file is updated to include a file mapping of the `.dll` for the extracted solution. This means the assembly built locally (or in a pipeline) is used when packing rather than the file downloaded within the solution.
-
----
+Creates a `Data` folder which contains the `DataExport.json`, `DataImport.json`, and `DataSchema.xml` files for use with the Capgemini XRM Data Migrator tool.
 
 ## License
 
