@@ -1,11 +1,7 @@
 {
   "name": "@capgemini/generator-cdspackage",
-  "version": "0.8.3",
-  "description": "A generator to scaffold Dynamics 365 packages and associated Azure DevOps project.",
-  "author": {
-    "name": "Capgemini",
-    "email": "tom.ashworth@capgemini.com"
-  },
+  "version": "0.8.4",
+  "description": "This Yeoman generator scaffolds Power Apps projects.",
   "files": [
     "common",
     "generators"
@@ -14,77 +10,45 @@
     "yeoman-generator"
   ],
   "devDependencies": {
-    "@types/ejs": "^2.6.3",
+    "@types/ejs": "^2.7.0",
     "@types/guid": "^1.0.0",
-    "@types/inquirer": "0.0.43",
-    "@types/node": "^10.12.18",
+    "@types/inquirer": "^6.5.0",
+    "@types/node": "^10.17.24",
     "@types/strip-json-comments": "0.0.30",
-    "@types/xml2js": "^0.4.4",
-    "@types/yeoman-generator": "^3.0.1",
+    "@types/xml2js": "^0.4.5",
+    "@types/yeoman-generator": "^3.1.4",
     "@types/yosay": "0.0.29",
-    "eslint": "^5.9.0",
-    "eslint-config-prettier": "^3.3.0",
-    "eslint-config-xo": "^0.25.0",
-    "eslint-plugin-prettier": "^3.0.0",
-    "husky": "^1.2.0",
     "jest": "^23.5.0",
-    "lint-staged": "^8.1.0",
-    "prettier": "^1.15.2",
-    "tslint": "^5.12.1",
-    "tslint-config-prettier": "^1.17.0",
-    "typescript": "^3.2.4",
+    "prettier": "^1.19.1",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.9.3",
     "yeoman-assert": "^3.1.0",
     "yeoman-test": "^1.7.0",
-    "yo": "^2.0.5"
+    "yo": "^2.0.6"
   },
   "engines": {
     "npm": ">= 4.0.0"
   },
   "dependencies": {
-    "@types/rimraf": "^2.0.2",
-    "azure-devops-node-api": "^7.0.0",
+    "@types/rimraf": "^2.0.4",
+    "azure-devops-node-api": "^7.2.0",
     "chalk": "^2.1.0",
-    "ejs": "^2.6.1",
-    "glob": "^7.1.3",
+    "ejs": "^2.7.4",
+    "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
     "guid": "0.0.12",
-    "inquirer": "^6.2.1",
-    "renamer": "^1.1.1",
-    "rimraf": "^2.6.3",
-    "simple-git": "^1.107.0",
-    "strip-json-comments": "^3.0.1",
-    "xml2js": "^0.4.19",
+    "inquirer": "^6.5.2",
+    "renamer": "^1.1.4",
+    "rimraf": "^2.7.1",
+    "simple-git": "^1.132.0",
+    "strip-json-comments": "^3.1.0",
+    "xml2js": "^0.4.23",
     "yeoman-generator": "^2.0.1",
     "yosay": "^2.0.1"
   },
   "jest": {
     "testEnvironment": "node"
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.json": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "xo",
-      "prettier"
-    ],
-    "env": {
-      "jest": true,
-      "node": true
-    },
-    "rules": {
-      "prettier/prettier": "error"
-    },
-    "plugins": [
-      "prettier"
-    ]
   },
   "scripts": {
     "pretest": "eslint .",

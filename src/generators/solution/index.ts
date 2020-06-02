@@ -45,7 +45,7 @@ class Main extends Generator {
         message: "Staging environment URL?",
         name: "stagingEnvironment",
         store: false,
-        when: (answers) => answers.hasStagingEnvironment
+        when: (answers: any) => answers.hasStagingEnvironment
       }
     ]);
 

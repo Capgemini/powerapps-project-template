@@ -58,7 +58,7 @@ class Main extends Generator {
         message: "Name of the package?",
         name: "package",
         store: true,
-        validate: (input, answers) =>
+        validate: (input: any, answers: any) =>
           this.validatePackage(input, answers!, adoAnswers)
       }
     ]);
