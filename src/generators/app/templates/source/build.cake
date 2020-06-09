@@ -1,11 +1,11 @@
 using System.Text.RegularExpressions;
 
 #addin nuget:?package=Cake.Xrm.Sdk&version=0.1.9
-#addin nuget:?package=Cake.Xrm.SolutionPackager&version=0.1.9
+#addin nuget:?package=Cake.Xrm.SolutionPackager&version=0.1.11
 #addin nuget:?package=Cake.Xrm.DataMigration&version=0.1.8
-#addin nuget:?package=Cake.Xrm.Spkl&version=0.1.7
+#addin nuget:?package=Cake.Xrm.Spkl&version=0.2.0
 #addin nuget:?package=Cake.Npm&version=0.17.0
-#addin nuget:?package=Cake.Json&version=3.0.0
+#addin nuget:?package=Cake.Json&version=4.0.0
 
 const string SolutionsFolder = "./src/solutions";
 const string PackagesFolder = "./packages";
