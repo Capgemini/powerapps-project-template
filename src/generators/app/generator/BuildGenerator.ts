@@ -1,6 +1,7 @@
 import { BuildApi } from "azure-devops-node-api/BuildApi";
 import { BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import glob from "glob-promise";
+import { parse } from "path";
 import buildDef from "../definitions/build/build.json";
 import { IGenerator } from "./IGenerator.js";
 
@@ -21,16 +22,15 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
     project: string,
     packageName: string,
     repoId: string,
-    variableGroups: number[]
   ): Promise<BuildDefinition[]> {
     this.log("Generating builds definitions...");
     const yamlDetails = await this.getYamlDetails(packageDirectory);
     const buildDefs = await this.createBuildDefinitions(
       project,
       yamlDetails.map(yaml =>
-        this.generateBuildDefinition(yaml, packageName, repoId, variableGroups)
+        this.generateBuildDefinition(yaml, packageName, repoId)
       )
-    ).catch(this.log);
+    );
 
     if (buildDefs === undefined) {
       throw new Error("An error occured while creating build definitions.");
@@ -54,7 +54,7 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
   }
 
   private async getYamlDetails(packageDirectory: string) {
-    return glob("**\\*.yml", { cwd: packageDirectory }).then(files => {
+    return glob("**/*.yml", { cwd: packageDirectory }).then(files => {
       this.log(`Found ${files.length} YAML builds.`);
       return files;
     });
@@ -74,8 +74,7 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
   private generateBuildDefinition(
     yamlPath: string,
     packageName: string,
-    repoId: string,
-    variableGroupIds: number[]
+    repoId: string
   ): BuildDefinition {
     this.log(`Creating ${yamlPath} build...`);
     const def: BuildDefinition = JSON.parse(JSON.stringify(buildDef));
@@ -86,22 +85,24 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
       yamlFilename: yamlPath
     };
     def.process = process;
-    def.variableGroups = variableGroupIds.map(groupId => ({
-      id: groupId
-    }));
     def.repository!.id = repoId;
     def.path = packageName.replace(/\s/g, "");
+    def.variableGroups = []
 
     return def;
   }
 }
 function getBuildDefinitionName(yamlPath: string) {
-  return yamlPath === "azure-pipelines.yml" ? "Package Build" : yamlPath
-    .split("azure-pipelines-")[1]
-    .replace(".yml", "")
-    .replace(/-/g, " ")
-    .replace(/\w\S*/g, (txt) => {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
+  const path = parse(yamlPath);
+
+  return path.name === "azure-pipelines" ?
+    "Package Build"
+    :
+    path.name
+      .replace("azure-pipelines-", "")
+      .replace(/-/g, " ")
+      .replace(/\w\S*/g, (txt) => {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      });
 }
 

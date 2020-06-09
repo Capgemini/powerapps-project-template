@@ -6,6 +6,7 @@ import { ExtensionGenerator } from "./generator/ExtensionGenerator";
 import { IGenerator } from "./generator/IGenerator";
 import { ReleaseGenerator } from "./generator/ReleaseGenerator";
 import { RepoGenerator } from "./generator/RepoGenerator";
+import { ServiceEndpointGenerator } from "./generator/ServiceEndpointGenerator";
 import { VarGroupGenerator } from "./generator/VarGroupGenerator";
 import { IScaffoldResult } from "./IScaffoldResult";
 import { IScaffoldSettings } from "./IScaffoldSettings";
@@ -17,6 +18,7 @@ export class AzureDevOpsScaffolder {
   private readonly buildGenerator: BuildGenerator;
   private readonly extensionGenerator: ExtensionGenerator;
   private readonly releaseGenerator: ReleaseGenerator;
+  private readonly serviceEndpointGenerator: ServiceEndpointGenerator
 
   private log: (message: string) => void;
 
@@ -27,6 +29,7 @@ export class AzureDevOpsScaffolder {
     buildGenerator: BuildGenerator,
     extensionGenerator: ExtensionGenerator,
     releaseGenerator: ReleaseGenerator,
+    serviceEndpointGenerator: ServiceEndpointGenerator,
     log: (message: string) => void
   ) {
     this.coreApi = coreApi;
@@ -35,6 +38,7 @@ export class AzureDevOpsScaffolder {
     this.buildGenerator = buildGenerator;
     this.extensionGenerator = extensionGenerator;
     this.releaseGenerator = releaseGenerator;
+    this.serviceEndpointGenerator = serviceEndpointGenerator;
     this.log = log;
   }
 
@@ -55,15 +59,20 @@ export class AzureDevOpsScaffolder {
       settings.package.path
     );
 
-    const varGroupIds = varGroups.map(group => group.id!);
-
     const buildDefs = await this.buildGenerator.generate(
       settings.package.path,
       settings.projectName,
       settings.package.name,
-      repo.id!,
-      varGroupIds
+      repo.id!
     );
+
+    const serviceEndpoint = await this.serviceEndpointGenerator.generate(
+      settings.projectName,
+      settings.package.name,
+      settings.ciEnvironmentUrl,
+      settings.tenantId,
+      settings.applicationId,
+      settings.clientSecret);
 
     let releaseDef: ReleaseDefinition;
     try {
@@ -75,13 +84,14 @@ export class AzureDevOpsScaffolder {
         await this.getProjectId(settings.projectName),
         buildDefs.find(
           def =>
-            (def.process as YamlProcess).yamlFilename === "azure-pipelines.yml"
+            (def.process as YamlProcess).yamlFilename?.endsWith("azure-pipelines.yml")
         )!,
-        varGroupIds
+        varGroups.filter(vg => vg.name!.startsWith("Integration Tests")).map(vg => vg.id!),
+        serviceEndpoint
       );
     } catch (e) {
       throw new Error(
-        "Failed to create release definition. Please ensure you have permission to install extensions in your target organisation"
+        "Failed to create release definition. Please ensure you have permission to install extensions in your target organisation."
       );
     }
 
@@ -90,7 +100,8 @@ export class AzureDevOpsScaffolder {
       buildDefinitions: buildDefs,
       releaseDefinition: releaseDef,
       repositories: repo,
-      variableGroups: varGroups
+      serviceEndpoint,
+      variableGroups: varGroups,
     };
   }
 
@@ -102,6 +113,7 @@ export class AzureDevOpsScaffolder {
       this.releaseGenerator,
       this.varGroupGenerator,
       this.extensionGenerator,
+      this.serviceEndpointGenerator
     ];
     await Promise.all(generators.map(gen => gen.rollback(project)));
     return;

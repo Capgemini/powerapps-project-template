@@ -7,7 +7,8 @@
     "strict": true,
     "esModuleInterop": true,
     "sourceMap": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["node"],
   },
   "include": ["./src", "./typings"],
   "exclude": ["node_modules"]

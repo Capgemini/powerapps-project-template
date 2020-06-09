@@ -58,7 +58,7 @@ class Main extends Generator {
 
   public writing(): void {
     this.writeSource();
-    this.writeEnvConfig();
+    this.writeSolutionConfig();
     this.updateTasks();
     this.updateImportConfig();
   }
@@ -76,27 +76,27 @@ class Main extends Generator {
     this.log(`Writing solution from template...`);
     this.fs.copyTpl(
       this.templatePath("source"),
-      this.destinationPath("Solutions"),
+      this.destinationPath("src", "solutions"),
       this.answers,
       {},
       { globOptions: { dot: true } }
     );
   };
 
-  private writeEnvConfig = () => {
-    this.log(`Writing environment configuration...`);
+  private writeSolutionConfig = () => {
+    this.log(`Writing solution configuration...`);
 
-    const envConfig: any = {
+    const solutionConfig: any = {
       environment: this.answers.environment
     };
 
     if (this.answers.hasStagingEnvironment) {
-      envConfig.stagingEnvironment = this.answers.stagingEnvironment;
+      solutionConfig.stagingEnvironment = this.answers.stagingEnvironment;
     }
 
     this.fs.writeJSON(
-      this.destinationPath("Solutions", "{{prefix}}_{{Package}}_{{Solution}}", "env.json"),
-      envConfig)
+      this.destinationPath("src", "solutions", "{{prefix}}_{{Package}}_{{Solution}}", "solution.json"),
+      solutionConfig)
   };
 
   private updateTasks = () => {
@@ -119,7 +119,7 @@ class Main extends Generator {
     this.log(`Updating import config to include new solution.`);
 
     const importConfigPath = this.destinationPath(
-      "Deploy",
+      "deploy",
       "PkgFolder",
       "ImportConfig.xml"
     );
@@ -179,7 +179,7 @@ class Main extends Generator {
 
       renamer.rename({
         dryRun: false,
-        files: [`${this.destinationPath()}/Solutions/**/*`],
+        files: [`${this.destinationPath()}/src/solutions/**/*`],
         find: rule.from,
         replace: rule.to
       });

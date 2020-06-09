@@ -1,8 +1,8 @@
-# <%= package %> for Dynamics 365
+# <%= package %>
 
 ## Introduction
 
-<%= package %> Dynamics 365 package - generated using the [package generator](https://capgeminiuk.visualstudio.com/Capgemini%20Reusable%20IP/_git/generator-cdspackage).
+<%= package %> package - generated using the [package generator](https://capgeminiuk.visualstudio.com/Capgemini%20Reusable%20IP/_git/generator-cdspackage).
 
 ## Contributing
 
@@ -12,8 +12,8 @@ Please ensure that pull requests are atomic and do not contain partially built f
 
 Two environment variables are required to enable you to authenticate with the development and staging environments:
 
-- CAKE_DYNAMICS_USERNAME
-- CAKE_DYNAMICS_PASSWORD
+- CAKE_<%= package.toUpperCase().replace(" ", "").trim(); %>_USERNAME
+- CAKE_<%= package.toUpperCase().replace(" ", "").trim(); %>_PASSWORD
 
 ### Create a git branch
 
@@ -70,6 +70,34 @@ Visual Studio is recommended for .NET development (i.e. plugins assemblies) whil
   - Azure Repos
 
 - Fiddler
+
+## Writing tests
+
+There are three test projects corresponding to unit, integration and UI tests. Ensure that your feature branch updates the test projects in order to verify your changes:
+
+- Write unit tests when writing custom code (e.g. workflow activities or plugins)
+- Write integration tests when making changes that affect the back-end (e.g. configuring Common Data Service security roles, processes or entities)
+- Write UI tests when making changes that affect the front-end (e.g. configuring apps, views, dashboards, and forms)
+
+### Configuring integration test users
+
+The `CommonDataServiceFixture` class fixture (refer to the xUnit documentation on class fixtures [here](https://xunit.net/docs/shared-context#class-fixture)) provides access to an `AdminTestClient` property - a `CrmServiceClient` instance authenticated as an admin user. All integration tests will require at least the ability to authenticate as an administrator in the Common Data Service environment under test. This can be achieved by setting the following environment variables:
+
+- CDS_TEST_ADMIN_USERNAME
+- CDS_TEST_ADMIN_PASWORD
+
+If you wish to test users with specific security roles, the `CommonDataServiceFixture` provides a `GetUserTestClient` method. Pass an alias to this method and it will use environment variables with the following pattern for authentication - 
+
+- CDS_TEST_<ALIAS>_USERNAME
+- CDS_TEST_<ALIAS>_PASSWORD
+
+These variables must also be added to the `Integration Tests` variable group in Azure DevOps. The variable group is linked to the release pipeline which allows the pipeline to them as environment variables. Note that passwords are stored as secret variables and these are not automatically decrypted into environment variables for the pipeline. This means that, each time a new alias is added, the `Set user credentials task` in the CI stage of the release pipeline must be updated to include the following -
+
+`echo ##vso[task.setvariable variable=CDS_TEST_<ALIAS>_PASSWORD]$(CDS Test <Alias> Password)`
+
+### Configuring UI test users 
+
+UI test users are configured according to the specflow-xrm-bindings [documentation](https://github.com/Capgemini/specflow-xrm-bindings/blob/master/README.md).
 
 ## Cake
 

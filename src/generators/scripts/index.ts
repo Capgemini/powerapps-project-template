@@ -34,7 +34,7 @@ class Main extends Generator {
   }
 
   private updateMappingFile = async (): Promise<void> => {
-    const mappingFilePath = this.destinationPath("Solutions", this.answers.sourceSolution, "MappingFile.xml");
+    const mappingFilePath = this.destinationPath("src", "solutions", this.answers.sourceSolution, "MappingFile.xml");
     const templateMappingFilePath = this.templatePath("MappingFile.xml");
 
     this.mappingFileTransformer.transform(templateMappingFilePath, this.answers, mappingFilePath);
@@ -44,7 +44,7 @@ class Main extends Generator {
     this.log(`Writing solution from template...`);
     this.fs.copyTpl(
       this.templatePath("source"),
-      this.destinationPath("Solutions", this.answers.sourceSolution),
+      this.destinationPath("src", "solutions", this.answers.sourceSolution),
       this.answers,
       {},
       { globOptions: { dot: true } }

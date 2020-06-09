@@ -63,7 +63,7 @@ class Main extends Generator {
     this.log(`Writing solution from template...`);
     this.fs.copyTpl(
       this.templatePath("source"),
-      this.destinationPath("Solutions", this.answers.sourceSolution, "PluginAssemblies"),
+      this.destinationPath("src", "solutions", this.answers.sourceSolution, "pluginassemblies"),
       this.answers,
       {},
       { globOptions: { dot: true } }
@@ -71,7 +71,7 @@ class Main extends Generator {
   };
 
   private updateSpklConfig = () => {
-    const targetSpklConfigPath = this.destinationPath("Solutions", this.answers.sourceSolution, "spkl.json");
+    const targetSpklConfigPath = this.destinationPath("src", "solutions", this.answers.sourceSolution, "spkl.json");
     const spklConfig = this.fs.readJSON(targetSpklConfigPath);
 
     if (!spklConfig.plugins) {
@@ -87,7 +87,7 @@ class Main extends Generator {
   }
 
   private updateMappingFile = async (): Promise<void> => {
-    const mappingFilePath = this.destinationPath("Solutions", this.answers.sourceSolution, "MappingFile.xml");
+    const mappingFilePath = this.destinationPath("src", "solutions", this.answers.sourceSolution, "MappingFile.xml");
     const templateMappingFilePath = this.templatePath("MappingFile.xml");
 
     this.mappingFileTransformer.transform(templateMappingFilePath, this.answers, mappingFilePath);
@@ -105,7 +105,7 @@ class Main extends Generator {
 
       renamer.rename({
         dryRun: false,
-        files: [`${this.destinationPath()}/Solutions/**/*`],
+        files: [`${this.destinationPath()}/src/solutions/**/*`],
         find: rule.from,
         replace: rule.to
       });

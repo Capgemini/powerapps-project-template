@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tslint": "^6.1.2",
+    "tslint-config-airbnb": "^5.11.2",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.9.5"
+  },
+  "-vs-binding": {
+    "BeforeBuild": [
+      "install"
+    ],
+    "AfterBuild": [
+      "build"
+    ]
+  }
+}

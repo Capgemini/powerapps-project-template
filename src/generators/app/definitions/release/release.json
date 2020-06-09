@@ -43,7 +43,9 @@
       "deployPhases": [
         {
           "deploymentInput": {
-            "parallelExecution": { "parallelExecutionType": 0 },
+            "parallelExecution": {
+              "parallelExecutionType": 0
+            },
             "agentSpecification": null,
             "skipArtifactsDownload": false,
             "demands": [],
@@ -55,13 +57,27 @@
           },
           "rank": 1,
           "phaseType": 1,
-          "name": "Agent job",
+          "name": "Deploy",
           "refName": null,
           "workflowTasks": [
             {
               "environment": {},
-              "taskId": "2aec407f-7763-43a5-a27f-bf45a58e4f1d",
-              "version": "1.*",
+              "taskId": "8015465b-f367-4ec4-8215-8edf682574d3",
+              "version": "0.*",
+              "name": "Power Platform Tool Installer ",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()"
+            },
+            {
+              "environment": {},
+              "taskId": "6eba22e9-9666-4241-8664-3d96354449c3",
+              "version": "0.*",
               "name": "Deploy Package",
               "refName": "",
               "enabled": true,
@@ -72,13 +88,167 @@
               "overrideInputs": {},
               "condition": "succeeded()",
               "inputs": {
-                "workingDir": "",
-                "packageName": "",
-                "connectionString": "$(connectionString)",
-                "timeOut": "1:00:00",
-                "logOutputFolder": "$(Agent.ReleaseDirectory)",
-                "configSubfolder": "",
-                "syncTimeoutMinutes": "60"
+                "authenticationType": "PowerPlatformSPN",
+                "PackageFile": ""
+              }
+            }
+          ]
+        },
+        {
+          "deploymentInput": {
+            "parallelExecution": {
+              "parallelExecutionType": "none"
+            },
+            "agentSpecification": {
+              "identifier": "vs2017-win2016"
+            },
+            "skipArtifactsDownload": false,
+            "artifactsDownloadInput": {
+              "downloadInputs": []
+            },
+            "demands": [],
+            "enableAccessToken": false,
+            "timeoutInMinutes": 0,
+            "jobCancelTimeoutInMinutes": 1,
+            "condition": "succeeded()",
+            "overrideInputs": {}
+          },
+          "rank": 2,
+          "phaseType": "agentBasedDeployment",
+          "name": "Test",
+          "refName": null,
+          "workflowTasks": [
+            {
+              "environment": {},
+              "taskId": "d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+              "version": "2.*",
+              "name": "Set user credentials",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "script": "echo ##vso[task.setvariable variable=CDS_TEST_ADMIN_PASSWORD]$(CDS Test Admin Password)",
+                "workingDirectory": "",
+                "failOnStderr": "false"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "ef087383-ee5e-42c7-9a53-ab56c98420f9",
+              "version": "2.*",
+              "name": "Run integration tests",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": true,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "testSelector": "testAssemblies",
+                "testAssemblyVer2": "**\\*IntegrationTests.dll\n!**\\*TestAdapter.dll\n!**\\obj\\**",
+                "testPlan": "",
+                "testSuite": "",
+                "testConfiguration": "",
+                "tcmTestRun": "$(test.RunId)",
+                "searchFolder": "$(System.DefaultWorkingDirectory)",
+                "resultsFolder": "$(Agent.TempDirectory)\\TestResults",
+                "testFiltercriteria": "",
+                "runOnlyImpactedTests": "False",
+                "runAllTestsAfterXBuilds": "50",
+                "uiTests": "false",
+                "vstestLocationMethod": "version",
+                "vsTestVersion": "latest",
+                "vstestLocation": "",
+                "runSettingsFile": "",
+                "overrideTestrunParameters": "",
+                "pathtoCustomTestAdapters": "",
+                "runInParallel": "true",
+                "runTestsInIsolation": "False",
+                "codeCoverageEnabled": "False",
+                "otherConsoleOptions": "",
+                "distributionBatchType": "basedOnTestCases",
+                "batchingBasedOnAgentsOption": "autoBatchSize",
+                "customBatchSizeValue": "10",
+                "batchingBasedOnExecutionTimeOption": "autoBatchSize",
+                "customRunTimePerBatchValue": "60",
+                "dontDistribute": "False",
+                "testRunTitle": "",
+                "platform": "",
+                "configuration": "",
+                "publishRunAttachments": "true",
+                "failOnMinTestsNotRun": "False",
+                "minimumExpectedTests": "1",
+                "diagnosticsEnabled": "false",
+                "collectDumpOn": "onAbortOnly",
+                "rerunFailedTests": "False",
+                "rerunType": "basedOnTestFailurePercentage",
+                "rerunFailedThreshold": "30",
+                "rerunFailedTestCasesMaxLimit": "5",
+                "rerunMaxAttempts": "3"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "ef087383-ee5e-42c7-9a53-ab56c98420f9",
+              "version": "2.*",
+              "name": "Run UI tests",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": true,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "testSelector": "testAssemblies",
+                "testAssemblyVer2": "**\\*UiTests.dll\n!**\\*TestAdapter.dll\n!**\\obj\\**",
+                "testPlan": "",
+                "testSuite": "",
+                "testConfiguration": "",
+                "tcmTestRun": "$(test.RunId)",
+                "searchFolder": "$(System.DefaultWorkingDirectory)",
+                "resultsFolder": "$(Agent.TempDirectory)\\TestResults",
+                "testFiltercriteria": "",
+                "runOnlyImpactedTests": "False",
+                "runAllTestsAfterXBuilds": "50",
+                "uiTests": "true",
+                "vstestLocationMethod": "version",
+                "vsTestVersion": "latest",
+                "vstestLocation": "",
+                "runSettingsFile": "",
+                "overrideTestrunParameters": "",
+                "pathtoCustomTestAdapters": "",
+                "runInParallel": "true",
+                "runTestsInIsolation": "False",
+                "codeCoverageEnabled": "False",
+                "otherConsoleOptions": "",
+                "distributionBatchType": "basedOnTestCases",
+                "batchingBasedOnAgentsOption": "autoBatchSize",
+                "customBatchSizeValue": "10",
+                "batchingBasedOnExecutionTimeOption": "autoBatchSize",
+                "customRunTimePerBatchValue": "60",
+                "dontDistribute": "False",
+                "testRunTitle": "",
+                "platform": "",
+                "configuration": "",
+                "publishRunAttachments": "true",
+                "failOnMinTestsNotRun": "False",
+                "minimumExpectedTests": "1",
+                "diagnosticsEnabled": "false",
+                "collectDumpOn": "onAbortOnly",
+                "rerunFailedTests": "False",
+                "rerunType": "basedOnTestFailurePercentage",
+                "rerunFailedThreshold": "30",
+                "rerunFailedTestCasesMaxLimit": "5",
+                "rerunMaxAttempts": "3"
               }
             }
           ]
@@ -97,9 +267,16 @@
       },
       "demands": [],
       "conditions": [
-        { "name": "ReleaseStarted", "conditionType": 1, "value": "" }
+        {
+          "name": "ReleaseStarted",
+          "conditionType": 1,
+          "value": ""
+        }
       ],
-      "executionPolicy": { "concurrencyCount": 1, "queueDepthCount": 1 },
+      "executionPolicy": {
+        "concurrencyCount": 1,
+        "queueDepthCount": 1
+      },
       "schedules": [],
       "retentionPolicy": {
         "daysToKeep": 30,
@@ -108,8 +285,16 @@
       },
       "processParameters": {},
       "properties": {},
-      "preDeploymentGates": { "id": 0, "gatesOptions": null, "gates": [] },
-      "postDeploymentGates": { "id": 0, "gatesOptions": null, "gates": [] },
+      "preDeploymentGates": {
+        "id": 0,
+        "gatesOptions": null,
+        "gates": []
+      },
+      "postDeploymentGates": {
+        "id": 0,
+        "gatesOptions": null,
+        "gates": []
+      },
       "environmentTriggers": []
     }
   ],
@@ -117,9 +302,15 @@
     {
       "alias": "",
       "definitionReference": {
-        "defaultVersionType": { "id": "latestType" },
-        "definition": { "id": "" },
-        "project": { "id": "" }
+        "defaultVersionType": {
+          "id": "latestType"
+        },
+        "definition": {
+          "id": ""
+        },
+        "project": {
+          "id": ""
+        }
       },
       "type": "Build"
     }
@@ -140,9 +331,14 @@
   ],
   "releaseNameFormat": "",
   "tags": [],
-  "pipelineProcess": { "type": 1 },
+  "pipelineProcess": {
+    "type": 1
+  },
   "properties": {
-    "DefinitionCreationSource": { "$type": "System.String", "$value": "Other" }
+    "DefinitionCreationSource": {
+      "$type": "System.String",
+      "$value": "Other"
+    }
   },
   "name": "",
   "path": ""

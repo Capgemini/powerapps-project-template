@@ -1,0 +1,15 @@
+{
+    "name": "",
+    "variables": {
+        "CDS Test Admin Username": {
+            "value": "0.1"
+        },
+        "CDS Test Admin Password": {
+            "value": "",
+            "isSecret": true
+        },
+        "CDS Test CDS URL": {
+            "value": ""
+        }
+    }
+}

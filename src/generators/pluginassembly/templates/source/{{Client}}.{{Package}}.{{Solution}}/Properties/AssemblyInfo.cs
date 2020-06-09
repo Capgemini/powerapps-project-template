@@ -11,9 +11,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("<%= client %>.<%= package %>.<%= solution %>")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Capgemini")]
+[assembly: AssemblyCompany("<%= client %>")]
 [assembly: AssemblyProduct("<%= client %>.<%= package %>.<%= solution %>")]
-[assembly: AssemblyCopyright("Copyright © Capgemini 2018")]
+[assembly: AssemblyCopyright("Copyright © <%= client %> 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

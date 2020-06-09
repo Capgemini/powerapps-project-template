@@ -1,6 +1,10 @@
 [
   {
-    "publisher": "capgemini-msft-uk",
-    "name": "capgemini-xrm-release-extension"
+    "publisher": "microsoft-IsvExpTools",
+    "name": "PowerPlatform-BuildTools"
+  },
+  {
+    "publisher": "sariftools",
+    "name": "sarif-viewer-build-tab"
   }
 ]

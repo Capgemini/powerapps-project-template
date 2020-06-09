@@ -6,6 +6,7 @@ import {
   ReleaseDefinitionEnvironment,
   WorkflowTask
 } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ServiceEndpoint } from "azure-devops-node-api/interfaces/TaskAgentInterfaces";
 import { ReleaseApi } from "azure-devops-node-api/ReleaseApi";
 import releaseDefinition from "../definitions/release/release.json";
 import { IGenerator } from "./IGenerator.js";
@@ -28,7 +29,8 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     client: string,
     projectId: string,
     buildDef: BuildDefinition,
-    varGroupIds: number[]
+    varGroupIds: number[],
+    serviceEndpoint: ServiceEndpoint
   ): Promise<ReleaseDefinition> {
     this.log("Generating release definition...");
     const def = await this.createReleaseDefinition(
@@ -40,7 +42,8 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
         client,
         `${buildDef.path!.split("\\")[1]}\\CD`,
         buildDef.id!,
-        (buildDef && buildDef.queue && buildDef.queue.id) || 0
+        (buildDef && buildDef.queue && buildDef.queue.id) || 0,
+        serviceEndpoint
       )
     );
 
@@ -81,7 +84,8 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     client: string,
     path: string,
     definitionId: number,
-    agentPoolQueueId: number
+    agentPoolQueueId: number,
+    serviceEndpoint: ServiceEndpoint,
   ): ReleaseDefinition {
     this.log(`Creating ${packageName} release...`);
 
@@ -99,10 +103,10 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     );
     const trigger: ArtifactSourceTrigger = def!.triggers![0];
     trigger.artifactAlias = def!.artifacts![0].alias;
-    const packageFolder = `$(System.DefaultWorkingDirectory)/${packageName}/${packageName}`;
+    const packageFolder = `$(System.DefaultWorkingDirectory)/${packageName}/package`;
     const ciDeploymentTasks = def.environments![0].deployPhases![0]
       .workflowTasks!;
-    this.configureTasks(ciDeploymentTasks, packageFolder, client, packageName);
+    this.configureTasks(ciDeploymentTasks, packageFolder, client, packageName, serviceEndpoint);
     
     return def;
   }
@@ -111,11 +115,12 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     ciDeploymentTasks: WorkflowTask[],
     packageFolder: string,
     client: string,
-    packageName: string
+    packageName: string,
+    serviceEndpoint: ServiceEndpoint
   ) {
-    const deployPackageTask = ciDeploymentTasks[0];
-    deployPackageTask.inputs!.workingDir = packageFolder;
-    deployPackageTask.inputs!.packageName = `${client}.${packageName}.Deployment.dll`;
+    const deployPackageTask = ciDeploymentTasks[1];
+    deployPackageTask.inputs!.PackageFile = `${packageFolder}/${client}.${packageName}.Deployment.dll`;
+    deployPackageTask.inputs!.PowerPlatformSPN = serviceEndpoint.id!;
   }
 
   private configureArtifact(
@@ -133,8 +138,10 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     environment: ReleaseDefinitionEnvironment,
     agentPoolQueueId: number
   ) {
-    environment.queueId = agentPoolQueueId;
-    (environment.deployPhases![0] as DeployPhase).deploymentInput!.queueId = agentPoolQueueId;
+    environment.queueId = agentPoolQueueId
+    for (const deployPhase of environment.deployPhases!) {
+      (deployPhase as DeployPhase).deploymentInput!.queueId = agentPoolQueueId;
+    }
   }
 
   private configureDefinition(

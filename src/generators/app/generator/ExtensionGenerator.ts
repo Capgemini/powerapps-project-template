@@ -20,7 +20,7 @@ export class ExtensionGenerator
 
   public async generate() {
     const installedExtensions = await this.conn.getInstalledExtensions();
-    const installPromises: Array<Promise<void> | undefined> = extensions.map(async extension => {
+    const installPromises: Array<Promise<void> | undefined> = extensions.map(extension => {
       if (installedExtensions.find(ext => ext.extensionId === extension.name && ext.publisherId === extension.publisher) === undefined) {
         return this.installExtension(extension.publisher, extension.name);
       } else {

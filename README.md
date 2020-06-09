@@ -58,15 +58,18 @@ A new project can be scaffolded using the main generator:
 yo @capgemini/cdspackage
 ```
 
-This generator requires you to enter some information about your project as well as an Azure DevOps personal access token. The scaffolded artifacts include:
+This generator requires you to enter some information about your project as well as an Azure DevOps personal access token and a tenant ID, application ID, and client secret of an Azure service principal. The scaffolded artifacts include:
 
 - IDE configuration files
 - Boilerplate source code
 - Azure DevOps repository
 - Azure DevOps extensions
 - Azure DevOps variables
+- Azure DevOps service connections
 - Azure DevOps build pipelines
 - Azure DevOps release pipeline
+
+> You can easily generate the service principal using the script provided by Microsoft [here](https://docs.microsoft.com/en-us/power-platform/alm/devops-build-tools#create-service-principal-and-client-secret-using-powershell). This will output the information required for the scaffolder.
 
 ### Scaffold a solution
 
@@ -82,7 +85,7 @@ This sub-generator requires some information about your solution and generates t
 
 Running this sub-generator:
 
-- Creates a corresponding folder within the `solutions` directory. This folder contains:
+- Creates a corresponding folder within the `src/solutions` directory. This folder contains:
     - A `MappingFile.xml` file which is used when packing the solution with the solution packager
     - A `spkl.json` file which is used to contain [spkl task runner](https://github.com/scottdurow/SparkleXrm/wiki/spkl) configuration 
     - An `environment.json` file which stores information regarding the development and staging (if applicable) environments for the solution
@@ -128,7 +131,7 @@ This sub-generator generates the source code required to support the migration o
 yo @capgemini/cdspackage:data
 ```
 
-Creates a `Data` folder which contains the `DataExport.json`, `DataImport.json`, and `DataSchema.xml` files for use with the Capgemini XRM Data Migrator tool.
+Creates a `data` folder which contains the `DataExport.json`, `DataImport.json`, and `DataSchema.xml` files for use with the Capgemini XRM Data Migrator tool. The `ImportConfig.xml` is also updated to include the import of the data.
 
 ## License
 

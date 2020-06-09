@@ -23,6 +23,12 @@ class Main extends Generator {
         name: "sourceSolution",
         store: true,
         type: "list"
+      },
+      {
+        default: false,
+        message: "Import data before solution?",
+        name: "importBeforeSolution",
+        type: "confirm",
       }
     ]);
     const solutionFolderComponents = this.answers.sourceSolution.split("_");
@@ -43,7 +49,7 @@ class Main extends Generator {
     this.log(`Writing data configuration files from template...`);
     this.fs.copyTpl(
       this.templatePath("source"),
-      this.destinationPath("Solutions", this.answers.sourceSolution),
+      this.destinationPath("src", "solutions", this.answers.sourceSolution),
       this.answers,
       {},
       { globOptions: { dot: true } }
@@ -54,7 +60,7 @@ class Main extends Generator {
     this.log(`Updating import config to include new solution.`);
 
     const importConfigPath = this.destinationPath(
-      "Deploy",
+      "deploy",
       "PkgFolder",
       "ImportConfig.xml"
     );
@@ -65,20 +71,21 @@ class Main extends Generator {
         if (err) {
           throw err;
         }
-        const configurationMigrations = res.configdatastorage.capgeminiConfigurationMigration[0];
-        const importPackage = {
+        const dataImports = res.configdatastorage.dataimports[0];
+        const dataImport = {
           $: {
-            extractedDataPath: `${this.answers.sourceSolution}/Data/Extract`,
-            importConfigFilePath: `${this.answers.sourceSolution}/Data/${this.answers.solution}DataImport.json`,
+            datafolderpath: `${this.answers.sourceSolution}/data/extract`,
+            importbeforesolutions: this.answers.importBeforeSolution,
+            importconfigpath: `${this.answers.sourceSolution}/data/${this.answers.solution}DataImport.json`,
           }
         };
 
-        if (configurationMigrations.importPackage) {
-          configurationMigrations.importPackage.push(importPackage);
+        if (dataImports.dataimport) {
+          dataImports.dataimport.push(dataImport);
         } else {
-          res.configdatastorage.capgeminiConfigurationMigration = [
+          res.configdatastorage.dataimports = [
             {
-              importPackage: [importPackage]
+              dataimport: [dataImport]
             }
           ];
         }
@@ -102,7 +109,7 @@ class Main extends Generator {
     const renamer = new Renamer();
     renamer.rename({
       dryRun: false,
-      files: [`${this.destinationPath("Solutions", this.answers.sourceSolution, "Data")}/**/*`],
+      files: [`${this.destinationPath("src", "solutions", this.answers.sourceSolution, "data")}/**/*`],
       find: from,
       replace: to
     });

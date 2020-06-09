@@ -7,6 +7,7 @@ import { BuildGenerator } from "./generator/BuildGenerator";
 import { ExtensionGenerator } from "./generator/ExtensionGenerator";
 import { ReleaseGenerator } from "./generator/ReleaseGenerator";
 import { RepoGenerator } from "./generator/RepoGenerator";
+import { ServiceEndpointGenerator } from "./generator/ServiceEndpointGenerator";
 import { VarGroupGenerator } from "./generator/VarGroupGenerator";
 import { validateEmail, validateNamespace, validateUrl } from "./utilities";
 
@@ -69,37 +70,43 @@ class Main extends Generator {
     packageAnswers.package = packageAnswers.package.replace(/\s/g, "");
     packageAnswers.client = packageAnswers.client.replace(/\s/g, "");
 
-    const ciGroupExists = await this.conn!.getTaskAgentApi()
-      .then(api => api.getVariableGroups(packageAnswers.adoProject, "Environment - CI"))
-      .then(grps => grps.length > 0);
-
-    const cakeGroupExists = await this.conn!.getTaskAgentApi()
-      .then(api => api.getVariableGroups(packageAnswers.adoProject, "Cake"))
-      .then(grps => grps.length > 0);
-
     const connectionAnswers = await this.prompt([
       {
         message: "CI environment URL?",
         name: "ciUrl",
         store: true,
-        validate: validateUrl,
-        when: !ciGroupExists
+        validate: validateUrl
       },
       {
-        message: "Dynamics 365 service account email?",
+        message: "Service account email?",
         name: "serviceAccountUsername",
         store: true,
         validate: validateEmail,
-        when: !cakeGroupExists || !ciGroupExists
       },
       {
         mask: "*",
-        message: "Dynamics 365 service account password?",
+        message: "Service account password?",
         name: "serviceAccountPassword",
         store: false,
         type: "password",
-        when: !cakeGroupExists || !ciGroupExists
-      }
+      },
+      {
+        message: "Tenant ID?",
+        name: "tenantId",
+        store: true,
+      },
+      {
+        message: "Application ID?",
+        name: "applicationId",
+        store: true,
+      },
+      {
+        mask: "*",
+        message: "Client secret?",
+        name: "clientSecret",
+        store: false,
+        type: "password",
+      },
     ]);
 
     this.answers = {
@@ -135,13 +142,16 @@ class Main extends Generator {
         this.log
       ),
       new ReleaseGenerator(await this.conn!.getReleaseApi(), this.log),
+      new ServiceEndpointGenerator(await taskAgentApi, this.log),
       this.log
     );
 
     try {
       await scaffolder.scaffold({
+        applicationId: this.answers.applicationId,
         ciEnvironmentUrl: this.answers.ciUrl,
         clientName: this.answers.client,
+        clientSecret: this.answers.clientSecret,
         gitRepository: this.answers.repositoryName,
         package: {
           name: this.answers.package,
@@ -150,6 +160,7 @@ class Main extends Generator {
         projectName: this.answers.adoProject,
         serviceAccountPassword: this.answers.serviceAccountPassword,
         serviceAccountUsername: this.answers.serviceAccountUsername,
+        tenantId: this.answers.tenantId,
       });
     } catch (e) {
       this.log("Package generator encountered an error.");

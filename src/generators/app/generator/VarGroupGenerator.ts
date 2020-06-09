@@ -2,7 +2,7 @@ import { VariableGroup } from "azure-devops-node-api/interfaces/BuildInterfaces"
 import { VariableGroupParameters } from "azure-devops-node-api/interfaces/TaskAgentInterfaces";
 import { ITaskAgentApi } from "azure-devops-node-api/TaskAgentApi";
 import cake from "../definitions/variablegroups/cake.json";
-import envCi from "../definitions/variablegroups/environment-ci.json";
+import integrationTests from "../definitions/variablegroups/integration-tests.json";
 import pkg from "../definitions/variablegroups/pkg.json";
 import { IGenerator } from "./IGenerator.js";
 
@@ -21,9 +21,9 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
   public async generate(
     project: string,
     packageName: string,
-    ciEnvironmentUrl?: string,
-    serviceAccountUsername?: string,
-    serviceAccountPassword?: string,
+    ciEnvironmentUrl: string,
+    serviceAccountUsername: string,
+    serviceAccountPassword: string,
   ): Promise<VariableGroup[]> {
     this.log("Generating variable groups...");
 
@@ -36,21 +36,6 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
 
     const varGroups = await this.createVariableGroups(project, groupsToCreate);
     this.createdObjects.push(...varGroups);
-
-    if (ciEnvironmentUrl && serviceAccountPassword && serviceAccountUsername) {
-      return varGroups;
-    }
-
-    const existingGroups: string[] = [];
-
-    if (!ciEnvironmentUrl) {
-      existingGroups.push(envCi.name);
-    }
-    if (!serviceAccountPassword) {
-      existingGroups.push(cake.name)
-    }
-
-    varGroups.push(...(await this.getExistingGroups(project, existingGroups)));
 
     return varGroups;
   }
@@ -66,38 +51,26 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     return;
   }
 
-  private async getExistingGroups(
-    project: string,
-    groups: string[]
-  ): Promise<VariableGroup[]> {
-    this.log(`Using existing variable groups for: ${groups.join(", ")}`);
-
-    const existingGroups = await this.conn.getVariableGroups(project);
-    return groups.map(name => existingGroups.find(grp => grp.name === name)!);
-  }
-
   private generateVariableGroups(
     packageName: string,
-    ciEnvironmentUrl?: string,
-    serviceAccountUsername?: string,
-    serviceAccountPassword?: string
+    ciEnvironmentUrl: string,
+    serviceAccountUsername: string,
+    serviceAccountPassword: string
   ): VariableGroup[] {
     const groups: VariableGroup[] = [pkg];
     pkg.name = `Package - ${packageName}`;
 
-    if (ciEnvironmentUrl) {
-      envCi.variables.url.value = ciEnvironmentUrl;
-      envCi.variables.username.value = serviceAccountUsername!;
-      envCi.variables.password.value = serviceAccountPassword!;
-      envCi.variables.connectionString.value = "Url=$(url); Username=$(username); Password=$(password); AuthType=Office365";
-      groups.push(envCi);
-    }
+    integrationTests.name = `Integration Tests - ${packageName}`;
+    integrationTests.variables["CDS Test CDS URL"].value = ciEnvironmentUrl;
+    integrationTests.variables["CDS Test Admin Username"].value = serviceAccountUsername;
+    integrationTests.variables["CDS Test Admin Password"].value = serviceAccountPassword;
+    groups.push(integrationTests);
 
-    if (serviceAccountPassword && serviceAccountUsername) {
-      cake.variables.dynamicsPassword.value = serviceAccountPassword;
-      cake.variables.dynamicsUsername.value = serviceAccountUsername;
-      groups.push(cake);
-    }
+    cake.name = `Cake - ${packageName}`
+    cake.variables.dynamicsPassword.value = serviceAccountPassword;
+    cake.variables.dynamicsUsername.value = serviceAccountUsername;
+
+    groups.push(cake);
 
     return groups;
   }

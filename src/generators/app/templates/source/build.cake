@@ -7,11 +7,10 @@ using System.Text.RegularExpressions;
 #addin nuget:?package=Cake.Npm&version=0.17.0
 #addin nuget:?package=Cake.Json&version=3.0.0
 
-const string DataFolder = "./Data";
-const string SolutionsFolder = "./Solutions";
+const string SolutionsFolder = "./src/solutions";
 const string PackagesFolder = "./packages";
-const string DeployProjectFolder = "./Deploy";
-const string TestsFolder = "./Tests";
+const string DeployProjectFolder = "./deploy";
+const string TestsFolder = "./tests";
 
 var target = Argument("target", "Default");
 var solution = Argument<string>("solution", "");
@@ -28,16 +27,13 @@ Task("BuildDeploymentProject")
       File($"{DeployProjectFolder}/<%= client %>.<%= package %>.Deployment.csproj"), 
       new NuGetRestoreSettings { ConfigFile = "NuGet.config" }, 
       new MSBuildSettings { Configuration = "Release" });
-    EnsureDirectoryExists($"{DeployProjectFolder}/bin/Release/PowerShell");
-    CopyFiles($"{PackagesFolder}/Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*/tools/**/*", Directory($"{DeployProjectFolder}/bin/Release"), true);
-    CopyFiles($"{PackagesFolder}/Microsoft.CrmSdk.XrmTooling.PackageDeployment.PowerShell.*/tools/**/*", Directory($"{DeployProjectFolder}/bin/Release/PowerShell"), true);
     foreach (var solutionDir in GetDirectories($"{SolutionsFolder}/*"))
     {
       EnsureDirectoryExists($"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}");
       DeleteFiles($"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}/**/*");
       CopyDirectory(solutionDir.Combine("bin/Release").FullPath, $"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}");
-      EnsureDirectoryExists(solutionDir.Combine("Data").FullPath);
-      CopyDirectory(solutionDir.Combine("Data").FullPath, $"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}/Data");
+      EnsureDirectoryExists(solutionDir.Combine("data").FullPath);
+      CopyDirectory(solutionDir.Combine("data").FullPath, $"{DeployProjectFolder}/bin/Release/PkgFolder/{solutionDir.GetDirectoryName()}/data");
     } 
   });
 
@@ -64,7 +60,7 @@ Task("ExtractSolution")
     ExtractSolution(
       GetConnectionString(solution, true), 
       solution, 
-      Directory($"{SolutionsFolder}/{solution}").Path.Combine("Extract"));
+      Directory($"{SolutionsFolder}/{solution}").Path.Combine("extract"));
   });
 
 Task("ExtractSolutionFromDevelopmentHub")
@@ -73,7 +69,7 @@ Task("ExtractSolutionFromDevelopmentHub")
     var tempDirectory = Directory(EnvironmentVariable("TEMP"));
     var unmanagedSolution = XrmDownloadAttachment(connectionString, Guid.Parse(Argument<string>("unmanagedNoteId")), tempDirectory);
     var managedSolution = XrmDownloadAttachment(connectionString, Guid.Parse(Argument<string>("managedNoteId")), tempDirectory);
-    var outputPath = Directory($"{SolutionsFolder}/{solution}").Path.Combine("Extract");
+    var outputPath = Directory($"{SolutionsFolder}/{solution}").Path.Combine("extract");
     
     SolutionPackagerExtract(unmanagedSolution, outputPath, SolutionPackageType.Both);
   });
@@ -115,7 +111,7 @@ Task("PackSolution")
     SolutionPackagerPack(
       new SolutionPackagerPackSettings(
         solutionFolder.Path.CombineWithFilePath($"bin\\Release\\{solution}.zip"),
-        solutionFolder.Path.Combine("Extract"),
+        solutionFolder.Path.Combine("extract"),
         SolutionPackageType.Both,
         solutionFolder.Path.CombineWithFilePath("MappingFile.xml")));
     packedSolutions.Add(solution);
@@ -125,19 +121,19 @@ Task("PackSolution")
 Task("ExportData")
   .Does(() => {
     var solutionDataFolder = Directory($"{SolutionsFolder}/{solution}/Data");
-    EnsureDirectoryExists(solutionDataFolder.Path.Combine("Extract"));
+    EnsureDirectoryExists(solutionDataFolder.Path.Combine("extract"));
     ExportData(
-      solutionDataFolder.Path.Combine("Data/Extract"),
+      solutionDataFolder.Path.Combine("data/extract"),
       solutionDataFolder.Path.CombineWithFilePath($"{solution.Split('_')[2]}DataExport.json"));
   });
 
 Task("StageData")
   .Does(() => {
-    var solutionDataFolder = Directory($"{SolutionsFolder}/{solution}/Data");
+    var solutionDataFolder = Directory($"{SolutionsFolder}/{solution}/data");
     XrmImportData(
       new DataMigrationImportSettings(
         GetConnectionString(solution, true), 
-        Directory($"{SolutionsFolder}/{solution}/Data").Path.CombineWithFilePath($"{solution.Split('_')[2]}DataImport.json")));
+        Directory($"{SolutionsFolder}/{solution}/data").Path.CombineWithFilePath($"{solution.Split('_')[2]}DataImport.json")));
   });
   
 // deploy targets
@@ -177,11 +173,11 @@ void BuildCSharpProject(FilePath projectPath, NuGetRestoreSettings nugetSettings
 // Utilities
 
 string GetConnectionString(string solution, bool stagingEnvironment) {
-  var envConfig = ParseJsonFromFile(File($"{SolutionsFolder}/{solution}/env.json"));
-  var targetEnvironment = stagingEnvironment && envConfig["stagingEnvironment"] != null ? "stagingEnvironment" : "environment";
-  var url = envConfig[targetEnvironment].ToString();
-  var username = envConfig["username"] ?? EnvironmentVariable("CAKE_DYNAMICS_USERNAME");
-  var password = EnvironmentVariable("CAKE_DYNAMICS_PASSWORD");
+  var solutionConfig = ParseJsonFromFile(File($"{SolutionsFolder}/{solution}/solution.json"));
+  var targetEnvironment = stagingEnvironment && solutionConfig["stagingEnvironment"] != null ? "stagingEnvironment" : "environment";
+  var url = solutionConfig[targetEnvironment].ToString();
+  var username = solutionConfig["username"] ?? EnvironmentVariable("CAKE_<%= package.toUpperCase().replace(" ", "").trim(); %>_USERNAME");
+  var password = EnvironmentVariable("CAKE_<%= package.toUpperCase().replace(" ", "").trim(); %>_PASSWORD");
 
   return $"Url={url}; Username={username}; Password={password}; AuthType=Office365;";
 }
@@ -201,7 +197,7 @@ void ExportData(DirectoryPath extractFolder, FilePath exportConfigPath) {
 void PackSolution(string projectFolder, string solutionName, string solutionVersion) {    
   SolutionPackagerPack(new SolutionPackagerPackSettings(
     Directory(projectFolder).Path.CombineWithFilePath($"bin\\Release\\{solutionName}.zip"),
-    Directory(projectFolder).Path.Combine("Extract"),
+    Directory(projectFolder).Path.Combine("extract"),
     SolutionPackageType.Both,
     Directory(projectFolder).Path.CombineWithFilePath("MappingFile.xml")));
 }

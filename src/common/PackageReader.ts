@@ -15,7 +15,7 @@ export class PackageReader {
   }
 
   public getSolutions(): string[] {
-    const solutionsPath = join(this.destinationPath, "Solutions");
+    const solutionsPath = join(this.destinationPath, "src", "solutions");
     
     return readdirSync(solutionsPath)
       .filter((path) => this.isDirectoryPath(join(solutionsPath, path)));

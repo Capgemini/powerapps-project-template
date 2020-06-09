@@ -1,0 +1,14 @@
+{
+    "name": "",
+    "type": "powerplatform-spn",
+    "url": "",
+    "authorization": {
+        "parameters": {
+            "tenantId": "",
+            "applicationId": "",
+            "clientSecret": ""
+        },
+        "scheme": "None"
+    },
+    "owner": "Library"
+}

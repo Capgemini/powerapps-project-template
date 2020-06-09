@@ -2,46 +2,54 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FD3CAA3F-296C-4ECB-A6E9-A4A8CA3E15B6}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solutions", "Solutions", "{0F585759-A22A-4564-AD05-11924B6B1DDF}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2AD54360-54F9-4CCD-8261-2ED80D5E8F4C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "<%= client %>.<%= package %>.Tests.Ui", "Tests\<%= client %>.<%= package %>.Tests.Ui\<%= client %>.<%= package %>.Tests.Ui.csproj", "{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66632694-4D0C-4007-B7AC-059E9BCC5932}"
 	ProjectSection(SolutionItems) = preProject
-		.runsettings = .runsettings
 		build.cake = build.cake
 		build.ps1 = build.ps1
 		cake.config = cake.config
+		NuGet.config = NuGet.config
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "<%= client %>.<%= package %>.BusinessLogic", "Common\<%= client %>.<%= package %>.BusinessLogic\<%= client %>.<%= package %>.BusinessLogic.shproj", "{2B1EF6DE-63CC-4B7E-9BF6-5D9B4C0AFDED}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DDA7178C-D1AB-4939-ACFD-3D77B03DE532}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "<%= client %>.<%= package %>.Repositories", "Common\<%= client %>.<%= package %>.Repositories\<%= client %>.<%= package %>.Repositories.shproj", "{56D657E2-2DB7-4489-AD26-CA2E147836C6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pipelines", "pipelines", "{2B969D63-26B7-4968-898C-F09CD7C84CDA}"
+	ProjectSection(SolutionItems) = preProject
+		pipelines\azure-pipelines-dynamics-365-extract.yml = pipelines\azure-pipelines-dynamics-365-extract.yml
+		pipelines\azure-pipelines-pull-request.yml = pipelines\azure-pipelines-pull-request.yml
+		pipelines\azure-pipelines.yml = pipelines\azure-pipelines.yml
+	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{D0CD09F0-8603-4099-B6E1-A65C77BC7459}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{2A6CADD3-618B-44B5-9DF4-1A97D23ED9C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "<%= client %>.<%= package %>.Deployment", "Deploy\<%= client %>.<%= package %>.Deployment.csproj", "{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E0325506-7C79-41A6-AD29-B31ABC678C9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "<%= client %>.<%= package %>.Tests.Unit", "Tests\<%= client %>.<%= package %>.Tests.Unit\<%= client %>.<%= package %>.Tests.Unit.csproj", "{F9924F3A-AF7A-408B-BF7E-4833CA103E70}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "<%= client %>.<%= package %>.Deployment", "deploy\<%= client %>.<%= package %>.Deployment.csproj", "{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "<%= client %>.<%= package %>.Tests.Integration", "Tests\<%= client %>.<%= package %>.Tests.Integration\<%= client %>.<%= package %>.Tests.Integration.csproj", "{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{4FAC9E73-87B5-48C3-912B-AFFCDCED63B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "<%= client %>.<%= package %>.Container", "Common\<%= client %>.<%= package %>.Container\<%= client %>.<%= package %>.Container.csproj", "{F9E5EF62-5BDF-4E36-8027-D265754B56C7}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "<%= client %>.<%= package %>.BusinessLogic", "src\common\<%= client %>.<%= package %>.BusinessLogic\<%= client %>.<%= package %>.BusinessLogic.shproj", "{2B1EF6DE-63CC-4B7E-9BF6-5D9B4C0AFDED}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "<%= client %>.<%= package %>.Model", "Common\<%= client %>.<%= package %>.Model\<%= client %>.<%= package %>.Model.shproj", "{9903C7AB-FF17-4FE6-AA49-F4B429847BCA}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "<%= client %>.<%= package %>.Repositories", "src\common\<%= client %>.<%= package %>.Repositories\<%= client %>.<%= package %>.Repositories.shproj", "{56D657E2-2DB7-4489-AD26-CA2E147836C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "<%= client %>.<%= package %>.Container", "src\common\<%= client %>.<%= package %>.Container\<%= client %>.<%= package %>.Container.csproj", "{F9E5EF62-5BDF-4E36-8027-D265754B56C7}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "<%= client %>.<%= package %>.Model", "src\common\<%= client %>.<%= package %>.Model\<%= client %>.<%= package %>.Model.shproj", "{70363B14-5D32-4BD6-AA74-A1CA3373C087}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "<%= client %>.<%= package %>.IntegrationTests", "tests\<%= client %>.<%= package %>.IntegrationTests\<%= client %>.<%= package %>.IntegrationTests.csproj", "{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "<%= client %>.<%= package %>.UiTests", "tests\<%= client %>.<%= package %>.UiTests\<%= client %>.<%= package %>.UiTests.csproj", "{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "<%= client %>.<%= package %>.UnitTests", "tests\<%= client %>.<%= package %>.UnitTests\<%= client %>.<%= package %>.UnitTests.csproj", "{F9924F3A-AF7A-408B-BF7E-4833CA103E70}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Common\<%= client %>.<%= package %>.BusinessLogic\<%= client %>.<%= package %>.BusinessLogic.projitems*{2b1ef6de-63cc-4b7e-9bf6-5d9b4c0afded}*SharedItemsImports = 13
-		Common\<%= client %>.<%= package %>.Repositories\<%= client %>.<%= package %>.Repositories.projitems*{56d657e2-2db7-4489-ad26-ca2e147836c6}*SharedItemsImports = 13
-		Common\<%= client %>.<%= package %>.Model\<%= client %>.<%= package %>.Model.projitems*{9903c7ab-ff17-4fe6-aa49-f4b429847bca}*SharedItemsImports = 13
-		Common\<%= client %>.<%= package %>.BusinessLogic\<%= client %>.<%= package %>.BusinessLogic.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 4
-		Common\<%= client %>.<%= package %>.Model\<%= client %>.<%= package %>.Model.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 4
-		Common\<%= client %>.<%= package %>.Repositories\<%= client %>.<%= package %>.Repositories.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 4
+		src\common\<%= client %>.<%= package %>.BusinessLogic\<%= client %>.<%= package %>.BusinessLogic.projitems*{2b1ef6de-63cc-4b7e-9bf6-5d9b4c0afded}*SharedItemsImports = 13
+		src\common\<%= client %>.<%= package %>.Repositories\<%= client %>.<%= package %>.Repositories.projitems*{56d657e2-2db7-4489-ad26-ca2e147836c6}*SharedItemsImports = 13
+		src\common\<%= client %>.<%= package %>.Model\<%= client %>.<%= package %>.Model.projitems*{70363b14-5d32-4bd6-aa74-a1ca3373c087}*SharedItemsImports = 13
+		src\common\<%= client %>.<%= package %>.BusinessLogic\<%= client %>.<%= package %>.BusinessLogic.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 4
+		src\common\<%= client %>.<%= package %>.Model\<%= client %>.<%= package %>.Model.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 4
+		src\common\<%= client %>.<%= package %>.Repositories\<%= client %>.<%= package %>.Repositories.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,47 +57,50 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Deploy|Any CPU.Build.0 = Debug|Any CPU
-		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
 		{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B}.Deploy|Any CPU.Build.0 = Debug|Any CPU
 		{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Deploy|Any CPU.ActiveCfg = Deploy|Any CPU
-		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9E5EF62-5BDF-4E36-8027-D265754B56C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9E5EF62-5BDF-4E36-8027-D265754B56C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9E5EF62-5BDF-4E36-8027-D265754B56C7}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9E5EF62-5BDF-4E36-8027-D265754B56C7}.Deploy|Any CPU.Build.0 = Debug|Any CPU
 		{F9E5EF62-5BDF-4E36-8027-D265754B56C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9E5EF62-5BDF-4E36-8027-D265754B56C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Deploy|Any CPU.ActiveCfg = Deploy|Any CPU
+		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Deploy|Any CPU.Build.0 = Deploy|Any CPU
+		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Deploy|Any CPU.ActiveCfg = Deploy|Any CPU
+		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Deploy|Any CPU.Build.0 = Deploy|Any CPU
+		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA} = {FD3CAA3F-296C-4ECB-A6E9-A4A8CA3E15B6}
-		{2B1EF6DE-63CC-4B7E-9BF6-5D9B4C0AFDED} = {2AD54360-54F9-4CCD-8261-2ED80D5E8F4C}
-		{56D657E2-2DB7-4489-AD26-CA2E147836C6} = {2AD54360-54F9-4CCD-8261-2ED80D5E8F4C}
-		{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B} = {D0CD09F0-8603-4099-B6E1-A65C77BC7459}
-		{F9924F3A-AF7A-408B-BF7E-4833CA103E70} = {FD3CAA3F-296C-4ECB-A6E9-A4A8CA3E15B6}
-		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57} = {FD3CAA3F-296C-4ECB-A6E9-A4A8CA3E15B6}
-		{F9E5EF62-5BDF-4E36-8027-D265754B56C7} = {2AD54360-54F9-4CCD-8261-2ED80D5E8F4C}
-		{9903C7AB-FF17-4FE6-AA49-F4B429847BCA} = {2AD54360-54F9-4CCD-8261-2ED80D5E8F4C}
+		{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B} = {2A6CADD3-618B-44B5-9DF4-1A97D23ED9C3}
+		{4FAC9E73-87B5-48C3-912B-AFFCDCED63B9} = {DDA7178C-D1AB-4939-ACFD-3D77B03DE532}
+		{2B1EF6DE-63CC-4B7E-9BF6-5D9B4C0AFDED} = {4FAC9E73-87B5-48C3-912B-AFFCDCED63B9}
+		{56D657E2-2DB7-4489-AD26-CA2E147836C6} = {4FAC9E73-87B5-48C3-912B-AFFCDCED63B9}
+		{F9E5EF62-5BDF-4E36-8027-D265754B56C7} = {4FAC9E73-87B5-48C3-912B-AFFCDCED63B9}
+		{70363B14-5D32-4BD6-AA74-A1CA3373C087} = {4FAC9E73-87B5-48C3-912B-AFFCDCED63B9}
+		{FD08C829-9610-4141-8C8F-0CDB7DCDDB57} = {E0325506-7C79-41A6-AD29-B31ABC678C9F}
+		{D4F155F1-411E-4C63-95F6-F0F9D9D450DA} = {E0325506-7C79-41A6-AD29-B31ABC678C9F}
+		{F9924F3A-AF7A-408B-BF7E-4833CA103E70} = {E0325506-7C79-41A6-AD29-B31ABC678C9F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3D6A7645-2C64-4610-BC84-6AD17AA98B71}

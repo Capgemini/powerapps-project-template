@@ -1,8 +1,0 @@
-{
-  "name": "Capgemini IP",
-  "type": "externalnugetfeed",
-  "url": "https://capgeminiuk.pkgs.visualstudio.com/_packaging/CapgeminiIp/nuget/v3/index.json",
-  "authorization": { "scheme": "Token" },
-  "isShared": false,
-  "isReady": true
-}
