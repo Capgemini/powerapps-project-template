@@ -133,6 +133,13 @@ yo @capgemini/cdspackage:data
 
 Creates a `data` folder which contains the `DataExport.json`, `DataImport.json`, and `DataSchema.xml` files for use with the Capgemini XRM Data Migrator tool. The `ImportConfig.xml` is also updated to include the import of the data.
 
+##Known Issues
+###Yeoman Permissions error
+This happens when you have a .yo-rc-global file in the root of your user directory. It tries to scaffold to this location which is not ideal. To solve this remove this file.
+
+###Git Hangs During scaffold
+This happens when git does not have credentials set to the remote repository.
+
 ## License
 
 Unlicensed © [Capgemini](https://capgemini.com)
