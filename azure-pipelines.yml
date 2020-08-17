@@ -4,7 +4,12 @@
 # https://aka.ms/yaml
 
 trigger:
-  - master
+ branches:
+   include:
+     - master
+ paths:
+   include:
+     - src/*
 
 resources:
   - repo: self
