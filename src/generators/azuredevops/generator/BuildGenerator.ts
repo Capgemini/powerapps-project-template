@@ -2,7 +2,7 @@ import { BuildApi } from "azure-devops-node-api/BuildApi";
 import { BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import glob from "glob-promise";
 import { parse } from "path";
-import buildDef from "../definitions/build/build.json";
+import buildDef from "../definitions/build/build.json"
 import { IGenerator } from "./IGenerator.js";
 
 export class BuildGenerator implements IGenerator<BuildDefinition> {

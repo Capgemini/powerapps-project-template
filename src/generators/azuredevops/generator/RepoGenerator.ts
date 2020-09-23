@@ -3,6 +3,7 @@ import {
   GitRepository,
   GitRepositoryCreateOptions
 } from "azure-devops-node-api/interfaces/GitInterfaces";
+import { promises as fs } from "fs";
 import Git from "simple-git/promise";
 import { IGenerator } from "./IGenerator";
 
@@ -12,10 +13,13 @@ export class RepoGenerator implements IGenerator<GitRepository> {
   private readonly conn: GitApi;
   private readonly log: (msg: string) => void;
 
+  private repoLocation: string;
+
   constructor(conn: GitApi, log: (msg: string) => void) {
     this.conn = conn;
     this.log = log;
     this.createdObjects = [];
+    this.repoLocation = "";
   }
 
   public async generate(
@@ -24,6 +28,8 @@ export class RepoGenerator implements IGenerator<GitRepository> {
     repoLocation: string
   ): Promise<GitRepository> {
     this.log("Generating repository...");
+    this.repoLocation = repoLocation;
+
     const repo = await this.createRepo(projectName, {
       name: repoName
     });
@@ -45,6 +51,10 @@ export class RepoGenerator implements IGenerator<GitRepository> {
         this.conn.deleteRepository(obj.id!, project)
       )
     );
+
+    // @ts-ignore The second argument is allowed but the type definition hasn't been updated.
+    await fs.rmdir(this.repoLocation + "/.git", { recursive: true });
+
     this.createdObjects.length = 0;
     return;
   }

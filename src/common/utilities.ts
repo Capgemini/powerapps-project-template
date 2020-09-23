@@ -20,3 +20,9 @@ export function validateNamespace(input: string): boolean | string {
     ? true
     : `Answer must not contain spaces, numeric characters or special characters.`;
 }
+
+export function validateGuid(input: string): boolean | string {
+  return /^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$/i.test(input)
+    ? true
+    : `Your answer doesn't match the shape of a GUID.`;
+}

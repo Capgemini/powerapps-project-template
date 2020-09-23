@@ -1,6 +1,5 @@
 import { CoreApi } from "azure-devops-node-api/CoreApi";
 import { YamlProcess } from "azure-devops-node-api/interfaces/BuildInterfaces";
-import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { BuildGenerator } from "./generator/BuildGenerator";
 import { ExtensionGenerator } from "./generator/ExtensionGenerator";
 import { IGenerator } from "./generator/IGenerator";
@@ -18,7 +17,7 @@ export class AzureDevOpsScaffolder {
   private readonly buildGenerator: BuildGenerator;
   private readonly extensionGenerator: ExtensionGenerator;
   private readonly releaseGenerator: ReleaseGenerator;
-  private readonly serviceEndpointGenerator: ServiceEndpointGenerator
+  private readonly serviceEndpointGenerator: ServiceEndpointGenerator;
 
   private log: (message: string) => void;
 
@@ -66,34 +65,34 @@ export class AzureDevOpsScaffolder {
       repo.id!
     );
 
+    await this.extensionGenerator.generate();
+
     const serviceEndpoint = await this.serviceEndpointGenerator.generate(
       settings.projectName,
       settings.package.name,
       settings.ciEnvironmentUrl,
       settings.tenantId,
       settings.applicationId,
-      settings.clientSecret);
+      settings.clientSecret
+    );
 
-    let releaseDef: ReleaseDefinition;
-    try {
-      await this.extensionGenerator.generate();
-      releaseDef = await this.releaseGenerator.generate(
-        settings.projectName,
-        settings.package.name,
-        settings.clientName,
-        await this.getProjectId(settings.projectName),
-        buildDefs.find(
-          def =>
-            (def.process as YamlProcess).yamlFilename?.endsWith("azure-pipelines.yml")
-        )!,
-        varGroups.filter(vg => vg.name!.startsWith("Integration Tests")).map(vg => vg.id!),
-        serviceEndpoint
-      );
-    } catch (e) {
-      throw new Error(
-        "Failed to create release definition. Please ensure you have permission to install extensions in your target organisation."
-      );
-    }
+    const mainBuildDef = buildDefs.find((def) =>
+      ((def.process as YamlProcess).yamlFilename || "").endsWith(
+        "azure-pipelines.yml"
+      )
+    )!;
+
+    const releaseDef = await this.releaseGenerator.generate(
+      settings.projectName,
+      settings.package.name,
+      settings.clientName,
+      await this.getProjectId(settings.projectName),
+      mainBuildDef,
+      varGroups
+        .filter((vg) => vg.name!.startsWith("Integration Tests"))
+        .map((vg) => vg.id!),
+      serviceEndpoint
+    );
 
     this.log(`Finished setting up Azure DevOps.`);
     return {
@@ -113,16 +112,18 @@ export class AzureDevOpsScaffolder {
       this.releaseGenerator,
       this.varGroupGenerator,
       this.extensionGenerator,
-      this.serviceEndpointGenerator
+      this.serviceEndpointGenerator,
     ];
-    await Promise.all(generators.map(gen => gen.rollback(project)));
+    await Promise.all(generators.map((gen) => gen.rollback(project)));
     return;
   }
 
   private async getProjectId(projectName: string): Promise<string> {
     return this.coreApi
       .getProjects()
-      .then(projects => projects.find(project => project.name === projectName))
-      .then(project => project!.id!);
+      .then((projects) =>
+        projects.find((project) => project.name === projectName)
+      )
+      .then((project) => project!.id!);
   }
 }

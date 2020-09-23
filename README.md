@@ -9,18 +9,20 @@ This Yeoman generator scaffolds Power Apps projects. This includes:
 - Release pipelines
 
 ## Table of Contents
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
+- [Power Apps Project Generator](#power-apps-project-generator)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
     - [Connect to the Capgemini UK npm feed](#connect-to-the-capgemini-uk-npm-feed)
     - [Install the generator package](#install-the-generator-package)
-- [Usage](#usage)
+  - [Usage](#usage)
     - [Scaffold a project](#scaffold-a-project)
+    - [Scaffold Azure DevOps](#scaffold-azure-devops)
     - [Scaffold a solution](#scaffold-a-solution)
     - [Scaffold a web resource project for a solution](#scaffold-a-web-resource-project-for-a-solution)
-    - [Scaffold a custom workflow activity/plug-in assembly for a solution](#scaffold-a-custom-workflow-activity/plug-in-assembly-for-a-solution)
-    - [Scaffold reference/configuration data migration for a solution](#scaffold-reference/configuration-data-migration-for-a-solution)
-- [Contributing](./CONTRIBUTING.md)
-- [Licence](#license)
+    - [Scaffold a custom workflow activity/plug-in assembly for a solution](#scaffold-a-custom-workflow-activityplug-in-assembly-for-a-solution)
+    - [Scaffold reference/configuration data migration for a solution](#scaffold-referenceconfiguration-data-migration-for-a-solution)
+  - [License](#license)
 
 ## Prerequisites
 
@@ -58,10 +60,21 @@ A new project can be scaffolded using the main generator:
 yo @capgemini/cdspackage
 ```
 
-This generator requires you to enter some information about your project as well as an Azure DevOps personal access token and a tenant ID, application ID, and client secret of an Azure service principal. The scaffolded artifacts include:
+This generator requires you to enter some information about your project. The scaffolded artifacts include:
 
 - IDE configuration files
 - Boilerplate source code
+
+### Scaffold Azure DevOps
+
+An Azure DevOps project can be scaffolded using the `azuredevops` sub-generator:
+
+```bash
+yo @capgemini/cdspackage:azuredevops
+```
+
+This generator requires you to enter some information about your project as well as an Azure DevOps personal access token and a tenant ID, application ID, and client secret of an Azure service principal. The scaffolded artifacts include:
+
 - Azure DevOps repository
 - Azure DevOps extensions
 - Azure DevOps variables
