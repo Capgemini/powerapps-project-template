@@ -4,10 +4,7 @@ VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66632694-4D0C-4007-B7AC-059E9BCC5932}"
 	ProjectSection(SolutionItems) = preProject
-		build.cake = build.cake
 		build.ps1 = build.ps1
-		cake.config = cake.config
-		NuGet.config = NuGet.config
 		README.md = README.md
 	EndProjectSection
 EndProject
