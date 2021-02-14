@@ -10,7 +10,7 @@
       "name": "Yeoman generator",
       "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
       "args": [
-        "cdspackage"
+        "@capgemini/cdspackage"
       ],
       "sourceMaps": true,
       "console": "integratedTerminal",
@@ -27,7 +27,7 @@
       "name": "Yeoman generator - azuredevops",
       "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
       "args": [
-        "cdspackage:azuredevops"
+        "@capgemini/cdspackage:azuredevops"
       ],
       "sourceMaps": true,
       "console": "integratedTerminal",
@@ -43,7 +43,7 @@
       "name": "Yeoman generator - solution",
       "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
       "args": [
-        "cdspackage:solution"
+        "@capgemini/cdspackage:solution"
       ],
       "sourceMaps": true,
       "console": "integratedTerminal",
@@ -59,7 +59,7 @@
       "name": "Yeoman generator - scripts",
       "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
       "args": [
-        "cdspackage:scripts"
+        "@capgemini/cdspackage:scripts"
       ],
       "sourceMaps": true,
       "console": "integratedTerminal",
@@ -75,7 +75,7 @@
       "name": "Yeoman generator - pluginassembly",
       "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
       "args": [
-        "cdspackage:pluginassembly"
+        "@capgemini/cdspackage:pluginassembly"
       ],
       "sourceMaps": true,
       "console": "integratedTerminal",
@@ -91,7 +91,7 @@
       "name": "Yeoman generator - data",
       "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
       "args": [
-        "cdspackage:data"
+        "@capgemini/cdspackage:data"
       ],
       "sourceMaps": true,
       "console": "integratedTerminal",
