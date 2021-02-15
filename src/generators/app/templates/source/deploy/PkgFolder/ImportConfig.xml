@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configdatastorage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" installsampledata="false" waitforsampledatatoinstall="true" agentdesktopzipfile="" agentdesktopexename="" crmmigdataimportfile="">
-  <solutions/>
-  <filestoimport/>
-  <filesmapstoimport/>
-  <processestodeactivate/>
-  <sdkstepstodeactivate/>
-  <wordtemplates/>
-  <dataimports/>
-  <defaultslas/>
+  <solutions>
+  
+  </solutions>
+  <templateconfig>
+  
+  </templateconfig>
 </configdatastorage>
