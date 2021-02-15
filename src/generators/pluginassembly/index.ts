@@ -63,7 +63,7 @@ class Main extends Generator {
     this.log(`Writing solution from template...`);
     this.fs.copyTpl(
       this.templatePath("source"),
-      this.destinationPath("src", "solutions", this.answers.sourceSolution, "pluginassemblies"),
+      this.destinationPath("src", "solutions", this.answers.sourceSolution, "PluginAssemblies"),
       this.answers,
       {},
       { globOptions: { dot: true } }
@@ -87,10 +87,15 @@ class Main extends Generator {
   }
 
   private updateMappingFile = async (): Promise<void> => {
-    const mappingFilePath = this.destinationPath("src", "solutions", this.answers.sourceSolution, "MappingFile.xml");
-    const templateMappingFilePath = this.templatePath("MappingFile.xml");
+    const packMappingFilePath = this.destinationPath("src", "solutions", this.answers.sourceSolution, "PackMappingFile.xml");
+    const templatePackMappingFilePath = this.templatePath("PackMappingFile.xml");
 
-    this.mappingFileTransformer.transform(templateMappingFilePath, this.answers, mappingFilePath);
+    this.mappingFileTransformer.transform(templatePackMappingFilePath, this.answers, packMappingFilePath);
+
+    const ExtractMappingFilePath = this.destinationPath("src", "solutions", this.answers.sourceSolution, "ExtractMappingFile.xml");
+    const templateExtractMappingFilePath = this.templatePath("ExtractMappingFile.xml");
+
+    this.mappingFileTransformer.transform(templateExtractMappingFilePath, this.answers, ExtractMappingFilePath);
   }
 
   private renameFileAndFolders = (
