@@ -9,7 +9,7 @@ Please ensure that pull requests are atomic and do not contain partially built f
 
 ### Power Apps CLI
 
-You must have the [Power Apps CLI](https://docs.microsoft.com/en-us/powerapps/developer/common-data-service/powerapps-cli) installed to use some of the Visual Studio Code build tasks. The _solution.json_ in each solution folder has a `developmentProfile` property - this is the Power Apps CLI authenication profile that maps to the development environment for that solution. You must create these authentication profiles using `pac auth create`.
+You must have the [Power Apps CLI](https://docs.microsoft.com/en-us/powerapps/developer/common-data-service/powerapps-cli) installed to use some of the Visual Studio Code build tasks. The _solution.json_ in each solution folder has a `developmentProfile` property - this is the Power Apps CLI authentication profile that maps to the development environment for that solution (<%= client %>.<%= package %>.<%= solution %>). You must create these authentication profiles using `pac auth create`.
 
 ### Build tasks
 

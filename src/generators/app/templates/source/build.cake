@@ -113,7 +113,7 @@ Task("PackSolution")
         solutionFolder.Path.CombineWithFilePath($"bin\\Release\\{solution}.zip"),
         solutionFolder.Path.Combine("extract"),
         SolutionPackageType.Both,
-        solutionFolder.Path.CombineWithFilePath("MappingFile.xml")));
+        solutionFolder.Path.CombineWithFilePath("PackMappingFile.xml")));
     packedSolutions.Add(solution);
   });
 
@@ -199,7 +199,7 @@ void PackSolution(string projectFolder, string solutionName, string solutionVers
     Directory(projectFolder).Path.CombineWithFilePath($"bin\\Release\\{solutionName}.zip"),
     Directory(projectFolder).Path.Combine("extract"),
     SolutionPackageType.Both,
-    Directory(projectFolder).Path.CombineWithFilePath("MappingFile.xml")));
+    Directory(projectFolder).Path.CombineWithFilePath("PackMappingFile.xml")));
 }
 
 RunTarget(target);
