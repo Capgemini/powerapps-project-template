@@ -86,9 +86,9 @@ class Main extends Generator {
   private writeSolutionConfig = () => {
     this.log(`Writing solution configuration...`);
 
-    const solutionConfig: any = {
-      environment: this.answers.environment
-    };
+    const solutionConfig: any = this.fs.readJSON(this.destinationPath("src", "solutions", "{{prefix}}_{{Package}}_{{Solution}}", "solution.json"));
+
+    solutionConfig.environment = this.answers.environment;
 
     if (this.answers.hasStagingEnvironment) {
       solutionConfig.stagingEnvironment = this.answers.stagingEnvironment;
