@@ -33,7 +33,7 @@ class Main extends Generator {
     ]);
     const solutionFolderComponents = this.answers.sourceSolution.split("_");
     this.answers.prefix = solutionFolderComponents[0];
-    this.answers.solution = solutionFolderComponents[2];
+    this.answers.solution = solutionFolderComponents[2] ?? solutionFolderComponents[1] ?? solutionFolderComponents[0];
   }
 
   public writing(): void {
@@ -71,7 +71,12 @@ class Main extends Generator {
         if (err) {
           throw err;
         }
-        const dataImports = res.configdatastorage.dataimports[0];
+
+        res.configdatastorage.templateconfig = (res.configdatastorage.templateconfig ?? [{}])[0];
+        res.configdatastorage.templateconfig.dataimports = (res.configdatastorage.templateconfig.dataimports ?? [{}])[0];
+        res.configdatastorage.templateconfig.dataimports.dataimport = res.configdatastorage.templateconfig.dataimports.dataimport ?? [];
+
+        const dataImports = res.configdatastorage.templateconfig.dataimports.dataimport;
         const dataImport = {
           $: {
             datafolderpath: `${this.answers.sourceSolution}/data/extract`,
@@ -80,15 +85,7 @@ class Main extends Generator {
           }
         };
 
-        if (dataImports.dataimport) {
-          dataImports.dataimport.push(dataImport);
-        } else {
-          res.configdatastorage.dataimports = [
-            {
-              dataimport: [dataImport]
-            }
-          ];
-        }
+        dataImports.push(dataImport);
 
         this.fs.write(
           importConfigPath,
