@@ -66,7 +66,7 @@ class Main extends Generator {
     );
     parseString(
       this.fs.read(importConfigPath),
-      { trim: true, includeWhiteChars: false, renderOpts: { pretty: true } },
+      { trim: true, includeWhiteChars: false, renderOpts: { pretty: true }, emptyTag: {} },
       (err, res) => {
         if (err) {
           throw err;
