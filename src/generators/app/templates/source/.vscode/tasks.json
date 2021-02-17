@@ -36,7 +36,7 @@
               "powershell",
               "-ExecutionPolicy ByPass",
               "-File build.ps1",
-              "--target clean",
+              "--target clean"
           ],
           "problemMatcher": []
       },
@@ -48,7 +48,7 @@
               "powershell",
               "-ExecutionPolicy ByPass",
               "-File build.ps1",
-              "--target restore",
+              "--target restore"
           ],
           "problemMatcher": []
       },
@@ -73,7 +73,7 @@
               "powershell",
               "-ExecutionPolicy ByPass",
               "-File build.ps1",
-              "--target compile-tests",
+              "--target compile-tests"
           ],
           "problemMatcher": []
       },
@@ -86,7 +86,7 @@
               "-ExecutionPolicy ByPass",
               "-File build.ps1",
               "-Target \"deploy-plugins\"",
-              "--DataverseSolution ${input:solution}",
+              "--DataverseSolution ${input:solution}"
           ],
           "problemMatcher": []
       },
@@ -99,7 +99,7 @@
               "-ExecutionPolicy ByPass",
               "-File build.ps1",
               "-Target \"deploy-workflow-activities\"",
-              "--DataverseSolution ${input:solution}",
+              "--DataverseSolution ${input:solution}"
           ],
           "problemMatcher": []
       },
@@ -112,7 +112,7 @@
               "-ExecutionPolicy ByPass",
               "-File build.ps1",
               "-Target \"generate-model\"",
-              "--DataverseSolution ${input:solution}",
+              "--DataverseSolution ${input:solution}"
           ],
           "problemMatcher": []
       }
