@@ -1,0 +1,15 @@
+name: $(solution) $(commitMessage)
+pool:
+  vmImage: windows-latest
+trigger: none
+steps:
+  - checkout: self
+    persistCredentials: true
+  - task: PowerShell@2
+    inputs:
+      workingDirectory: $(Build.SourcesDirectory)
+      filePath: 'pipelines/scripts/Merge-SolutionVersion.ps1'
+      arguments: '-ClientId "$(Client ID)" -TenantId "$(Tenant ID)" -ClientSecret (ConvertTo-SecureString "$(Client Secret)" -AsPlainText -Force) -SolutionVersionId "$(solutionVersionId)" -Solution "$(solution)" -CommitUserEmailAddress "$(triggeredByEmail)" -CommitUserName "$(triggeredBy)" -CommitMessage "$(commitMessage)" -SourceBranch "$(sourceBranch)" -WorkItemId "$(workItemId)"'
+    displayName: Extract and commit
+variables:
+  - group: <%= package %>

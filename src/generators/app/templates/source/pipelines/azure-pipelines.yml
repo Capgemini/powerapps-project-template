@@ -1,119 +1,19 @@
-name: $(packageVersion)$(rev:.r)
+name: $(GITVERSION_FullSemVer)
 pool:
-  vmImage: windows-latest
+  vmImage: 'windows-latest'
+pr: none
 trigger:
   batch: true
   branches:
-    include: ["master"]
-variables:
-  - group: Package - <%= package %>
+    include:
+      - master
 stages:
-  - stage: Build
-    displayName: Build
-    jobs:
-      - job: BuildJob
-        displayName: Build
-        steps:
-          - powershell: |
-              $resultArray = git show --name-only
-              $solutionList = ""
-          
-              foreach ($_ in $resultArray)
-              {
-                  if ($_.StartsWith("src/solutions") -and $_.Contains("Extract")) 
-                  {
-                    $solutionName = $_.Split("/")[2]
-                    if (!$solutionList.Contains($solutionName)) 
-                    {
-                      $solutionList += $solutionName + ";"
-                      Write-Host "##vso[build.addbuildtag]$solutionName" 
-                    }
-                  }
-              }
-            displayName: Add build tags for changed solutions
-          - task: PowerShell@2
-            displayName: Build test projects
-            inputs:
-              targetType: filePath
-              filePath: ./build.ps1
-              arguments: '-Target BuildTestProjects'
-          - task: CopyFiles@2
-            displayName: Copy unit tests to artifact staging directory
-            inputs:
-              SourceFolder: tests
-              Contents: '**/*Unit*/bin/**/*.*'
-              flattenFolders: true
-              TargetFolder: $(Build.ArtifactStagingDirectory)/tests/unit
-          - task: CopyFiles@2
-            displayName: Copy integration tests to artifact staging directory
-            inputs:
-              SourceFolder: tests
-              Contents: '**/*Integration*/bin/**/*.*'
-              flattenFolders: true
-              TargetFolder: $(Build.ArtifactStagingDirectory)/tests/integration
-          - task: CopyFiles@2
-            displayName: Copy UI tests to artifact staging directory
-            inputs:
-              SourceFolder: tests
-              Contents: '**/*Ui*/bin/**/*.*'
-              flattenFolders: true
-              TargetFolder: $(Build.ArtifactStagingDirectory)/tests/ui
-          - publish: $(Build.ArtifactStagingDirectory)/tests
-            artifact: tests
-            displayName: Publish test artifacts
-          - task: NuGetToolInstaller@1
-          - task: NuGetCommand@2
-            inputs:
-              command: 'restore'
-              restoreSolution: '**/*.sln'
-              feedsToUse: 'select'
-              vstsFeed: '09a0c8e6-b178-4703-9510-5153d8341020/e5e61a8e-137a-4c85-8a69-fa7de8227e69'
-          - task: PowerShell@2
-            displayName: Build package
-            inputs:
-              targetType: filePath
-              filePath: ./build.ps1
-              arguments: -Target Default
-          - task: CopyFiles@2
-            displayName: Copy package to artifact staging directory
-            inputs:
-              SourceFolder: deploy/bin/Release
-              TargetFolder: $(Build.ArtifactStagingDirectory)/package
-          - publish: $(Build.ArtifactStagingDirectory)/package
-            artifact: package
-            displayName: Publish package artifacts
-  - stage: UnitTest
-    displayName: Unit test
-    jobs:
-      - job: TestJob
-        displayName: Test
-        steps:
-          - checkout: none
-          - download: current
-            artifact: tests
-          - task: VSTest@2
-            displayName: Run unit tests
-            inputs:
-              searchFolder: $(Pipeline.Workspace)/tests
-              testAssemblyVer2: |
-                **\*UnitTests.dll
-                !**\*TestAdapter.dll
-                !**\obj\**
-              codeCoverageEnabled: true
-  - stage: SolutionChecker
-    displayName: Solution Checker
-    jobs:
-      - job: SolutionCheckerJob
-        displayName: Solution Checker
-        steps:
-          - checkout: none
-          - download: current
-            artifact: package
-          - task: PowerPlatformToolInstaller@0
-            displayName: Install Power Platform Tools
-          - task: PowerPlatformChecker@0
-            displayName: Run solution checker
-            inputs:
-              PowerPlatformSPN: 'CI Environment - <%= package %>'
-              FilesToAnalyze: '$(Pipeline.Workspace)\package\**\*.zip'
-              RuleSet: '0ad12346-e108-40b8-a956-9a8f95ea18c9'
+  - template: pipelines/templates/include-build-stage.yml
+  - template: pipelines/templates/include-solution-checker-stage.yml
+    parameters:
+      serviceConnection: 'CI Environment - <%= package %>'
+  - template: pipelines/templates/include-deploy-stage.yml
+    parameters:
+      environment: 'ci'
+      deployServiceConnection: 'CI Environment - <%= package %>'
+      environmentVariableGroup: 'CI Environment - <%= package %>'

@@ -1,0 +1,39 @@
+parameters:
+  - name: environment
+    type: string
+    displayName: 'The deployment job environment'
+  - name: deployServiceConnection
+    type: string
+    displayName: 'The deployment service connection'
+  - name: environmentVariableGroup
+    displayName: 'The variable group containing the environment details'
+    type: string
+stages:
+  - stage: Deploy
+    displayName: 'Deploy package'
+    jobs:
+      - deployment: Deployment
+        displayName: Deploy
+        environment: '${{ parameters.environment }}'
+        variables:
+          - group: '${{ parameters.environmentVariableGroup }}'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  displayName: 'Download package artifact'
+                  artifact: 'Package'
+                - task: PowerPlatformToolInstaller@0
+                  displayName: 'Install Power Platform Build Tools'
+                  inputs:
+                    DefaultVersion: true
+                - task: PowerPlatformDeployPackage@0
+                  displayName: 'Deploy package'
+                  inputs:
+                    authenticationType: 'PowerPlatformSPN'
+                    PowerPlatformSPN: '${{ parameters.deployServiceConnection }}'
+                    PackageFile: '$(Pipeline.Workspace)/Package/<%= package %>.<%= package %>.Deployment.dll'
+                  env:
+                    PACKAGEDEPLOYER_SETTINGS_SERVICEPRINCIPALCLIENTSECRET: $(PACKAGEDEPLOYER_SETTINGS_SERVICEPRINCIPALCLIENTSECRET_SECRET)
+                    PACKAGEDEPLOYER_SETTINGS_LICENSEDUSERPASSWORD: $(PACKAGEDEPLOYER_SETTINGS_LICENSEDUSERPASSWORD_SECRET)
