@@ -6,5 +6,9 @@
   {
     "publisher": "sariftools",
     "name": "sarif-viewer-build-tab"
+  },
+  {
+    "publisher": "gittools",
+    "name": "gittools"
   }
 ]
