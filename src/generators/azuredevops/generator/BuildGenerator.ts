@@ -54,7 +54,7 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
   }
 
   private async getYamlDetails(packageDirectory: string) {
-    return glob("**/*.yml", { cwd: `${packageDirectory}/pipelines` }).then(files => {
+    return glob("pipelines/*.yml", { cwd: `${packageDirectory}` }).then(files => {
       this.log(`Found ${files.length} YAML builds.`);
       return files;
     });
