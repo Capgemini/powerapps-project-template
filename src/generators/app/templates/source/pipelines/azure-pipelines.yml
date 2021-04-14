@@ -8,11 +8,11 @@ trigger:
     include:
       - master
 stages:
-  - template: pipelines/templates/include-build-stage.yml
-  - template: pipelines/templates/include-solution-checker-stage.yml
+  - template: templates/include-build-stage.yml
+  - template: templates/include-solution-checker-stage.yml
     parameters:
       serviceConnection: 'CI Environment - <%= package %>'
-  - template: pipelines/templates/include-deploy-stage.yml
+  - template: templates/include-deploy-stage.yml
     parameters:
       environment: 'ci'
       deployServiceConnection: 'CI Environment - <%= package %>'

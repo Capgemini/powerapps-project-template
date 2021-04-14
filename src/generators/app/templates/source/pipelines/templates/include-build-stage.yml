@@ -15,7 +15,7 @@ stages:
             inputs:
               targetType: 'filePath'
               errorActionPreference: 'stop'
-              filePath: 'scripts/Add-BuildTagForEachUpdatedSolution.ps1'
+              filePath: 'pipelines/scripts/Add-BuildTagForEachUpdatedSolution.ps1'
           - task: gitversion/setup@0
             displayName: 'Install GitVersion'
             inputs:
@@ -34,7 +34,7 @@ stages:
             inputs:
               errorActionPreference: 'stop'
               failOnStderr: true
-              filePath: 'scripts/Set-SolutionVersion.ps1'
+              filePath: 'pipelines/scripts/Set-SolutionVersion.ps1'
               targetType: 'filePath'
               arguments: '-Solutions "$(solutionList)" -Version "$(GitVersion.SemVer)"'
           - task: PowerShell@2
@@ -54,7 +54,7 @@ stages:
             inputs:
               runInParallel: true
               codeCoverageEnabled: true
-              runSettingsFile: tests/<%= package %>.<%= package %>.UnitTests/unit.runsettings
+              runSettingsFile: tests/<%= client %>.<%= package %>.UnitTests/unit.runsettings
               testAssemblyVer2: |
                 **\*Tests.Unit.dll
                 !**\*TestAdapter.dll
@@ -68,12 +68,12 @@ stages:
           - task: CopyFiles@2
             displayName: 'Copy integration tests to artifact staging directory'
             inputs:
-              SourceFolder: 'tests\<%= package %>.<%= package %>.IntegrationTests\bin\Debug\net48'
+              SourceFolder: 'tests\<%= client %>.<%= package %>.IntegrationTests\bin\Debug\net48'
               TargetFolder: '$(Build.ArtifactStagingDirectory)/tests/integration'
           - task: CopyFiles@2
             displayName: 'Copy UI tests to artifact staging directory'
             inputs:
-              SourceFolder: 'tests\<%= package %>.<%= package %>.UiTests\bin\Debug\net48'
+              SourceFolder: 'tests\<%= client %>.<%= package %>.UiTests\bin\Debug\net48'
               TargetFolder: '$(Build.ArtifactStagingDirectory)/tests/ui'
           - task: PublishBuildArtifacts@1
             displayName: 'Publish package artifact'

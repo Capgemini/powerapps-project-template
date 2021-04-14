@@ -33,7 +33,7 @@ stages:
                   inputs:
                     authenticationType: 'PowerPlatformSPN'
                     PowerPlatformSPN: '${{ parameters.deployServiceConnection }}'
-                    PackageFile: '$(Pipeline.Workspace)/Package/<%= package %>.<%= package %>.Deployment.dll'
+                    PackageFile: '$(Pipeline.Workspace)/Package/<%= client %>.<%= package %>.Deployment.dll'
                   env:
                     PACKAGEDEPLOYER_SETTINGS_SERVICEPRINCIPALCLIENTSECRET: $(PACKAGEDEPLOYER_SETTINGS_SERVICEPRINCIPALCLIENTSECRET_SECRET)
                     PACKAGEDEPLOYER_SETTINGS_LICENSEDUSERPASSWORD: $(PACKAGEDEPLOYER_SETTINGS_LICENSEDUSERPASSWORD_SECRET)
