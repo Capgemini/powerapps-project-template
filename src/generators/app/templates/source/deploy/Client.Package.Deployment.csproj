@@ -64,7 +64,7 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Capgemini.PowerApps.PackageDeployerTemplate" Version="0.2.4" />
+    <PackageReference Include="Capgemini.PowerApps.PackageDeployerTemplate" Version="0.3.4" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework" />
