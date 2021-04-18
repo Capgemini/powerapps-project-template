@@ -119,14 +119,6 @@ These variables must also be added to the `Integration Tests` variable group in 
 
 UI test users are configured according to the specflow-xrm-bindings [documentation](https://github.com/Capgemini/specflow-xrm-bindings/blob/master/README.md).
 
-## Cake
-
-Cake is a build automation tool that can be integrated with Visual Studio and Visual Studio code through extensions. An add-in for Cake has been developed by the Capgemini Dynamics team which automates many of the day-to-day tasks of Dynamics 365 developers. A Cake build script (_build.cake_) and bootstrapper (_build.ps1_) are present in the root of this repository.
-
-It is not recommended to call the Cake build executable directly. The _build.ps1_ bootstrapper script should be used instead. The bootstrapper script handle dependency resolution, negating the need to store Cake dependencies in source control.
-
-**Note:** The Cake extension for Visual Studio does not use the _build.ps1_ bootstrapper. It is recommended that you run your first Cake task through Visual Studio Code to resolve dependencies first.
-
 ### Extracting a solution
 
 Solutions can be extracted using the `Extract Solution` task.
