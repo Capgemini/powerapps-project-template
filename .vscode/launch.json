@@ -7,99 +7,74 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Yeoman generator",
-      "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
-      "args": [
-        "@capgemini/cdspackage"
-      ],
-      "sourceMaps": true,
+      "name": "Main Generator",
+      "runtimeArgs": ["${workspaceFolder}/node_modules/yo/lib/cli.js"],
+      "program": "${workspaceFolder}/src/generators/app/index.ts",
+      "cwd": "${workspaceFolder}/debug",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "cwd": "${workspaceFolder}/debug",
-      "preLaunchTask": "clean-debug",
-      "env": {
-        "DEBUG": "yeoman:generator"
-      }
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": "build and clean-debug"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Yeoman generator - azuredevops",
-      "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
-      "args": [
-        "@capgemini/cdspackage:azuredevops"
-      ],
-      "sourceMaps": true,
+      "name": "Azure DevOps Generator",
+      "runtimeArgs": ["${workspaceFolder}/node_modules/yo/lib/cli.js"],
+      "program": "${workspaceFolder}/src/generators/azuredevops/index.ts",
+      "cwd": "${workspaceFolder}/debug",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "cwd": "${workspaceFolder}/debug",
-      "env": {
-        "DEBUG": "yeoman:generator"
-      }
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": "npm: build"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Yeoman generator - solution",
-      "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
-      "args": [
-        "@capgemini/cdspackage:solution"
-      ],
-      "sourceMaps": true,
+      "name": "Solution Generator",
+      "runtimeArgs": ["${workspaceFolder}/node_modules/yo/lib/cli.js"],
+      "program": "${workspaceFolder}/src/generators/solution/index.ts",
+      "cwd": "${workspaceFolder}/debug",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "cwd": "${workspaceFolder}/debug",
-      "env": {
-        "DEBUG": "yeoman:generator"
-      }
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": "npm: build"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Yeoman generator - scripts",
-      "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
-      "args": [
-        "@capgemini/cdspackage:scripts"
-      ],
-      "sourceMaps": true,
+      "name": "Scripts Generator",
+      "runtimeArgs": ["${workspaceFolder}/node_modules/yo/lib/cli.js"],
+      "program": "${workspaceFolder}/src/generators/scripts/index.ts",
+      "cwd": "${workspaceFolder}/debug",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "cwd": "${workspaceFolder}/debug",
-      "env": {
-        "DEBUG": "yeoman:generator"
-      }
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": "npm: build"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Yeoman generator - pluginassembly",
-      "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
-      "args": [
-        "@capgemini/cdspackage:pluginassembly"
-      ],
-      "sourceMaps": true,
+      "name": "Plug-In Assembly Generator",
+      "runtimeArgs": ["${workspaceFolder}/node_modules/yo/lib/cli.js"],
+      "program": "${workspaceFolder}/src/generators/pluginassembly/index.ts",
+      "cwd": "${workspaceFolder}/debug",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "cwd": "${workspaceFolder}/debug",
-      "env": {
-        "DEBUG": "yeoman:generator"
-      }
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": "npm: build"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Yeoman generator - data",
-      "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
-      "args": [
-        "@capgemini/cdspackage:data"
-      ],
-      "sourceMaps": true,
+      "name": "Data Generator",
+      "runtimeArgs": ["${workspaceFolder}/node_modules/yo/lib/cli.js"],
+      "program": "${workspaceFolder}/src/generators/data/index.ts",
+      "cwd": "${workspaceFolder}/debug",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "cwd": "${workspaceFolder}/debug",
-      "env": {
-        "DEBUG": "yeoman:generator"
-      }
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": "npm: build"
     }
   ]
 }
