@@ -6,4 +6,4 @@ stages:
   - template: templates/include-build-stage.yml
   - template: templates/include-solution-checker-stage.yml
     parameters:
-      serviceConnection: 'Developer Instance'
+      serviceConnection: 'CI Environment - <%= package %>'
