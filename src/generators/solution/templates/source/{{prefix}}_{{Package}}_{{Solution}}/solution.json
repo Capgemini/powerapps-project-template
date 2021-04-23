@@ -1,3 +1,0 @@
-{
-    "DevelopmentProfile": "<%= client %>.<%= package %>.<%= solution %>"
-}

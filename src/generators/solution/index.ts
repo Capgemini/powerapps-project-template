@@ -4,11 +4,13 @@ import Renamer from "renamer";
 import stripJsonComments from "strip-json-comments";
 import { Builder, parseString } from "xml2js";
 import Generator from "yeoman-generator";
+import { validatePacAuthProfile } from "../../common/utilities";
 
 class Main extends Generator {
   private answers!: inquirer.Answers;
 
   public async prompting(): Promise<void> {
+
     this.answers = await this.prompt([
       {
         message: "Publisher prefix?",
@@ -29,6 +31,12 @@ class Main extends Generator {
         message: "Name of the solution?",
         name: "solution",
         store: true
+      },
+      {
+        message: "Name of PAC Auth profile? This is used to export the solution locally. (please ensure this has been created with pac auth create -n <name> -u <url>)",
+        name: "pacProfile",
+        store: false,
+        validate: validatePacAuthProfile
       },
       {
         message: "Development environment URL?",
@@ -86,8 +94,9 @@ class Main extends Generator {
   private writeSolutionConfig = () => {
     this.log(`Writing solution configuration...`);
 
-    const solutionConfig: any = this.fs.readJSON(this.destinationPath("src", "solutions", "{{prefix}}_{{Package}}_{{Solution}}", "solution.json"));
+    const solutionConfig: any = {};
 
+    solutionConfig.DevelopmentProfile = this.answers.pacProfile;
     solutionConfig.environment = this.answers.environment;
 
     if (this.answers.hasStagingEnvironment) {
@@ -108,8 +117,7 @@ class Main extends Generator {
     tasks.inputs
       .find((input: { id: string }) => input.id === "solution")
       .options.push(
-        `${this.answers.prefix}_${this.answers.package}_${
-        this.answers.solution
+        `${this.answers.prefix}_${this.answers.package}_${this.answers.solution
         }`
       );
     this.fs.writeJSON(this.destinationPath(".vscode", "tasks.json"), tasks);
