@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
-    <AssemblyTitle><%= client %>.<%= package %>.Deployment</AssemblyTitle>
-    <CodeAnalysisRuleSet><%= client %>.<%= package %>.Deployment.ruleset</CodeAnalysisRuleSet>
+    <AssemblyTitle>client.package.Deployment</AssemblyTitle>
+    <CodeAnalysisRuleSet>client.package.Deployment.ruleset</CodeAnalysisRuleSet>
     <Configurations>Debug;Release;Test</Configurations>
   </PropertyGroup>
   <PropertyGroup>
@@ -19,9 +19,11 @@
   </Target>
   <Target Condition="'$(Configuration)'!='Test'" Name="CopySolutionsToPackageFolder" AfterTargets="Build">
     <ItemGroup>
-      <SolutionsToPack Include="../src/**/$(Configuration)/*.zip" Visible="false" />
+      <SolutionsToPack Include="../src/solutions/*/bin/$(Configuration)/*.zip" Visible="false" />
     </ItemGroup>
-    <Copy DestinationFolder="$(OutputPath)PkgFolder" SourceFiles="@(SolutionsToPack)" />
+    <Copy
+      SourceFiles="@(SolutionsToPack)" 
+      DestinationFiles="@(SolutionsToPack->'$(OutputPath)\PkgFolder\%(Filename)\%(Filename)%(Extension)')" />
   </Target>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
