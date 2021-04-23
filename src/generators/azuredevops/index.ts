@@ -5,6 +5,7 @@ import { validateEmail, validateGuid, validateNamespace, validateUrl } from "../
 import { AzureDevOpsScaffolder } from "./AzureDevOpsScaffolder";
 import { BuildGenerator } from "./generator/BuildGenerator";
 import { ExtensionGenerator } from "./generator/ExtensionGenerator";
+import { ReleaseGenerator } from "./generator/ReleaseGenerator";
 import { RepoGenerator } from "./generator/RepoGenerator";
 import { ServiceEndpointGenerator } from "./generator/ServiceEndpointGenerator";
 import { VarGroupGenerator } from "./generator/VarGroupGenerator";
@@ -127,6 +128,7 @@ class Main extends Generator {
         await this.conn!.getExtensionManagementApi(),
         this.log
       ),
+      new ReleaseGenerator(await this.conn!.getReleaseApi(), this.log),
       new ServiceEndpointGenerator(await this.conn!.getTaskAgentApi(), this.log),
       this.log
     );

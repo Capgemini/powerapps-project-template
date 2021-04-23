@@ -3,6 +3,7 @@ import { YamlProcess } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { BuildGenerator } from "./generator/BuildGenerator";
 import { ExtensionGenerator } from "./generator/ExtensionGenerator";
 import { IGenerator } from "./generator/IGenerator";
+import { ReleaseGenerator } from "./generator/ReleaseGenerator";
 import { RepoGenerator } from "./generator/RepoGenerator";
 import { ServiceEndpointGenerator } from "./generator/ServiceEndpointGenerator";
 import { VarGroupGenerator } from "./generator/VarGroupGenerator";
@@ -15,6 +16,7 @@ export class AzureDevOpsScaffolder {
   private readonly repoGenerator: RepoGenerator;
   private readonly buildGenerator: BuildGenerator;
   private readonly extensionGenerator: ExtensionGenerator;
+  private readonly releaseGenerator: ReleaseGenerator;
   private readonly serviceEndpointGenerator: ServiceEndpointGenerator;
 
   private log: (message: string) => void;
@@ -25,6 +27,7 @@ export class AzureDevOpsScaffolder {
     repoGenerator: RepoGenerator,
     buildGenerator: BuildGenerator,
     extensionGenerator: ExtensionGenerator,
+    releaseGenerator: ReleaseGenerator,
     serviceEndpointGenerator: ServiceEndpointGenerator,
     log: (message: string) => void
   ) {
@@ -33,6 +36,7 @@ export class AzureDevOpsScaffolder {
     this.repoGenerator = repoGenerator;
     this.buildGenerator = buildGenerator;
     this.extensionGenerator = extensionGenerator;
+    this.releaseGenerator = releaseGenerator;
     this.serviceEndpointGenerator = serviceEndpointGenerator;
     this.log = log;
   }
@@ -78,9 +82,22 @@ export class AzureDevOpsScaffolder {
       )
     )!;
 
+    const releaseDef = await this.releaseGenerator.generate(
+      settings.projectName,
+      settings.package.name,
+      settings.clientName,
+      await this.getProjectId(settings.projectName),
+      mainBuildDef,
+      varGroups
+        .filter((vg) => vg.name!.startsWith("Integration Tests"))
+        .map((vg) => vg.id!),
+      serviceEndpoint
+    );
+
     this.log(`Finished setting up Azure DevOps.`);
     return {
       buildDefinitions: buildDefs,
+      releaseDefinition: releaseDef,
       repositories: repo,
       serviceEndpoint,
       variableGroups: varGroups,
@@ -92,6 +109,7 @@ export class AzureDevOpsScaffolder {
     const generators: Array<IGenerator<any>> = [
       this.repoGenerator,
       this.buildGenerator,
+      this.releaseGenerator,
       this.varGroupGenerator,
       this.extensionGenerator,
       this.serviceEndpointGenerator,
