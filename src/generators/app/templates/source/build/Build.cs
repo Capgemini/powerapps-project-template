@@ -98,19 +98,6 @@ class Build : NukeBuild
                 .EnableNoRestore());
         });
 
-    Target CopySolutionData => _ => _
-        .TriggeredBy(Compile)
-        .Executes(() =>
-        {
-            foreach (var solution in SolutionsDirectory.GlobDirectories("*").Where(solution => DirectoryExists(solution / "data")))
-            {
-                var target = PkgFolder / solution.Parent.GetRelativePathTo(solution) / "data";
-
-                DeleteDirectory(target);
-                CopyDirectoryRecursively(solution / "data", target);
-            }
-        });
-
     Target CompileTests => _ => _
         .Executes(() =>
         {

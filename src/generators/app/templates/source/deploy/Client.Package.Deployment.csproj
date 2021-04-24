@@ -25,6 +25,14 @@
       SourceFiles="@(SolutionsToPack)" 
       DestinationFiles="@(SolutionsToPack->'$(OutputPath)\PkgFolder\%(Filename)\%(Filename)%(Extension)')" />
   </Target>
+  <Target Condition="'$(Configuration)'!='Test'" Name="CopyDataToPackageFolder" AfterTargets="Build">
+    <ItemGroup>
+      <DataToPack Include="../src/solutions/*/data/**/*.*" Visible="false" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(DataToPack)" 
+      DestinationFiles="@(DataToPack->'$(OutputPath)\PkgFolder\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
