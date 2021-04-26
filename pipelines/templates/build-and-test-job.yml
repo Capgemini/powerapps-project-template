@@ -83,7 +83,7 @@ jobs:
       - task: CopyFiles@2
         displayName: Copy package.json
         inputs:
-          Contents: 'pacakge.json'
+          Contents: 'package.json'
           TargetFolder: $(Build.ArtifactStagingDirectory)/out
 
       - publish: $(Build.ArtifactStagingDirectory)/out
