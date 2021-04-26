@@ -43,7 +43,7 @@
     "node-fetch": "^2.6.0",
     "renamer": "^1.1.4",
     "rimraf": "^2.7.1",
-    "simple-git": "^1.132.0",
+    "simple-git": "^2.38.0",
     "strip-json-comments": "^3.1.0",
     "xml2js": "^0.4.23",
     "yeoman-generator": "^2.0.1",
@@ -54,7 +54,7 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "npm run clean && tsc && npm run copy-all",
+    "build": "tsc && npm run copy-all",
     "clean": "del /s /q common && del /s /q generators",
     "copy-all": "npm run copy-ado-definitions && npm run copy-app-template && npm run copy-solution-template && npm run copy-pluginassembly-template && npm run copy-scripts-template && npm run copy-data-template",
     "copy-ado-definitions": "xcopy \"src\\generators\\azuredevops\\definitions\" \"generators\\azuredevops\\definitions\" /I /y",
