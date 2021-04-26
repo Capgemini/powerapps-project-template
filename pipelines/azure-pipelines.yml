@@ -1,0 +1,54 @@
+name: $(GITVERSION_FullSemVer)
+
+trigger:
+ batch: true
+ branches:
+  include:
+    - master
+
+pr: none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+- name: GitVersion.SemVer
+  value: ''
+stages:
+  - stage: BuildAndTest
+    displayName: Build and Test
+    jobs:
+    - template: templates/build-and-test-job.yml    
+  - stage: Publish
+    displayName: Publish
+    jobs:
+      - job: PublishJob
+        displayName: Publish 
+        variables: 
+          SemVer: $[ stageDependencies.BuildAndTest.BuildAndTestJob.outputs['OutputSemVerTask.SemVer'] ]
+        steps:
+          - checkout: none
+          - download: current
+            displayName: Download NPM package artifact
+            artifact: powerapps-project-generator
+
+          - task: Npm@1
+            inputs:
+              command: 'custom'
+              customCommand: 'publish capgemini-generator-cdspackage-$(GitVersion.SemVer).tgz'
+              customEndpoint: 'NPM - Capgemini UK (tdashworth)'
+
+          - task: GitHubRelease@1
+            displayName: Create GitHub releaes
+            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+            inputs:
+              gitHubConnection: 'Github Capgemini'
+              repositoryName: '$(Build.Repository.Name)'
+              action: 'create'
+              target: '$(Build.SourceVersion)'
+              tagSource: 'userSpecifiedTag'
+              tag: 'v$(SemVer)'
+              releaseNotesSource: 'inline'
+              assets: '$(Pipeline.Workspace)/powerapps-project-generator/*'
+              changeLogCompareToRelease: 'lastNonDraftRelease'
+              changeLogType: commitBased
