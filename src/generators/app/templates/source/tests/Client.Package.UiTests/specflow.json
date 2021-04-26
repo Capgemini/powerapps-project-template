@@ -6,6 +6,6 @@
     "feature": "en-gb"
   },
   "stepAssemblies": [
-    { "assembly": "Capgemini.Test.Xrm.Uci" }
+    { "assembly": "Capgemini.PowerApps.SpecFlowBindings" }
   ]
 }

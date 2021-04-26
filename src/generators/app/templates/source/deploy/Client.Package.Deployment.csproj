@@ -2,18 +2,70 @@
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
     <AssemblyTitle><%= client %>.<%= package %>.Deployment</AssemblyTitle>
-    <Product><%= client %>.<%= package %>.Deployment</Product>
-    <Copyright>Copyright ©  2018</Copyright>
     <CodeAnalysisRuleSet><%= client %>.<%= package %>.Deployment.ruleset</CodeAnalysisRuleSet>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <Configurations>Debug;Release;Test</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <DocumentationFile />
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
+  <ItemGroup>
+    <SolutionProjectsToBuild Include="../src/**/*.cdsproj" Visible="false" />
+  </ItemGroup>
+  <Target Condition="'$(Configuration)'!='Test'" Name="PackSolutions" BeforeTargets="Build">
+    <Exec Command="dotnet build %(SolutionProjectsToBuild.FullPath) --configuration $(Configuration)" />
+    <!-- Using Exec as the MSBuild task was failing from a clean build.
+    <MSBuild Projects="@(SolutionProjectsToBuild)" Targets="Restore" />
+    <MSBuild Projects="@(SolutionProjectsToBuild)" Targets="Build" /> -->
+  </Target>
+  <Target Condition="'$(Configuration)'!='Test'" Name="CopySolutionsToPackageFolder" AfterTargets="Build">
+    <ItemGroup>
+      <SolutionsToPack Include="../src/**/$(Configuration)/*.zip" Visible="false" />
+    </ItemGroup>
+    <Copy DestinationFolder="$(OutputPath)PkgFolder" SourceFiles="@(SolutionsToPack)" />
+  </Target>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.VersionCheckAnalyzer" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.29">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CrmSdk.Deployment" Version="9.0.2.29">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CrmSdk.Workflow" Version="9.0.2.28">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CrmSdk.XrmTooling.CoreAssembly" Version="9.1.0.68">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CrmSdk.XrmTooling.PackageDeployment" Version="9.1.0.46">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NetFramework.Analyzers" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.20" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Capgemini.PowerApps.PackageDeployerTemplate" Version="0.2.4" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Activities" />
@@ -30,12 +82,12 @@
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Services" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Workflow.Activities" />
     <Reference Include="System.Workflow.ComponentModel" />
     <Reference Include="System.Workflow.Runtime" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -45,9 +97,5 @@
     <Content Include="PkgFolder\ImportConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Capgemini.Xrm.Deployment.PackageDeployer" Version="3.0.6" />
   </ItemGroup>
 </Project>
