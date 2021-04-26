@@ -68,6 +68,24 @@ jobs:
         inputs:
           cwd: '$(Build.SourcesDirectory)'
 
-      - publish: $(Build.SourcesDirectory)
+      - task: CopyFiles@2
+        displayName: Copy Common folder
+        inputs:
+          Contents: '**\common\**'
+          TargetFolder: $(Build.ArtifactStagingDirectory)/out
+
+      - task: CopyFiles@2
+        displayName: Copy Generated folder
+        inputs:
+          Contents: '**\generator\**'
+          TargetFolder: $(Build.ArtifactStagingDirectory)/out
+
+      - task: CopyFiles@2
+        displayName: Copy package.json
+        inputs:
+          Contents: '**\pacakge.json'
+          TargetFolder: $(Build.ArtifactStagingDirectory)/out
+
+      - publish: $(Build.ArtifactStagingDirectory)/out
         displayName: Publish NPM artifact
         artifact: powerapps-project-generator
