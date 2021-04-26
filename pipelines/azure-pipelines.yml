@@ -1,0 +1,30 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+ branches:
+   include:
+     - master
+ paths:
+   include:
+     - src/*
+
+resources:
+  - repo: self
+
+queue:
+  name: Hosted VS2017
+  demands: npm
+
+steps:
+  - task: Npm@1
+    displayName: "npm install"
+    inputs:
+      verbose: false
+  - task: Npm@1
+    displayName: "npm run build"
+    inputs:
+      command: custom
+      customCommand: run build
