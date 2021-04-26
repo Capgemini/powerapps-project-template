@@ -138,7 +138,7 @@ class Main extends Generator {
             forceUpgrade: "false",
             overwriteunmanagedcustomizations: true,
             publishworkflowsandactivateplugins: true,
-            solutionpackagefilename: `${solutionFullName}/${solutionFullName}_managed.zip`,
+            solutionpackagefilename: `${solutionFullName}.zip`,
             useAsync: "true"
           }
         };
