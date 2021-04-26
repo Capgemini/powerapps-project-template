@@ -2,11 +2,6 @@
 
 Please ensure that pull requests are atomic and do not contain partially built functionality. This allows for holistic code reviews, cleaner git history and a more stable package. The repository contains all of the dependencies required to develop Dynamics 365 functionality.
 
-## Development environment
-
-...
-
-
 ### Power Apps CLI
 
 You must have the [Power Apps CLI](https://docs.microsoft.com/en-us/powerapps/developer/common-data-service/powerapps-cli) installed to use some of the Visual Studio Code build tasks. The _solution.json_ in each solution folder has a `developmentProfile` property - this is the Power Apps CLI authentication profile that maps to the development environment for that solution. You must create these authentication profiles using `pac auth create`.
@@ -81,7 +76,6 @@ Visual Studio is recommended for .NET development (i.e. plugins assemblies) whil
 - Visual Studio
 
   - NPM Task Runner
-  - Cake for Visual Studio
   - SpecFlow for Visual Studio
 
 - Visual Studio Code
@@ -129,12 +123,6 @@ Solutions can be packed into managed and unmanaged solution zip files using the 
 
 _Note: it is unlikely that developers will need to pack the solutions themselves. This is typically done via CI build_
 
-### Extracting data
-
-Data can be exported using the `ExportData` task.
-
-The data is exported using the [Capgemini Data Migration Engine](https://capgeminiuk.visualstudio.com/Capgemini%20Reusable%20IP/_git/Capgemini.Xrm.DataMigration) and the export config file located in the relevant data folder.
-
 ### Deploying web resources
 
 In most instances, developers should [configure Fiddler AutoResponder rules](https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/streamline-javascript-development-fiddler-autoresponder) and deploy their web resource via Dynamics 365 UI.
@@ -149,7 +137,7 @@ Worklow activities can be deployed using the `Deploy Workflow Activities` task. 
 
 ### Generating the early-bound model classes
 
-The early-bound model classes can be generated for solutions using the `Generate Model` Cake task. It will use the early-bound configuration located in the spkl.json file in the root of the solution folder.
+The early-bound model classes can be generated for solutions using the `Generate Model` task. It will use the early-bound configuration located in the spkl.json file in the root of the solution folder.
 
 ### Building the package
 
