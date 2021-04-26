@@ -1,15 +1,15 @@
 {
-    "name": "",
+    "name": "[overridden by generator]",
     "variables": {
         "CDS Test Admin Username": {
-            "value": "0.1"
+            "value": "[overridden by generator]"
         },
         "CDS Test Admin Password": {
-            "value": "",
+            "value": "[overridden by generator]",
             "isSecret": true
         },
         "CDS Test CDS URL": {
-            "value": ""
+            "value": "[overridden by generator]"
         }
     }
 }

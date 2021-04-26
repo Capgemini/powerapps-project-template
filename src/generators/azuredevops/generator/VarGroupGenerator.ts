@@ -1,9 +1,8 @@
 import { VariableGroup } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { VariableGroupParameters } from "azure-devops-node-api/interfaces/TaskAgentInterfaces";
 import { ITaskAgentApi } from "azure-devops-node-api/TaskAgentApi";
-import cake from "../definitions/variablegroups/cake.json";
+import ciEnvironment from "../definitions/variablegroups/ci-environment.json";
 import integrationTests from "../definitions/variablegroups/integration-tests.json";
-import pkg from "../definitions/variablegroups/pkg.json";
 import { IGenerator } from "./IGenerator.js";
 
 export class VarGroupGenerator implements IGenerator<VariableGroup> {
@@ -57,20 +56,16 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     serviceAccountUsername: string,
     serviceAccountPassword: string
   ): VariableGroup[] {
-    const groups: VariableGroup[] = [pkg];
-    pkg.name = `Package - ${packageName}`;
+    const groups: VariableGroup[] = [];
+
+    ciEnvironment.name = `CI Environment - ${packageName}`;
+    groups.push(ciEnvironment);
 
     integrationTests.name = `Integration Tests - ${packageName}`;
     integrationTests.variables["CDS Test CDS URL"].value = ciEnvironmentUrl;
     integrationTests.variables["CDS Test Admin Username"].value = serviceAccountUsername;
     integrationTests.variables["CDS Test Admin Password"].value = serviceAccountPassword;
     groups.push(integrationTests);
-
-    cake.name = `Cake - ${packageName}`
-    cake.variables.dynamicsPassword.value = serviceAccountPassword;
-    cake.variables.dynamicsUsername.value = serviceAccountUsername;
-
-    groups.push(cake);
 
     return groups;
   }

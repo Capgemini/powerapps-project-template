@@ -1,0 +1,8 @@
+{
+  "name": "[overridden by generator]",
+  "variables": {
+    "keep": {
+      "value": "This can be deleted once another variable has been added."
+    }
+  }
+}

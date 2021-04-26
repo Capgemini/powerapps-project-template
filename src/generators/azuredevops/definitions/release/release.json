@@ -5,7 +5,7 @@
     {
       "name": "CI",
       "variables": {},
-      "variableGroups": [],
+      "variableGroups": [ "[overridden by generator]" ],
       "preDeployApprovals": {
         "approvals": [
           {
@@ -89,7 +89,8 @@
               "condition": "succeeded()",
               "inputs": {
                 "authenticationType": "PowerPlatformSPN",
-                "PackageFile": ""
+                "PackageFile": "[overridden by generator]",
+                "PowerPlatformSPN": "[overridden by generator]"
               }
             }
           ]
@@ -295,21 +296,22 @@
         "gatesOptions": null,
         "gates": []
       },
-      "environmentTriggers": []
+      "environmentTriggers": [],
+      "queueId": "[overridden by generator]"
     }
   ],
   "artifacts": [
     {
-      "alias": "",
+      "alias": "[overridden by generator]",
       "definitionReference": {
         "defaultVersionType": {
           "id": "latestType"
         },
         "definition": {
-          "id": ""
+          "id": "[overridden by generator]"
         },
         "project": {
-          "id": ""
+          "id": "[overridden by generator]"
         }
       },
       "type": "Build"
@@ -317,7 +319,7 @@
   ],
   "triggers": [
     {
-      "artifactAlias": "",
+      "artifactAlias": "[overridden by generator]",
       "triggerConditions": [
         {
           "sourceBranch": "",
@@ -329,7 +331,7 @@
       "triggerType": 1
     }
   ],
-  "releaseNameFormat": "",
+  "releaseNameFormat": "[overridden by generator]",
   "tags": [],
   "pipelineProcess": {
     "type": 1
@@ -340,6 +342,6 @@
       "$value": "Other"
     }
   },
-  "name": "",
-  "path": ""
+  "name": "[overridden by generator]",
+  "path": "[overridden by generator]"
 }
