@@ -44,22 +44,16 @@ jobs:
         inputs:
           cwd: '$(Build.SourcesDirectory)'
 
-      - task: CopyFiles@2
-        displayName: Copy Common folder
+      - task: Npm@1
+        displayName: Pack Package
         inputs:
-          Contents: 'common\**'
-          TargetFolder: $(Build.ArtifactStagingDirectory)/out
-
-      - task: CopyFiles@2
-        displayName: Copy Generated folder
-        inputs:
-          Contents: 'generators\**'
-          TargetFolder: $(Build.ArtifactStagingDirectory)/out
+          command: custom
+          customCommand: pack
 
       - task: CopyFiles@2
         displayName: Copy package.json
         inputs:
-          Contents: 'package.json'
+          Contents: 'capgemini-generator-cdspackage-*.tgz'
           TargetFolder: $(Build.ArtifactStagingDirectory)/out
 
       - publish: $(Build.ArtifactStagingDirectory)/out
