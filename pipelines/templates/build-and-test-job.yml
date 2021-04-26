@@ -71,19 +71,19 @@ jobs:
       - task: CopyFiles@2
         displayName: Copy Common folder
         inputs:
-          Contents: '**\common\**'
+          Contents: 'common\**'
           TargetFolder: $(Build.ArtifactStagingDirectory)/out
 
       - task: CopyFiles@2
         displayName: Copy Generated folder
         inputs:
-          Contents: '**\generator\**'
+          Contents: 'generator\**'
           TargetFolder: $(Build.ArtifactStagingDirectory)/out
 
       - task: CopyFiles@2
         displayName: Copy package.json
         inputs:
-          Contents: '**\pacakge.json'
+          Contents: 'pacakge.json'
           TargetFolder: $(Build.ArtifactStagingDirectory)/out
 
       - publish: $(Build.ArtifactStagingDirectory)/out
