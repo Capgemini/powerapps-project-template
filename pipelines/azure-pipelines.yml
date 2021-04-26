@@ -1,21 +1,16 @@
 name: $(GITVERSION_FullSemVer)
 
 trigger:
+ batch: true
  branches:
-   include:
-     - master
- paths:
-   include:
-     - src/*
-
-resources:
-  - repo: self
-
-queue:
-  name: Hosted VS2017
-  demands: npm
+  include:
+    - master
 
 pr: none
+
+pool:
+  vmImage: 'windows-latest'
+  demands: npm
 
 variables:
 - name: GitVersion.SemVer
@@ -45,11 +40,13 @@ stages:
           - download: current
             displayName: Download NPM package artifact
             artifact: powerapps-project-generator
+
           - task: Npm@1
-            displayName: Publish Package
             inputs:
-              command: publish
+              command: 'publish'
+              publishEndpoint: 'NPM - Capgemini UK (tdashworth)'
               verbose: false
+
           - task: GitHubRelease@1
             displayName: Create GitHub releaes
             condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
