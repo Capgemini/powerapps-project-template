@@ -10,24 +10,15 @@ pr: none
 
 pool:
   vmImage: 'windows-latest'
-  demands: npm
 
 variables:
 - name: GitVersion.SemVer
   value: ''
-- name: solution
-  value: '**/*.sln'
-- name: buildPlatform
-  value: 'anycpu'
-- name: buildConfiguration
-  value: 'Release'
-
 stages:
   - stage: BuildAndTest
     displayName: Build and Test
     jobs:
     - template: templates/build-and-test-job.yml    
-
   - stage: Publish
     displayName: Publish
     jobs:

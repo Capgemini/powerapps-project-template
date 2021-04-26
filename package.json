@@ -1,6 +1,6 @@
 {
   "name": "@capgemini/generator-cdspackage",
-  "version": "1.0.0",
+  "version": "managed by GitVersion",
   "description": "This Yeoman generator scaffolds Power Apps projects.",
   "files": [
     "common",
