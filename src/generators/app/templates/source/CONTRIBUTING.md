@@ -18,14 +18,14 @@ The following tasks are available:
 - Compile tests
 - Generate early-bound model
 - Deploy workflow activities
-- Deploy plug-ins
+- Deploy plugins
 - Extract solution
 - Pack solution
 
 A description will be shown for each.
 
 > ⚠ **Building outside of the tasks is not recommended!**. If you are building the solution in Visual Studio, you should set the following environment variable:
-`MSBUILDDISABLENODEREUSE=1`. This is a workaround for an apparent bug in the MSBuild tasks used by solutions created with the Power Apps CLI. If you do not disable parallel builds or node reuse using the environment variable above, plug-in assembly files become locked afte a build and subsequent builds will fail.
+`MSBUILDDISABLENODEREUSE=1`. This is a workaround for an apparent bug in the MSBuild tasks used by solutions created with the Power Apps CLI. If you do not disable parallel builds or node reuse using the environment variable above, plugin assembly files become locked after a build and subsequent builds will fail.
 ### Extract to source control
 
 Before creating a pull request containing your changes, you must extract the solutions into source control. This can be done using the _Extract solution_ task and specifying which solution(s) to extract.
@@ -59,7 +59,7 @@ The following rules need to be adhered to when working in your development solut
 
 - Only one development solution can make changes to a component (e.g. relationship, field, view, form, assembly or process) at a time. Check other development solutions if you are unsure. Multiple development solutions modifying the same components will mean that either:
   - Unfinished customisations will be added to the build
-  - Developent solutions cannot be merged because of dependencies added by other development solutions
+  - Development solutions cannot be merged because of dependencies added by other development solutions
 - Avoid locking out shared components for longer than required by modifying them last if possible
 - Add only the components that you require to your solution. Do not check 'Add all assets' or 'Include entity metadata' when adding entities.
 - Do not add dependencies when prompted. These should already exist in the target system (the staging environment).
@@ -67,7 +67,7 @@ The following rules need to be adhered to when working in your development solut
 
 ### Processes and plugins
 
-- Plugin steps can't be scoped so alternatives should be considered when dealing with out-of-the-box entities and messsages.
+- Plugin steps can't be scoped so alternatives should be considered when dealing with out-of-the-box entities and messages.
 
 ## Tools
 
@@ -81,7 +81,6 @@ Visual Studio is recommended for .NET development (i.e. plugins assemblies) whil
 - Visual Studio Code
 
   - npm
-  - Azure Repos
 
 - Fiddler
 
@@ -98,7 +97,7 @@ There are three test projects corresponding to unit, integration and UI tests. E
 The `CommonDataServiceFixture` class fixture (refer to the xUnit documentation on class fixtures [here](https://xunit.net/docs/shared-context#class-fixture)) provides access to an `AdminTestClient` property - a `CrmServiceClient` instance authenticated as an admin user. All integration tests will require at least the ability to authenticate as an administrator in the Common Data Service environment under test. This can be achieved by setting the following environment variables:
 
 - CDS_TEST_ADMIN_USERNAME
-- CDS_TEST_ADMIN_PASWORD
+- CDS_TEST_ADMIN_PASSWORD
 
 If you wish to test users with specific security roles, the `CommonDataServiceFixture` provides a `GetUserTestClient` method. Pass an alias to this method and it will use environment variables with the following pattern for authentication - 
 
@@ -133,7 +132,7 @@ Plugins can be deployed using the `Deploy Plugins` task. This deploys all steps 
 
 ### Deploying workflow activities
 
-Worklow activities can be deployed using the `Deploy Workflow Activities` task. This deploys all workflow activities declared via the Spkl attribute.
+Workflow activities can be deployed using the `Deploy Workflow Activities` task. This deploys all workflow activities declared via the Spkl attribute.
 
 ### Generating the early-bound model classes
 
