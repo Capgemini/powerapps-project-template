@@ -10,8 +10,3 @@ stages:
   - template: templates/include-solution-checker-stage.yml
     parameters:
       serviceConnection: 'CI Environment - <%= package %>'
-  - template: templates/include-deploy-stage.yml
-    parameters:
-      environment: 'ci'
-      deployServiceConnection: 'CI Environment - <%= package %>'
-      environmentVariableGroup: 'CI Environment - <%= package %>'
