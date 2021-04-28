@@ -2,35 +2,11 @@
 
 Please ensure that pull requests are atomic and do not contain partially built functionality. This allows for holistic code reviews, cleaner git history and a more stable package. The repository contains all of the dependencies required to develop Dynamics 365 functionality.
 
-### Power Apps CLI
+## Power Apps CLI
 
 You must have the [Power Apps CLI](https://docs.microsoft.com/en-us/powerapps/developer/common-data-service/powerapps-cli) installed to use some of the Visual Studio Code build tasks. The _solution.json_ in each solution folder has a `developmentProfile` property - this is the Power Apps CLI authentication profile that maps to the development environment for that solution. You must create these authentication profiles using `pac auth create`.
 
-### Build tasks
-
-Build tasks have been defined to make development easier. Call these in Visual Studio Code via the command palette (_ctrl + shift + p_) and selecting _Tasks: Run Task_.
-
-The following tasks are available: 
-
-- Clean
-- Restore
-- Compile
-- Compile tests
-- Generate early-bound model
-- Deploy workflow activities
-- Deploy plugins
-- Extract solution
-- Pack solution
-
-A description will be shown for each.
-
-> ⚠ **Building outside of the tasks is not recommended!**. If you are building the solution in Visual Studio, you should set the following environment variable:
-`MSBUILDDISABLENODEREUSE=1`. This is a workaround for an apparent bug in the MSBuild tasks used by solutions created with the Power Apps CLI. If you do not disable parallel builds or node reuse using the environment variable above, plugin assembly files become locked after a build and subsequent builds will fail.
-### Extract to source control
-
-Before creating a pull request containing your changes, you must extract the solutions into source control. This can be done using the _Extract solution_ task and specifying which solution(s) to extract.
-
-### Create a git branch
+## Create a git branch
 
 Create a git branch from master using the following naming convention:
 
@@ -43,7 +19,7 @@ Create a git branch from master using the following naming convention:
 
 For example, `feature/1722-view-and-maintain-accounts`.
 
-### Create a development solution
+## Create a development solution
 
 A development solution should be created in the development environment which will exist until your branch is merged with master. The solution should be created with the following convention:
 
@@ -65,23 +41,17 @@ The following rules need to be adhered to when working in your development solut
 - Do not add dependencies when prompted. These should already exist in the target system (the staging environment).
 - Avoid changes to managed components where possible. There may be a couple of exceptions.
 
-### Processes and plugins
+## Processes and plugins
 
 - Plugin steps can't be scoped so alternatives should be considered when dealing with out-of-the-box entities and messages.
 
 ## Tools
 
-Visual Studio is recommended for .NET development (i.e. plugins assemblies) while Visual Studio Code is recommended for most other tasks.
+Visual Studio is recommended for .NET development (i.e. plugins assemblies) and SpecFlow development.Visual Studio Code is recommended for most other tasks.
 
 - Visual Studio
-
-  - NPM Task Runner
   - SpecFlow for Visual Studio
-
 - Visual Studio Code
-
-  - npm
-
 - Fiddler
 
 ## Writing tests
@@ -99,7 +69,7 @@ The `CommonDataServiceFixture` class fixture (refer to the xUnit documentation o
 - CDS_TEST_ADMIN_USERNAME
 - CDS_TEST_ADMIN_PASSWORD
 
-If you wish to test users with specific security roles, the `CommonDataServiceFixture` provides a `GetUserTestClient` method. Pass an alias to this method and it will use environment variables with the following pattern for authentication - 
+If you wish to test users with specific security roles, the `CommonDataServiceFixture` provides a `GetUserTestClient` method. Pass an alias to this method and it will use environment variables with the following pattern for authentication -
 
 - CDS_TEST_<ALIAS>_USERNAME
 - CDS_TEST_<ALIAS>_PASSWORD
@@ -108,9 +78,30 @@ These variables must also be added to the `Integration Tests` variable group in 
 
 `echo ##vso[task.setvariable variable=CDS_TEST_<ALIAS>_PASSWORD]$(CDS Test <Alias> Password)`
 
-### Configuring UI test users 
+### Configuring UI test users
 
 UI test users are configured according to the specflow-xrm-bindings [documentation](https://github.com/Capgemini/specflow-xrm-bindings/blob/master/README.md).
+
+## Build tasks
+
+Build tasks have been defined to make development easier. Call these in Visual Studio Code via the command palette (_ctrl + shift + p_) and selecting _Tasks: Run Task_.
+
+The following tasks are available:
+
+- Clean
+- Restore
+- Compile
+- Compile tests
+- Generate early-bound model
+- Deploy workflow activities
+- Deploy plugins
+- Extract solution
+- Pack solution
+
+A description will be shown for each.
+
+> ⚠ **Building outside of the tasks is not recommended!**. If you are building the solution in Visual Studio, you should set the following environment variable:
+`MSBUILDDISABLENODEREUSE=1`. This is a workaround for an apparent bug in the MSBuild tasks used by solutions created with the Power Apps CLI. If you do not disable parallel builds or node reuse using the environment variable above, plugin assembly files become locked after a build and subsequent builds will fail.
 
 ### Extracting a solution
 
@@ -120,13 +111,11 @@ Solutions can be extracted using the `Extract Solution` task.
 
 Solutions can be packed into managed and unmanaged solution zip files using the `Pack Solution` task.
 
-_Note: it is unlikely that developers will need to pack the solutions themselves. This is typically done via CI build_
-
 ### Deploying web resources
 
-In most instances, developers should [configure Fiddler AutoResponder rules](https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/streamline-javascript-development-fiddler-autoresponder) and deploy their web resource via Dynamics 365 UI.
+In most instances, developers should [configure Fiddler AutoResponder rules](https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/streamline-javascript-development-fiddler-autoresponder) and deploy their web resource via UI.
 
-### Deploying plugins
+### Deploying plugin handlers & steps
 
 Plugins can be deployed using the `Deploy Plugins` task. This deploys all steps declared via the Spkl attribute.
 
@@ -142,12 +131,11 @@ The early-bound model classes can be generated for solutions using the `Generate
 
 The entire package can be built using the `Build Package` task. This will pack all solutions and copy them to the _Package_ folder. The PackageDeployer import configuration and reference/configuration data and associated import configurations will also be copied to this folder.
 
-
 ## Pull requests
 
 Please ensure that you:
 
 - Write commit messages that increment the version using [GitVersion](https://gitversion.readthedocs.io/en/latest/input/docs/more-info/version-increments/) syntax
 - Write commit messages follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification
-- Write automated tests to cover any new or changed functionality 
+- Write automated tests to cover any new or changed functionality
 - Update the README.md with details of any new or changed functionality
