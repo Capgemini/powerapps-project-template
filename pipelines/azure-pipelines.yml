@@ -35,7 +35,7 @@ stages:
           - task: Npm@1
             inputs:
               command: 'custom'
-              customCommand: 'publish capgemini-generator-cdspackage-$(GitVersion.SemVer).tgz'
+              customCommand: 'publish capgemini-generator-cdspackage-$(SemVer).tgz'
               customEndpoint: 'NPM - Capgemini UK (tdashworth)'
 
           - task: GitHubRelease@1
