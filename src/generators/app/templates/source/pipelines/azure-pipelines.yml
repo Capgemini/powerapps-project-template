@@ -2,7 +2,6 @@ name: $(GITVERSION_FullSemVer)
 pool:
   vmImage: 'windows-latest'
 trigger:
-  batch: true
   branches:
     include:
       - master
