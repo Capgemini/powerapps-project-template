@@ -35,7 +35,7 @@ stages:
           - task: Npm@1
             inputs:
               command: 'custom'
-              customCommand: 'publish $(Pipeline.Workspace)/powerapps-project-generator/capgemini-generator-cdspackage-$(SemVer).tgz'
+              customCommand: 'publish $(Pipeline.Workspace)/powerapps-project-generator/capgemini-generator-cdspackage-$(SemVer).tgz --access public'
               customEndpoint: 'NPM - Capgemini UK (tdashworth)'
 
           - task: GitHubRelease@1
