@@ -4,7 +4,7 @@ import {
   GitRepositoryCreateOptions
 } from "azure-devops-node-api/interfaces/GitInterfaces";
 import { promises as fs } from "fs";
-import Git from "simple-git/promise";
+import Git from "simple-git";
 import { IGenerator } from "./IGenerator";
 
 export class RepoGenerator implements IGenerator<GitRepository> {
@@ -75,10 +75,10 @@ export class RepoGenerator implements IGenerator<GitRepository> {
 
     const repo = Git(repoLocation);
     return repo
-      .init()
+      .init([ "--initial-branch", "master" ])
       .then(() => repo.add("."))
       .then(() => repo.commit("Initial commit from template."))
       .then(() => repo.remote(["add", "origin", gitUrl]))
-      .then(() => repo.push("origin", "master", { "-u": true }));
+      .then(() => repo.push("origin", undefined, ["--set-upstream", "--all"]));
   }
 }

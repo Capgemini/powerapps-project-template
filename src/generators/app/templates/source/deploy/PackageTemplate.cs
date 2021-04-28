@@ -1,14 +1,14 @@
 namespace <%= client %>.<%= package %>.Deployment
 {
     using System.ComponentModel.Composition;
-    using Capgemini.PowerApps.Deployment;
+    using Capgemini.PowerApps.PackageDeployerTemplate;
     using Microsoft.Xrm.Tooling.PackageDeployment.CrmPackageExtentionBase;
 
     /// <summary>
     /// Import package starter frame.
     /// </summary>
     [Export(typeof(IImportExtensions))]
-    public class PackageTemplate : CapgeminiPackageTemplate
+    public class PackageTemplate : PackageTemplateBase
     {
         /// <inheritdoc/>
         public override string GetImportPackageDataFolderName => "PkgFolder";

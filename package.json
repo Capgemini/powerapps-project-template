@@ -1,6 +1,6 @@
 {
   "name": "@capgemini/generator-cdspackage",
-  "version": "managed by GitVersion",
+  "version": "0.1.0",
   "description": "This Yeoman generator scaffolds Power Apps projects.",
   "files": [
     "common",
@@ -43,7 +43,7 @@
     "node-fetch": "^2.6.0",
     "renamer": "^1.1.4",
     "rimraf": "^2.7.1",
-    "simple-git": "^1.132.0",
+    "simple-git": "^2.38.0",
     "strip-json-comments": "^3.1.0",
     "xml2js": "^0.4.23",
     "yeoman-generator": "^2.0.1",
@@ -54,7 +54,15 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "tsc && xcopy \"src\\generators\\azuredevops\\definitions\" \"generators\\azuredevops\\definitions\" /I /y && xcopy \"src\\generators\\app\\templates\" \"generators\\app\\templates\" /I /S /y && xcopy \"src\\generators\\solution\\templates\" \"generators\\solution\\templates\" /I /S /y && xcopy \"src\\generators\\pluginassembly\\templates\" \"generators\\pluginassembly\\templates\" /I /S /y && xcopy \"src\\generators\\scripts\\templates\" \"generators\\scripts\\templates\" /I /S /y && xcopy \"src\\generators\\data\\templates\" \"generators\\data\\templates\" /I /S /y",
-    "clean-debug": "del /S /q debug\\* && FOR /D %p IN (\"debug\\*\") DO rmdir \"%p\" /s /q"
+    "build": "tsc && npm run copy-all",
+    "clean": "del /s /q common && del /s /q generators",
+    "copy-all": "npm run copy-ado-definitions && npm run copy-app-template && npm run copy-solution-template && npm run copy-pluginassembly-template && npm run copy-scripts-template && npm run copy-data-template",
+    "copy-ado-definitions": "xcopy \"src\\generators\\azuredevops\\definitions\" \"generators\\azuredevops\\definitions\" /I /y",
+    "copy-app-template": "xcopy \"src\\generators\\app\\templates\" \"generators\\app\\templates\" /I /S /y",
+    "copy-solution-template": "xcopy \"src\\generators\\solution\\templates\" \"generators\\solution\\templates\" /I /S /y",
+    "copy-pluginassembly-template": "xcopy \"src\\generators\\pluginassembly\\templates\" \"generators\\pluginassembly\\templates\" /I /S /y",
+    "copy-scripts-template": "xcopy \"src\\generators\\scripts\\templates\" \"generators\\scripts\\templates\" /I /S /y",
+    "copy-data-template": "xcopy \"src\\generators\\data\\templates\" \"generators\\data\\templates\" /I /S /y",
+    "clean-debug": "del /S /q debug\\*"
   }
 }

@@ -29,7 +29,7 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     client: string,
     projectId: string,
     buildDef: BuildDefinition,
-    varGroupIds: number[],
+    ciVarGroupIds: number[],
     serviceEndpoint: ServiceEndpoint
   ): Promise<ReleaseDefinition> {
     this.log("Generating release definition...");
@@ -37,7 +37,7 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
       project,
       this.generateReleaseDefinition(
         packageName,
-        varGroupIds,
+        ciVarGroupIds,
         projectId,
         client,
         `${buildDef.path!.split("\\")[1]}\\CD`,
@@ -92,8 +92,8 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     const def: ReleaseDefinition = JSON.parse(
       JSON.stringify(releaseDefinition)
     );
-    this.configureDefinition(def, packageName, path, variableGroupIds);
-    this.configureEnvironment(def.environments![0], agentPoolQueueId);
+    this.configureDefinition(def, packageName, path);
+    this.configureEnvironment(def.environments![0], agentPoolQueueId, variableGroupIds);
     const packageArtifact = def!.artifacts![0];
     this.configureArtifact(
       packageArtifact,
@@ -136,9 +136,12 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
 
   private configureEnvironment(
     environment: ReleaseDefinitionEnvironment,
-    agentPoolQueueId: number
+    agentPoolQueueId: number,
+    variableGroupIds: number[],
   ) {
-    environment.queueId = agentPoolQueueId
+    environment.queueId = agentPoolQueueId;
+    environment.variableGroups = variableGroupIds;
+
     for (const deployPhase of environment.deployPhases!) {
       (deployPhase as DeployPhase).deploymentInput!.queueId = agentPoolQueueId;
     }
@@ -147,12 +150,10 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
   private configureDefinition(
     def: ReleaseDefinition,
     packageName: string,
-    path: string,
-    variableGroupIds: number[]
+    path: string
   ) {
     def.name = `${packageName} Release`;
     def.path = path;
     def.releaseNameFormat = `${packageName} $(Build.BuildNumber) - Release $(Rev:r)`;
-    def.variableGroups = variableGroupIds;
   }
 }

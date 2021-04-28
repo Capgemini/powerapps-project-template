@@ -1,12 +1,12 @@
 {
-    "name": "",
+    "name": "[overridden by generator]",
     "type": "powerplatform-spn",
-    "url": "",
+    "url": "[overridden by generator]",
     "authorization": {
         "parameters": {
-            "tenantId": "",
-            "applicationId": "",
-            "clientSecret": ""
+            "tenantId": "[overridden by generator]",
+            "applicationId": "[overridden by generator]",
+            "clientSecret": "[overridden by generator]"
         },
         "scheme": "None"
     },

@@ -88,9 +88,7 @@ export class AzureDevOpsScaffolder {
       settings.clientName,
       await this.getProjectId(settings.projectName),
       mainBuildDef,
-      varGroups
-        .filter((vg) => vg.name!.startsWith("Integration Tests"))
-        .map((vg) => vg.id!),
+      varGroups.map((vg) => vg.id!),
       serviceEndpoint
     );
 
