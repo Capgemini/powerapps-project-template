@@ -1,6 +1,7 @@
-# Power Apps Project Generator 
-[![Build Status](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_apis/build/status/generator-cdspackage?branchName=master)](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_build/latest?definitionId=115&branchName=master)
-[![NPM version](https://feeds.dev.azure.com/capgeminiuk/_apis/public/Packaging/Feeds/25162f08-da5e-4c04-bac0-40216eaa4bf9/Packages/48ba9982-c47a-4df2-bc62-3f560c69391d/badge?api-version=5.1-preview.1)](https://dev.azure.com/capgeminiuk/Capgemini%20Reusable%20IP/_packaging?_a=package&feed=CapgeminiIp&package=%40capgemini%2Fgenerator-cdspackage&protocolType=Npm)
+# Power Apps Project Generator
+
+[![Build Status](https://capgeminiuk.visualstudio.com/GitHub%20Support/_apis/build/status/CI-Builds/NPM%20package/powerapps-project-template?branchName=master)](https://capgeminiuk.visualstudio.com/GitHub%20Support/_build/latest?definitionId=229&branchName=master)
+![npm (scoped)](https://img.shields.io/npm/v/capgeminiuk/generator-powerapps-project)
 
 This Yeoman generator scaffolds Power Apps projects. This includes:
 
@@ -9,6 +10,7 @@ This Yeoman generator scaffolds Power Apps projects. This includes:
 - Release pipelines
 
 ## Table of Contents
+
 - [Power Apps Project Generator](#power-apps-project-generator)
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
@@ -27,11 +29,12 @@ This Yeoman generator scaffolds Power Apps projects. This includes:
 ## Prerequisites
 
 You must have the following installed globally before you can use this generator:
+
 - [Node](https://nodejs.org/en/)
 - [Yeoman](https://yeoman.io/)
 - [PAC](https://docs.microsoft.com/en-us/powerapps/developer/data-platform/powerapps-cli)
 
-If you already have Node installed, install Yeoman: 
+If you already have Node installed, install Yeoman:
 
 ```
 npm install -g yo
@@ -45,10 +48,10 @@ The generator is currently published to a private npm feed hosted on Azure Artif
 
 ### Install the generator package
 
-Install the [@capgemini/generate-cdspackage](https://dev.azure.com/capgeminiuk/Microsoft%20Community/_packaging?_a=package&feed=CapgeminiIp&package=%40capgemini%2Fgenerator-cdspackage&protocolType=Npm) package globally: 
+Install the [@capgemini/generate-cdspackage](https://www.npmjs.com/package/@capgeminiuk/generator-powerapps-project) package globally:
 
 ```
-npm install -g @capgemini/generator-cdspackage
+npm install -g @capgeminiuk/generator-powerapps-project
 ```
 
 ## Usage
@@ -97,14 +100,14 @@ yo @capgemini/cdspackage:solution
 
 This sub-generator requires some information about your solution and generates the source code required to support the source control, build, and deployment of this solution.
 
-> This does __not__ create a solution within the Common Data Service environment. The corresponding solution must be created manually and extracted after scaffolding.
+> This does **not** create a solution within the Common Data Service environment. The corresponding solution must be created manually and extracted after scaffolding.
 
 Running this sub-generator:
 
 - Creates a corresponding folder within the `src/solutions` directory. This folder contains:
-    - A `MappingFile.xml` file which is used when packing the solution with the solution packager
-    - A `spkl.json` file which is used to contain [spkl task runner](https://github.com/scottdurow/SparkleXrm/wiki/spkl) configuration 
-    - An `environment.json` file which stores information regarding the development and staging (if applicable) environments for the solution
+  - A `MappingFile.xml` file which is used when packing the solution with the solution packager
+  - A `spkl.json` file which is used to contain [spkl task runner](https://github.com/scottdurow/SparkleXrm/wiki/spkl) configuration
+  - An `environment.json` file which stores information regarding the development and staging (if applicable) environments for the solution
 - Updates the `ImportConfig.xml` file within the deployment project is updated to include the scaffolded solution in the deployment
 - Updates the `.vscode/tasks.json` file to allow for build tasks to be ran against the new solution
 
@@ -119,9 +122,9 @@ yo @capgemini/cdspackage:scripts
 Running this sub-generator:
 
 - Creates a `WebResources/Scripts` folder within the specified solution folder. This folder contains:
-    - A `tsconfig.json` file for TypeScript configuration
-    - A `tslint.json` file for TSLint configuration
-    - A `package.json` file for managing npm dependencies
+  - A `tsconfig.json` file for TypeScript configuration
+  - A `tslint.json` file for TSLint configuration
+  - A `package.json` file for managing npm dependencies
 - Updates the `spkl.json` file to include an empty `webresource` array which can be used to deploy the web resources with the spkl task runner
 - Updates the `MappingFile.xml` file to include a wildcard file mapping of all WebResources files. This will cause the Solution Packager to replace the web resources with the TypeScript compilation output when packing the solution
 
