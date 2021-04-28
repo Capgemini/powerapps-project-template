@@ -26,7 +26,10 @@ This Yeoman generator scaffolds Power Apps projects. This includes:
 
 ## Prerequisites
 
-You must have [Node](https://nodejs.org/en/) and [Yeoman](https://yeoman.io/) installed globally before you can use this generator.
+You must have the following installed globally before you can use this generator:
+- [Node](https://nodejs.org/en/)
+- [Yeoman](https://yeoman.io/)
+- [PAC](https://docs.microsoft.com/en-us/powerapps/developer/data-platform/powerapps-cli)
 
 If you already have Node installed, install Yeoman: 
 
