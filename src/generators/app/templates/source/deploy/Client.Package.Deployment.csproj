@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
-    <AssemblyTitle>client.package.Deployment</AssemblyTitle>
-    <CodeAnalysisRuleSet>client.package.Deployment.ruleset</CodeAnalysisRuleSet>
+    <AssemblyTitle><%= client %>.<%= package %>.Deployment</AssemblyTitle>
+    <CodeAnalysisRuleSet><%= client %>.<%= package %>.Deployment.ruleset</CodeAnalysisRuleSet>
     <Configurations>Debug;Release;Test</Configurations>
   </PropertyGroup>
   <PropertyGroup>
