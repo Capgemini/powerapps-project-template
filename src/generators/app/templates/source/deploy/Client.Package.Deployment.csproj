@@ -17,7 +17,7 @@
     <MSBuild Projects="@(SolutionProjectsToBuild)" Targets="Restore" />
     <MSBuild Projects="@(SolutionProjectsToBuild)" Targets="Build" /> -->
   </Target>
-  <Target Condition="'$(Configuration)'!='Test'" Name="CopySolutionsToPackageFolder" AfterTargets="Build">
+  <Target Condition="'$(Configuration)'!='Test' And '@(SolutionProjectsToBuild->Count())' &gt; 0" Name="CopySolutionsToPackageFolder" AfterTargets="Build">
     <ItemGroup>
       <SolutionsToPack Include="../src/solutions/*/bin/$(Configuration)/*.zip" Visible="false" />
     </ItemGroup>
