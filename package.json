@@ -1,5 +1,5 @@
 {
-  "name": "@capgemini/generator-cdspackage",
+  "name": "@capgeminiuk/generator-powerapps-project",
   "version": "0.1.0",
   "description": "This Yeoman generator scaffolds Power Apps projects.",
   "files": [
