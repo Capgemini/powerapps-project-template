@@ -51,9 +51,9 @@ jobs:
           customCommand: pack
 
       - task: CopyFiles@2
-        displayName: Copy package.json
+        displayName: Copy package
         inputs:
-          Contents: "capgemini-generator-powerapps-project-*.tgz"
+          Contents: "capgeminiuk-generator-powerapps-project-*.tgz"
           TargetFolder: $(Build.ArtifactStagingDirectory)/out
 
       - publish: $(Build.ArtifactStagingDirectory)/out
