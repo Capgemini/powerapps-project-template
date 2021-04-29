@@ -1,7 +1,7 @@
 # Power Apps Project Generator
 
 [![Build Status](https://capgeminiuk.visualstudio.com/GitHub%20Support/_apis/build/status/CI-Builds/NPM%20package/powerapps-project-template?branchName=master)](https://capgeminiuk.visualstudio.com/GitHub%20Support/_build/latest?definitionId=229&branchName=master)
-![npm (scoped)](https://img.shields.io/npm/v/capgeminiuk/generator-powerapps-project)
+![npm (scoped)](https://img.shields.io/npm/v/@capgeminiuk/generator-powerapps-project)
 
 This Yeoman generator scaffolds Power Apps projects. This includes:
 
