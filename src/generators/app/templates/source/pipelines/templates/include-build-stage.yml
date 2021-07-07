@@ -47,7 +47,7 @@ stages:
               codeCoverageEnabled: true
               runSettingsFile: tests/<%= client %>.<%= package %>.UnitTests/unit.runsettings
               testAssemblyVer2: |
-                **\*Tests.Unit.dll
+                **\*.UnitTests.dll
                 !**\*TestAdapter.dll
                 !**\obj\**
               searchFolder: tests
