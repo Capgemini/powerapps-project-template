@@ -1,7 +1,7 @@
 {
   "plugins": [
     {
-      "assemblypath": "PluginAssemblies\\<%= client %>.<%= package %>.<%= solution %>\\bin\\Debug\\<%= client %>.<%= package %>.<%= solution %>.dll",
+      "assemblypath": "PluginAssemblies\\<%= client %>.<%= package %>.<%= solution %>\\bin\\Debug\\net462\\<%= client %>.<%= package %>.<%= solution %>.dll",
       "solution": "<%= prefix %>_<%= package %>_<%= solution %>"
     }
   ]
