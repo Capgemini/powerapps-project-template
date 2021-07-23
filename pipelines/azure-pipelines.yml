@@ -42,13 +42,13 @@ stages:
             displayName: Create GitHub releaes
             condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
             inputs:
-              gitHubConnection: "Github Capgemini"
-              repositoryName: "$(Build.Repository.Name)"
-              action: "create"
-              target: "$(Build.SourceVersion)"
-              tagSource: "userSpecifiedTag"
-              tag: "v$(SemVer)"
-              releaseNotesSource: "inline"
-              assets: "$(Pipeline.Workspace)/powerapps-project-generator/*"
-              changeLogCompareToRelease: "lastNonDraftRelease"
-              changeLogType: commitBased
+              gitHubConnection: 'github.com_tdashworth'
+              repositoryName: '$(Build.Repository.Name)'
+              action: 'create'
+              target: '$(Build.SourceVersion)'
+              tagSource: 'userSpecifiedTag'
+              tag: 'v$(SemVer)'
+              releaseNotesSource: 'inline'
+              assets: '$(Pipeline.Workspace)/powerapps-project-generator/*'
+              changeLogCompareToRelease: 'lastNonDraftRelease'
+              changeLogType: 'commitBased'
