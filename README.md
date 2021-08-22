@@ -159,4 +159,4 @@ Please refer to the [Contributing](./CONTRIBUTING.md) guide.
 
 ## License
 
-The Power Apps Package Deployer Template is released under the [MIT](./LICENSE) license.
+The Power Apps Project Template is released under the [MIT](./LICENSE) license.
