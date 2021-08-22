@@ -3,7 +3,7 @@ import { ITaskAgentApi } from 'azure-devops-node-api/TaskAgentApi';
 import ciEnvironment from '../definitions/serviceendpoints/ci-environment.json';
 import { IGenerator } from './IGenerator.js';
 
-export class ServiceEndpointGenerator implements IGenerator<ServiceEndpoint> {
+export default class ServiceEndpointGenerator implements IGenerator<ServiceEndpoint> {
   public readonly createdObjects: ServiceEndpoint[];
 
   private readonly conn: ITaskAgentApi;
@@ -25,7 +25,13 @@ export class ServiceEndpointGenerator implements IGenerator<ServiceEndpoint> {
     clientSecret: string,
   ): Promise<ServiceEndpoint> {
     this.log('Generating service connections...');
-    const serviceEndpoint = this.generateServiceEndpoint(packageName, ciUrl, tenantId, applicationId, clientSecret);
+    const serviceEndpoint = ServiceEndpointGenerator.generateServiceEndpoint(
+      packageName,
+      ciUrl,
+      tenantId,
+      applicationId,
+      clientSecret,
+    );
     const def = await this.conn.createServiceEndpoint(serviceEndpoint, project);
 
     if (def === undefined) {
@@ -55,7 +61,7 @@ export class ServiceEndpointGenerator implements IGenerator<ServiceEndpoint> {
     return this.conn.createServiceEndpoint(endpoint, project);
   }
 
-  private generateServiceEndpoint(
+  private static generateServiceEndpoint(
     packageName: string,
     ciUrl: string,
     tenantId: string,

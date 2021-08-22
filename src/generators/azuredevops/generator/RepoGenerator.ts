@@ -7,7 +7,7 @@ import { promises as fs } from 'fs';
 import Git from 'simple-git';
 import { IGenerator } from './IGenerator';
 
-export class RepoGenerator implements IGenerator<GitRepository> {
+export default class RepoGenerator implements IGenerator<GitRepository> {
   public readonly createdObjects: GitRepository[];
 
   private readonly conn: GitApi;

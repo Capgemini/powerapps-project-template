@@ -2,8 +2,7 @@ import { ExtensionManagementApi } from 'azure-devops-node-api/ExtensionManagemen
 import extensions from '../definitions/extensions.json';
 import { IGenerator } from './IGenerator';
 
-export class ExtensionGenerator
-implements IGenerator<{ publisher: string; name: string }> {
+export default class ExtensionGenerator implements IGenerator<{ publisher: string; name: string }> {
   public readonly createdObjects: Array<{
     publisher: string;
     name: string;
@@ -21,16 +20,26 @@ implements IGenerator<{ publisher: string; name: string }> {
 
   public async generate() {
     const installedExtensions = await this.conn.getInstalledExtensions();
-    const installPromises: Array<Promise<void> | undefined> = extensions.map((extension) => {
-      if (installedExtensions.find((ext) => ext.extensionId === extension.name && ext.publisherId === extension.publisher) === undefined) {
-        return this.installExtension(extension.publisher, extension.name);
+
+    const uninstalledEntensions = extensions.filter((extension) => {
+      const installed = installedExtensions
+        // eslint-disable-next-line max-len
+        .find((ext) => ext.extensionId === extension.name && ext.publisherId === extension.publisher) !== undefined;
+
+      if (installed) {
+        this.log(`Extension: ${extension.name} is already installed.`);
       }
-      this.log(`Extension: ${extension.name} is already installed.`);
+
+      return installed;
     });
+
+    const installPromises: Array<Promise<void> | undefined> = uninstalledEntensions
+      .map((extension) => this.installExtension(extension.publisher, extension.name));
+
     return Promise.all(installPromises);
   }
 
-  public async rollback(project: string): Promise<void> {
+  public async rollback(): Promise<void> {
     this.log(`Rolling back ${this.createdObjects.length} extensions...`);
 
     await Promise.all(
@@ -44,13 +53,7 @@ implements IGenerator<{ publisher: string; name: string }> {
       `Installing '${name}' from '${publisher}' extension...`,
     );
 
-    try {
-      await this.conn.installExtensionByName(publisher, name);
-      this.createdObjects.push({ publisher, name });
-    } catch (e) {
-      if (!e.message.includes('already installed')) {
-        throw e;
-      }
-    }
+    await this.conn.installExtensionByName(publisher, name);
+    this.createdObjects.push({ publisher, name });
   }
 }

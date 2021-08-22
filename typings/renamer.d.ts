@@ -1,4 +1,4 @@
-declare module "renamer" {
+declare module 'renamer' {
   export interface RenameOptions {
     files: string[];
     find: string;

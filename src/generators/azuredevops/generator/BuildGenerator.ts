@@ -5,7 +5,18 @@ import { parse } from 'path';
 import buildDef from '../definitions/build/build.json';
 import { IGenerator } from './IGenerator.js';
 
-export class BuildGenerator implements IGenerator<BuildDefinition> {
+function getBuildDefinitionName(yamlPath: string) {
+  const path = parse(yamlPath);
+
+  return path.name === 'azure-pipelines'
+    ? 'Package Build'
+    : path.name
+      .replace('azure-pipelines-', '')
+      .replace(/-/g, ' ')
+      .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+}
+
+export default class BuildGenerator implements IGenerator<BuildDefinition> {
   public readonly createdObjects: BuildDefinition[];
 
   private readonly conn: BuildApi;
@@ -32,7 +43,7 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
     );
 
     if (buildDefs === undefined) {
-      throw new Error('An error occured while creating build definitions.');
+      throw new Error('An error occurred while creating build definitions.');
     }
 
     this.createdObjects.push(...buildDefs);
@@ -60,11 +71,10 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
     project: string,
     definitions: BuildDefinition[],
   ) {
-    const createdDefinitions: BuildDefinition[] = [];
-    for (const definition of definitions) {
-      createdDefinitions.push(await this.conn.createDefinition(definition, project));
-    }
-    return createdDefinitions;
+    const createDefinitionPromises = definitions
+      .map((def) => this.conn.createDefinition(def, project));
+
+    return Promise.all(createDefinitionPromises);
   }
 
   private generateBuildDefinition(
@@ -87,14 +97,4 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
 
     return def;
   }
-}
-function getBuildDefinitionName(yamlPath: string) {
-  const path = parse(yamlPath);
-
-  return path.name === 'azure-pipelines'
-    ? 'Package Build'
-    : path.name
-      .replace('azure-pipelines-', '')
-      .replace(/-/g, ' ')
-      .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }

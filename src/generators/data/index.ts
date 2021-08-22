@@ -2,7 +2,7 @@ import inquirer from 'inquirer';
 import Renamer from 'renamer';
 import { Builder, parseString } from 'xml2js';
 import Generator from 'yeoman-generator';
-import { PackageReader } from '../../common/PackageReader';
+import PackageReader from '../../common/PackageReader';
 
 class Main extends Generator {
   private readonly packageReader: PackageReader;
@@ -31,9 +31,9 @@ class Main extends Generator {
         type: 'confirm',
       },
     ]);
-    const solutionFolderComponents = this.answers.sourceSolution.split('_');
-    this.answers.prefix = solutionFolderComponents[0];
-    this.answers.solution = solutionFolderComponents[2] ?? solutionFolderComponents[1] ?? solutionFolderComponents[0];
+    const folderComponents = this.answers.sourceSolution.split('_');
+    [this.answers.prefix] = folderComponents;
+    this.answers.solution = folderComponents[2] ?? folderComponents[1] ?? folderComponents[0];
   }
 
   public writing(): void {
@@ -74,9 +74,11 @@ class Main extends Generator {
           throw err;
         }
 
-        res.configdatastorage.templateconfig = (res.configdatastorage.templateconfig ?? [{}])[0];
-        res.configdatastorage.templateconfig.dataimports = (res.configdatastorage.templateconfig.dataimports ?? [{}])[0];
-        res.configdatastorage.templateconfig.dataimports.dataimport = res.configdatastorage.templateconfig.dataimports.dataimport ?? [];
+        [res.configdatastorage.templateconfig] = (res.configdatastorage.templateconfig ?? [{}]);
+        // eslint-disable-next-line max-len
+        [res.configdatastorage.templateconfig.dataimports] = (res.configdatastorage.templateconfig.dataimports ?? [{}]);
+        // eslint-disable-next-line max-len
+        [res.configdatastorage.templateconfig.dataimports.dataimport] = res.configdatastorage.templateconfig.dataimports.dataimport ?? [];
 
         const dataImports = res.configdatastorage.templateconfig.dataimports.dataimport;
         const dataImport = {

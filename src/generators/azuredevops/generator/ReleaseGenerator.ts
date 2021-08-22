@@ -11,7 +11,7 @@ import { ReleaseApi } from 'azure-devops-node-api/ReleaseApi';
 import releaseDefinition from '../definitions/release/release.json';
 import { IGenerator } from './IGenerator.js';
 
-export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
+export default class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
   public readonly createdObjects: ReleaseDefinition[];
 
   private readonly conn: ReleaseApi;
@@ -87,14 +87,18 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
   ): ReleaseDefinition {
     this.log(`Creating ${packageName} release...`);
 
-    const def: ReleaseDefinition = JSON.parse(
-      JSON.stringify(releaseDefinition),
+    const def = ReleaseGenerator.configureDefinition(
+      JSON.parse(JSON.stringify(releaseDefinition)),
+      packageName,
+      path,
     );
-    this.configureDefinition(def, packageName, path);
-    this.configureEnvironment(def.environments![0], agentPoolQueueId, variableGroupIds);
-    const packageArtifact = def!.artifacts![0];
-    this.configureArtifact(
-      packageArtifact,
+    def.environments![0] = ReleaseGenerator.configureEnvironment(
+      def.environments![0],
+      agentPoolQueueId,
+      variableGroupIds,
+    );
+    def!.artifacts![0] = ReleaseGenerator.configureArtifact(
+      def!.artifacts![0],
       packageName,
       definitionId,
       projectId,
@@ -104,12 +108,18 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     const packageFolder = `$(System.DefaultWorkingDirectory)/${packageName}/package`;
     const ciDeploymentTasks = def.environments![0].deployPhases![0]
       .workflowTasks!;
-    this.configureTasks(ciDeploymentTasks, packageFolder, client, packageName, serviceEndpoint);
+    ReleaseGenerator.configureTasks(
+      ciDeploymentTasks,
+      packageFolder,
+      client,
+      packageName,
+      serviceEndpoint,
+    );
 
     return def;
   }
 
-  private configureTasks(
+  private static configureTasks(
     ciDeploymentTasks: WorkflowTask[],
     packageFolder: string,
     client: string,
@@ -121,37 +131,49 @@ export class ReleaseGenerator implements IGenerator<ReleaseDefinition> {
     deployPackageTask.inputs!.PowerPlatformSPN = serviceEndpoint.id!;
   }
 
-  private configureArtifact(
+  private static configureArtifact(
     packageArtifact: Artifact,
     packageName: string,
     definitionId: number,
     projectId: string,
   ) {
-    packageArtifact.alias = packageName;
-    packageArtifact.definitionReference!.definition.id = definitionId.toString();
-    packageArtifact.definitionReference!.project.id = projectId;
+    const result: Artifact = { ...packageArtifact };
+
+    result.alias = packageName;
+    result.definitionReference!.definition.id = definitionId.toString();
+    result.definitionReference!.project.id = projectId;
+
+    return result;
   }
 
-  private configureEnvironment(
+  private static configureEnvironment(
     environment: ReleaseDefinitionEnvironment,
     agentPoolQueueId: number,
     variableGroupIds: number[],
   ) {
-    environment.queueId = agentPoolQueueId;
-    environment.variableGroups = variableGroupIds;
+    const result: ReleaseDefinitionEnvironment = { ...environment };
 
-    for (const deployPhase of environment.deployPhases!) {
+    result.queueId = agentPoolQueueId;
+    result.variableGroups = variableGroupIds;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const deployPhase of result.deployPhases!) {
       (deployPhase as DeployPhase).deploymentInput!.queueId = agentPoolQueueId;
     }
+
+    return result;
   }
 
-  private configureDefinition(
+  private static configureDefinition(
     def: ReleaseDefinition,
     packageName: string,
     path: string,
   ) {
-    def.name = `${packageName} Release`;
-    def.path = path;
-    def.releaseNameFormat = `${packageName} $(Build.BuildNumber) - Release $(Rev:r)`;
+    const result: ReleaseDefinition = { ...def };
+    result.name = `${packageName} Release`;
+    result.path = path;
+    result.releaseNameFormat = `${packageName} $(Build.BuildNumber) - Release $(Rev:r)`;
+
+    return result;
   }
 }

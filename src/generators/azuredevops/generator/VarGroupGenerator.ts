@@ -5,7 +5,7 @@ import ciEnvironment from '../definitions/variablegroups/ci-environment.json';
 import integrationTests from '../definitions/variablegroups/integration-tests.json';
 import { IGenerator } from './IGenerator.js';
 
-export class VarGroupGenerator implements IGenerator<VariableGroup> {
+export default class VarGroupGenerator implements IGenerator<VariableGroup> {
   public readonly createdObjects: VariableGroup[];
 
   private readonly conn: ITaskAgentApi;
@@ -27,7 +27,7 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
   ): Promise<VariableGroup[]> {
     this.log('Generating variable groups...');
 
-    const groupsToCreate = this.generateVariableGroups(
+    const groupsToCreate = VarGroupGenerator.generateVariableGroups(
       packageName,
       ciEnvironmentUrl,
       serviceAccountUsername,
@@ -48,7 +48,7 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     this.createdObjects.length = 0;
   }
 
-  private generateVariableGroups(
+  private static generateVariableGroups(
     packageName: string,
     ciEnvironmentUrl: string,
     serviceAccountUsername: string,

@@ -4,13 +4,13 @@ import Generator from 'yeoman-generator';
 import {
   validateEmail, validateGuid, validateNamespace, validateUrl,
 } from '../../common/utilities';
-import { AzureDevOpsScaffolder } from './AzureDevOpsScaffolder';
-import { BuildGenerator } from './generator/BuildGenerator';
-import { ExtensionGenerator } from './generator/ExtensionGenerator';
-import { ReleaseGenerator } from './generator/ReleaseGenerator';
-import { RepoGenerator } from './generator/RepoGenerator';
-import { ServiceEndpointGenerator } from './generator/ServiceEndpointGenerator';
-import { VarGroupGenerator } from './generator/VarGroupGenerator';
+import AzureDevOpsScaffolder from './AzureDevOpsScaffolder';
+import BuildGenerator from './generator/BuildGenerator';
+import ExtensionGenerator from './generator/ExtensionGenerator';
+import ReleaseGenerator from './generator/ReleaseGenerator';
+import RepoGenerator from './generator/RepoGenerator';
+import ServiceEndpointGenerator from './generator/ServiceEndpointGenerator';
+import VarGroupGenerator from './generator/VarGroupGenerator';
 
 class Main extends Generator {
   private answers!: inquirer.Answers;
@@ -135,7 +135,7 @@ class Main extends Generator {
     );
 
     try {
-      const scaffoldResult = await scaffolder.scaffold({
+      await scaffolder.scaffold({
         applicationId: this.answers.applicationId,
         ciEnvironmentUrl: this.answers.ciUrl,
         clientName: this.answers.client,
@@ -154,7 +154,7 @@ class Main extends Generator {
     } catch (e) {
       this.log('Package generator encountered an error.');
       await scaffolder.rollback(this.answers.adoProject);
-      this.log(e);
+      this.log(e as string);
     }
   }
 

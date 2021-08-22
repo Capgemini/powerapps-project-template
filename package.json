@@ -77,6 +77,6 @@
     "copy-scripts-template": "xcopy \"src\\generators\\scripts\\templates\" \"generators\\scripts\\templates\" /I /S /y",
     "copy-data-template": "xcopy \"src\\generators\\data\\templates\" \"generators\\data\\templates\" /I /S /y",
     "clean-debug": "del /S /q debug\\*",
-    "lint": "eslint -c .eslintrc.js"
+    "lint": "eslint .eslintrc.js ./src"
   }
 }
