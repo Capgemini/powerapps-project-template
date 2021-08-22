@@ -37,7 +37,7 @@ jobs:
         displayName: Lint Package
         inputs:
           command: custom
-          customCommand: run run lint
+          customCommand: run lint
 
       - task: Npm@1
         displayName: Build Package
