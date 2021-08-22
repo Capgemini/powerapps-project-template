@@ -11,19 +11,18 @@ This Yeoman generator scaffolds Power Apps projects. This includes:
 
 ## Table of Contents
 
-- [Power Apps Project Generator](#power-apps-project-generator)
-  - [Table of Contents](#table-of-contents)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-    - [Install the generator package](#install-the-generator-package)
-  - [Usage](#usage)
-    - [Scaffold a project](#scaffold-a-project)
-    - [Scaffold Azure DevOps](#scaffold-azure-devops)
-    - [Scaffold a solution](#scaffold-a-solution)
-    - [Scaffold a web resource project for a solution](#scaffold-a-web-resource-project-for-a-solution)
-    - [Scaffold a custom workflow activity/plug-in assembly for a solution](#scaffold-a-custom-workflow-activityplug-in-assembly-for-a-solution)
-    - [Scaffold reference/configuration data migration for a solution](#scaffold-referenceconfiguration-data-migration-for-a-solution)
-  - [License](#license)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [Install the generator package](#install-the-generator-package)
+- [Usage](#usage)
+  - [Scaffold a project](#scaffold-a-project)
+  - [Scaffold Azure DevOps](#scaffold-azure-devops)
+  - [Scaffold a solution](#scaffold-a-solution)
+  - [Scaffold a web resource project for a solution](#scaffold-a-web-resource-project-for-a-solution)
+  - [Scaffold a custom workflow activity/plug-in assembly for a solution](#scaffold-a-custom-workflow-activityplug-in-assembly-for-a-solution)
+  - [Scaffold reference/configuration data migration for a solution](#scaffold-referenceconfiguration-data-migration-for-a-solution)
+- [Contributing](#Contributing)
+- [Licence](#Licence)
 
 ## Prerequisites
 
@@ -154,6 +153,10 @@ This happens when you have a .yo-rc-global file in the root of your user directo
 ### Git Hangs During scaffold
 This happens when git does not have credentials set to the remote repository.
 
+## Contributing
+
+Please refer to the [Contributing](./CONTRIBUTING.md) guide.
+
 ## License
 
-Unlicensed © [Capgemini](https://capgemini.com)
+The Power Apps Package Deployer Template is released under the [MIT](./LICENSE) license.
