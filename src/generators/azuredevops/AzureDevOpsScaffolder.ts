@@ -1,12 +1,12 @@
 import { CoreApi } from 'azure-devops-node-api/CoreApi';
 import { YamlProcess } from 'azure-devops-node-api/interfaces/BuildInterfaces';
-import { BuildGenerator } from './generator/BuildGenerator';
-import { ExtensionGenerator } from './generator/ExtensionGenerator';
+import BuildGenerator from './generator/BuildGenerator';
+import ExtensionGenerator from './generator/ExtensionGenerator';
 import { IGenerator } from './generator/IGenerator';
-import { ReleaseGenerator } from './generator/ReleaseGenerator';
-import { RepoGenerator } from './generator/RepoGenerator';
-import { ServiceEndpointGenerator } from './generator/ServiceEndpointGenerator';
-import { VarGroupGenerator } from './generator/VarGroupGenerator';
+import ReleaseGenerator from './generator/ReleaseGenerator';
+import RepoGenerator from './generator/RepoGenerator';
+import ServiceEndpointGenerator from './generator/ServiceEndpointGenerator';
+import VarGroupGenerator from './generator/VarGroupGenerator';
 import { IScaffoldResult } from './IScaffoldResult';
 import { IScaffoldSettings } from './IScaffoldSettings';
 

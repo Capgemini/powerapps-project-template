@@ -34,6 +34,12 @@ jobs:
           verbose: true
 
       - task: Npm@1
+        displayName: Lint Package
+        inputs:
+          command: custom
+          customCommand: run run lint
+
+      - task: Npm@1
         displayName: Build Package
         inputs:
           command: custom
