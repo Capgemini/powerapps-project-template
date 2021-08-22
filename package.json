@@ -2,12 +2,24 @@
   "name": "@capgeminiuk/generator-powerapps-project",
   "version": "0.1.0",
   "description": "This Yeoman generator scaffolds Power Apps projects.",
+  "homepage": "https://github.com/Capgemini/powerapps-project-template#readme",
+  "url" : "https://github.com/Capgemini/powerapps-project-template/issues",
+  "repository": "github:Capgemini/powerapps-project-template",
+  "license" : "MIT",
+  "keywords": [
+    "yeoman-generator",
+    "power-apps",
+    "power-platform",
+    "dataverse",
+    "dynamics",
+    "dynamics-365"
+  ],
+  "engines": {
+    "npm": ">= 4.0.0"
+  },
   "files": [
     "common",
     "generators"
-  ],
-  "keywords": [
-    "yeoman-generator"
   ],
   "devDependencies": {
     "@types/ejs": "^2.7.0",
@@ -27,9 +39,6 @@
     "yeoman-assert": "^3.1.0",
     "yeoman-test": "^1.7.0",
     "yo": "^2.0.6"
-  },
-  "engines": {
-    "npm": ">= 4.0.0"
   },
   "dependencies": {
     "@types/rimraf": "^2.0.4",
