@@ -1,8 +1,8 @@
-import inquirer from "inquirer";
-import Renamer from "renamer";
-import { Builder, parseString } from "xml2js";
-import Generator from "yeoman-generator";
-import { PackageReader } from "../../common/PackageReader";
+import inquirer from 'inquirer';
+import Renamer from 'renamer';
+import { Builder, parseString } from 'xml2js';
+import Generator from 'yeoman-generator';
+import { PackageReader } from '../../common/PackageReader';
 
 class Main extends Generator {
   private readonly packageReader: PackageReader;
@@ -19,19 +19,19 @@ class Main extends Generator {
     this.answers = await this.prompt([
       {
         choices: () => this.packageReader.getSolutions(),
-        message: "Name of the solution?",
-        name: "sourceSolution",
+        message: 'Name of the solution?',
+        name: 'sourceSolution',
         store: true,
-        type: "list"
+        type: 'list',
       },
       {
         default: false,
-        message: "Import data before solution?",
-        name: "importBeforeSolution",
-        type: "confirm",
-      }
+        message: 'Import data before solution?',
+        name: 'importBeforeSolution',
+        type: 'confirm',
+      },
     ]);
-    const solutionFolderComponents = this.answers.sourceSolution.split("_");
+    const solutionFolderComponents = this.answers.sourceSolution.split('_');
     this.answers.prefix = solutionFolderComponents[0];
     this.answers.solution = solutionFolderComponents[2] ?? solutionFolderComponents[1] ?? solutionFolderComponents[0];
   }
@@ -42,31 +42,33 @@ class Main extends Generator {
   }
 
   public install() {
-    this.renameFileAndFolders("{{Solution}}", this.answers.solution);
+    this.renameFileAndFolders('{{Solution}}', this.answers.solution);
   }
 
   private writeSource = () => {
-    this.log(`Writing data configuration files from template...`);
+    this.log('Writing data configuration files from template...');
     this.fs.copyTpl(
-      this.templatePath("source"),
-      this.destinationPath("src", "solutions", this.answers.sourceSolution),
+      this.templatePath('source'),
+      this.destinationPath('src', 'solutions', this.answers.sourceSolution),
       this.answers,
       {},
-      { globOptions: { dot: true } }
+      { globOptions: { dot: true } },
     );
   };
 
   private updateImportConfig = async () => {
-    this.log(`Updating import config to include new solution.`);
+    this.log('Updating import config to include new solution.');
 
     const importConfigPath = this.destinationPath(
-      "deploy",
-      "PkgFolder",
-      "ImportConfig.xml"
+      'deploy',
+      'PkgFolder',
+      'ImportConfig.xml',
     );
     parseString(
       this.fs.read(importConfigPath),
-      { trim: true, includeWhiteChars: false, renderOpts: { pretty: true }, emptyTag: {} },
+      {
+        trim: true, includeWhiteChars: false, renderOpts: { pretty: true }, emptyTag: {},
+      },
       (err, res) => {
         if (err) {
           throw err;
@@ -82,7 +84,7 @@ class Main extends Generator {
             datafolderpath: `${this.answers.sourceSolution}/data/extract`,
             importbeforesolutions: this.answers.importBeforeSolution,
             importconfigpath: `${this.answers.sourceSolution}/data/${this.answers.solution}DataImport.json`,
-          }
+          },
         };
 
         dataImports.push(dataImport);
@@ -93,22 +95,21 @@ class Main extends Generator {
             explicitArray: true,
             includeWhiteChars: false,
             renderOpts: { pretty: true },
-            trim: true
-          }).buildObject(res)
+            trim: true,
+          }).buildObject(res),
         );
-        return;
-      }
+      },
     );
   };
 
   private renameFileAndFolders = (from: string, to: string) => {
-    this.log(`Renaming file and folders...`);
+    this.log('Renaming file and folders...');
     const renamer = new Renamer();
     renamer.rename({
       dryRun: false,
-      files: [`${this.destinationPath("src", "solutions", this.answers.sourceSolution, "data")}/**/*`],
+      files: [`${this.destinationPath('src', 'solutions', this.answers.sourceSolution, 'data')}/**/*`],
       find: from,
-      replace: to
+      replace: to,
     });
   };
 }

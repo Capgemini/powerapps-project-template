@@ -1,14 +1,15 @@
-import { BuildApi } from "azure-devops-node-api/BuildApi";
-import { BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
-import glob from "glob-promise";
-import { parse } from "path";
-import buildDef from "../definitions/build/build.json"
-import { IGenerator } from "./IGenerator.js";
+import { BuildApi } from 'azure-devops-node-api/BuildApi';
+import { BuildDefinition } from 'azure-devops-node-api/interfaces/BuildInterfaces';
+import glob from 'glob-promise';
+import { parse } from 'path';
+import buildDef from '../definitions/build/build.json';
+import { IGenerator } from './IGenerator.js';
 
 export class BuildGenerator implements IGenerator<BuildDefinition> {
   public readonly createdObjects: BuildDefinition[];
 
   private readonly conn: BuildApi;
+
   private readonly log: (msg: string) => void;
 
   constructor(conn: BuildApi, log: (msg: string) => void) {
@@ -23,17 +24,15 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
     packageName: string,
     repoId: string,
   ): Promise<BuildDefinition[]> {
-    this.log("Generating builds definitions...");
+    this.log('Generating builds definitions...');
     const yamlDetails = await this.getYamlDetails(packageDirectory);
     const buildDefs = await this.createBuildDefinitions(
       project,
-      yamlDetails.map(yaml =>
-        this.generateBuildDefinition(yaml, packageName, repoId)
-      )
+      yamlDetails.map((yaml) => this.generateBuildDefinition(yaml, packageName, repoId)),
     );
 
     if (buildDefs === undefined) {
-      throw new Error("An error occured while creating build definitions.");
+      throw new Error('An error occured while creating build definitions.');
     }
 
     this.createdObjects.push(...buildDefs);
@@ -45,16 +44,13 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
     this.log(`Rolling back ${this.createdObjects.length} build definitions...`);
 
     await Promise.all(
-      this.createdObjects.map(obj =>
-        this.conn.deleteDefinition(obj.id!, project)
-      )
+      this.createdObjects.map((obj) => this.conn.deleteDefinition(obj.id!, project)),
     );
     this.createdObjects.length = 0;
-    return;
   }
 
   private async getYamlDetails(packageDirectory: string) {
-    return glob("pipelines/*.yml", { cwd: `${packageDirectory}` }).then(files => {
+    return glob('pipelines/*.yml', { cwd: `${packageDirectory}` }).then((files) => {
       this.log(`Found ${files.length} YAML builds.`);
       return files;
     });
@@ -62,7 +58,7 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
 
   private async createBuildDefinitions(
     project: string,
-    definitions: BuildDefinition[]
+    definitions: BuildDefinition[],
   ) {
     const createdDefinitions: BuildDefinition[] = [];
     for (const definition of definitions) {
@@ -74,7 +70,7 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
   private generateBuildDefinition(
     yamlPath: string,
     packageName: string,
-    repoId: string
+    repoId: string,
   ): BuildDefinition {
     this.log(`Creating ${yamlPath} build...`);
     const def: BuildDefinition = JSON.parse(JSON.stringify(buildDef));
@@ -82,12 +78,12 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
     def.name = `${packageName} - ${buildDefinitionName}`;
     const process: BuildProcess = {
       type: 2,
-      yamlFilename: yamlPath
+      yamlFilename: yamlPath,
     };
     def.process = process;
     def.repository!.id = repoId;
-    def.path = packageName.replace(/\s/g, "");
-    def.variableGroups = []
+    def.path = packageName.replace(/\s/g, '');
+    def.variableGroups = [];
 
     return def;
   }
@@ -95,14 +91,10 @@ export class BuildGenerator implements IGenerator<BuildDefinition> {
 function getBuildDefinitionName(yamlPath: string) {
   const path = parse(yamlPath);
 
-  return path.name === "azure-pipelines" ?
-    "Package Build"
-    :
-    path.name
-      .replace("azure-pipelines-", "")
-      .replace(/-/g, " ")
-      .replace(/\w\S*/g, (txt) => {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      });
+  return path.name === 'azure-pipelines'
+    ? 'Package Build'
+    : path.name
+      .replace('azure-pipelines-', '')
+      .replace(/-/g, ' ')
+      .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
-

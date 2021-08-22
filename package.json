@@ -48,6 +48,7 @@
     "azure-devops-node-api": "^7.2.0",
     "chalk": "^2.1.0",
     "ejs": "^2.7.4",
+    "eslint-config-airbnb-typescript": "^13.0.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
     "guid": "0.0.12",
@@ -76,6 +77,6 @@
     "copy-scripts-template": "xcopy \"src\\generators\\scripts\\templates\" \"generators\\scripts\\templates\" /I /S /y",
     "copy-data-template": "xcopy \"src\\generators\\data\\templates\" \"generators\\data\\templates\" /I /S /y",
     "clean-debug": "del /S /q debug\\*",
-    "lint": "eslint -c .eslintrc.js --ext .ts ./src"
+    "lint": "eslint -c .eslintrc.js"
   }
 }

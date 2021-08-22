@@ -1,12 +1,13 @@
-import { ServiceEndpoint } from "azure-devops-node-api/interfaces/TaskAgentInterfaces";
-import { ITaskAgentApi } from "azure-devops-node-api/TaskAgentApi";
-import ciEnvironment from "../definitions/serviceendpoints/ci-environment.json";
-import { IGenerator } from "./IGenerator.js";
+import { ServiceEndpoint } from 'azure-devops-node-api/interfaces/TaskAgentInterfaces';
+import { ITaskAgentApi } from 'azure-devops-node-api/TaskAgentApi';
+import ciEnvironment from '../definitions/serviceendpoints/ci-environment.json';
+import { IGenerator } from './IGenerator.js';
 
 export class ServiceEndpointGenerator implements IGenerator<ServiceEndpoint> {
   public readonly createdObjects: ServiceEndpoint[];
 
   private readonly conn: ITaskAgentApi;
+
   private readonly log: (msg: string) => void;
 
   constructor(conn: ITaskAgentApi, log: (msg: string) => void) {
@@ -23,12 +24,12 @@ export class ServiceEndpointGenerator implements IGenerator<ServiceEndpoint> {
     applicationId: string,
     clientSecret: string,
   ): Promise<ServiceEndpoint> {
-    this.log("Generating service connections...");
+    this.log('Generating service connections...');
     const serviceEndpoint = this.generateServiceEndpoint(packageName, ciUrl, tenantId, applicationId, clientSecret);
     const def = await this.conn.createServiceEndpoint(serviceEndpoint, project);
-    
+
     if (def === undefined) {
-      throw new Error("An error occurred while creating service connections.");
+      throw new Error('An error occurred while creating service connections.');
     }
 
     this.createdObjects.push(def);
@@ -38,21 +39,18 @@ export class ServiceEndpointGenerator implements IGenerator<ServiceEndpoint> {
 
   public async rollback(project: string): Promise<void> {
     this.log(
-      `Rolling back ${this.createdObjects.length} service connections...`
+      `Rolling back ${this.createdObjects.length} service connections...`,
     );
 
     await Promise.all(
-      this.createdObjects.map(obj =>
-        this.conn.deleteServiceEndpoint(project, obj.id!)
-      )
+      this.createdObjects.map((obj) => this.conn.deleteServiceEndpoint(project, obj.id!)),
     );
     this.createdObjects.length = 0;
-    return;
   }
 
   private async createServiceEndpoint(
     project: string,
-    endpoint: ServiceEndpoint
+    endpoint: ServiceEndpoint,
   ): Promise<ServiceEndpoint> {
     return this.conn.createServiceEndpoint(endpoint, project);
   }
@@ -62,7 +60,7 @@ export class ServiceEndpointGenerator implements IGenerator<ServiceEndpoint> {
     ciUrl: string,
     tenantId: string,
     applicationId: string,
-    clientSecret: string
+    clientSecret: string,
   ): ServiceEndpoint {
     const endpoint: ServiceEndpoint = JSON.parse(JSON.stringify(ciEnvironment));
 

@@ -1,16 +1,17 @@
-import { GitApi } from "azure-devops-node-api/GitApi";
+import { GitApi } from 'azure-devops-node-api/GitApi';
 import {
   GitRepository,
-  GitRepositoryCreateOptions
-} from "azure-devops-node-api/interfaces/GitInterfaces";
-import { promises as fs } from "fs";
-import Git from "simple-git";
-import { IGenerator } from "./IGenerator";
+  GitRepositoryCreateOptions,
+} from 'azure-devops-node-api/interfaces/GitInterfaces';
+import { promises as fs } from 'fs';
+import Git from 'simple-git';
+import { IGenerator } from './IGenerator';
 
 export class RepoGenerator implements IGenerator<GitRepository> {
   public readonly createdObjects: GitRepository[];
 
   private readonly conn: GitApi;
+
   private readonly log: (msg: string) => void;
 
   private repoLocation: string;
@@ -19,23 +20,23 @@ export class RepoGenerator implements IGenerator<GitRepository> {
     this.conn = conn;
     this.log = log;
     this.createdObjects = [];
-    this.repoLocation = "";
+    this.repoLocation = '';
   }
 
   public async generate(
     projectName: string,
     repoName: string,
-    repoLocation: string
+    repoLocation: string,
   ): Promise<GitRepository> {
-    this.log("Generating repository...");
+    this.log('Generating repository...');
     this.repoLocation = repoLocation;
 
     const repo = await this.createRepo(projectName, {
-      name: repoName
+      name: repoName,
     });
 
     if (repo === undefined) {
-      throw new Error("An error occurred while creating repository.");
+      throw new Error('An error occurred while creating repository.');
     }
 
     await this.pushRepo(repoLocation, repo.remoteUrl!);
@@ -47,21 +48,18 @@ export class RepoGenerator implements IGenerator<GitRepository> {
     this.log(`Rolling back ${this.createdObjects.length} repositories...`);
 
     await Promise.all(
-      this.createdObjects.map(obj =>
-        this.conn.deleteRepository(obj.id!, project)
-      )
+      this.createdObjects.map((obj) => this.conn.deleteRepository(obj.id!, project)),
     );
 
     // @ts-ignore The second argument is allowed but the type definition hasn't been updated.
-    await fs.rmdir(this.repoLocation + "/.git", { recursive: true });
+    await fs.rmdir(`${this.repoLocation}/.git`, { recursive: true });
 
     this.createdObjects.length = 0;
-    return;
   }
 
   private async createRepo(
     project: string,
-    repo: GitRepositoryCreateOptions
+    repo: GitRepositoryCreateOptions,
   ): Promise<GitRepository> {
     this.log(`Creating ${repo.name} repository...`);
     const repository = await this.conn.createRepository(repo, project);
@@ -75,10 +73,10 @@ export class RepoGenerator implements IGenerator<GitRepository> {
 
     const repo = Git(repoLocation);
     return repo
-      .init([ "--initial-branch", "master" ])
-      .then(() => repo.add("."))
-      .then(() => repo.commit("Initial commit from template."))
-      .then(() => repo.remote(["add", "origin", gitUrl]))
-      .then(() => repo.push("origin", undefined, ["--set-upstream", "--all"]));
+      .init(['--initial-branch', 'master'])
+      .then(() => repo.add('.'))
+      .then(() => repo.commit('Initial commit from template.'))
+      .then(() => repo.remote(['add', 'origin', gitUrl]))
+      .then(() => repo.push('origin', undefined, ['--set-upstream', '--all']));
   }
 }
