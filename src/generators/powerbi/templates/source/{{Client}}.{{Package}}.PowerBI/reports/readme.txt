@@ -1,0 +1,1 @@
+Power BI pbix files should be added to this folder and marked to be copied to output. This will allow them to be included in the build artifacts under PowerBI folder.

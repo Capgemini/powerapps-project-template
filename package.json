@@ -13,6 +13,7 @@
     "@types/ejs": "^2.7.0",
     "@types/guid": "^1.0.0",
     "@types/inquirer": "^6.5.0",
+    "@types/js-yaml": "^4.0.2",
     "@types/node": "^10.17.24",
     "@types/node-fetch": "^2.5.7",
     "@types/strip-json-comments": "0.0.30",
@@ -40,6 +41,7 @@
     "glob-promise": "^3.4.0",
     "guid": "0.0.12",
     "inquirer": "^6.5.2",
+    "js-yaml": "^4.1.0",
     "node-fetch": "^2.6.0",
     "renamer": "^1.1.4",
     "rimraf": "^2.7.1",
@@ -56,13 +58,14 @@
     "test": "jest",
     "build": "tsc && npm run copy-all",
     "clean": "del /s /q common && del /s /q generators",
-    "copy-all": "npm run copy-ado-definitions && npm run copy-app-template && npm run copy-solution-template && npm run copy-pluginassembly-template && npm run copy-scripts-template && npm run copy-data-template",
+    "copy-all": "npm run copy-ado-definitions && npm run copy-app-template && npm run copy-solution-template && npm run copy-pluginassembly-template && npm run copy-scripts-template && npm run copy-data-template && npm run copy-powerbi-template",
     "copy-ado-definitions": "xcopy \"src\\generators\\azuredevops\\definitions\" \"generators\\azuredevops\\definitions\" /I /y",
     "copy-app-template": "xcopy \"src\\generators\\app\\templates\" \"generators\\app\\templates\" /I /S /y",
     "copy-solution-template": "xcopy \"src\\generators\\solution\\templates\" \"generators\\solution\\templates\" /I /S /y",
     "copy-pluginassembly-template": "xcopy \"src\\generators\\pluginassembly\\templates\" \"generators\\pluginassembly\\templates\" /I /S /y",
     "copy-scripts-template": "xcopy \"src\\generators\\scripts\\templates\" \"generators\\scripts\\templates\" /I /S /y",
     "copy-data-template": "xcopy \"src\\generators\\data\\templates\" \"generators\\data\\templates\" /I /S /y",
+    "copy-powerbi-template": "xcopy \"src\\generators\\powerbi\\templates\" \"generators\\powerbi\\templates\" /I /S /y",
     "clean-debug": "del /S /q debug\\*"
   }
 }
