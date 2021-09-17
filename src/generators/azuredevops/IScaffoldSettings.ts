@@ -1,4 +1,4 @@
-import { IPackageDetails } from "./IPackageDetails";
+import { IPackageDetails } from './IPackageDetails';
 
 export interface IScaffoldSettings {
   projectName: string;

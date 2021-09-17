@@ -1,7 +1,7 @@
 # Power Apps Project Generator
 
 [![Build Status](https://capgeminiuk.visualstudio.com/GitHub%20Support/_apis/build/status/CI-Builds/NPM%20package/powerapps-project-template?branchName=master)](https://capgeminiuk.visualstudio.com/GitHub%20Support/_build/latest?definitionId=229&branchName=master)
-![npm (scoped)](https://img.shields.io/npm/v/@capgeminiuk/generator-powerapps-project)
+[![npm (scoped)](https://img.shields.io/npm/v/@capgeminiuk/generator-powerapps-project)](https://www.npmjs.com/package/@capgeminiuk/generator-powerapps-project)
 
 This Yeoman generator scaffolds Power Apps projects. This includes:
 
@@ -11,20 +11,19 @@ This Yeoman generator scaffolds Power Apps projects. This includes:
 
 ## Table of Contents
 
-- [Power Apps Project Generator](#power-apps-project-generator)
-  - [Table of Contents](#table-of-contents)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-    - [Install the generator package](#install-the-generator-package)
-  - [Usage](#usage)
-    - [Scaffold a project](#scaffold-a-project)
-    - [Scaffold Azure DevOps](#scaffold-azure-devops)
-    - [Scaffold a solution](#scaffold-a-solution)
-    - [Scaffold a web resource project for a solution](#scaffold-a-web-resource-project-for-a-solution)
-    - [Scaffold a custom workflow activity/plug-in assembly for a solution](#scaffold-a-custom-workflow-activityplug-in-assembly-for-a-solution)
-    - [Scaffold reference/configuration data migration for a solution](#scaffold-referenceconfiguration-data-migration-for-a-solution)
-    - [Scaffold a Power BI project for a solution](#scaffold-a-power-bi-assembly-for-a-solution)
-  - [License](#license)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [Install the generator package](#install-the-generator-package)
+- [Usage](#usage)
+  - [Scaffold a project](#scaffold-a-project)
+  - [Scaffold Azure DevOps](#scaffold-azure-devops)
+  - [Scaffold a solution](#scaffold-a-solution)
+  - [Scaffold a web resource project for a solution](#scaffold-a-web-resource-project-for-a-solution)
+  - [Scaffold a custom workflow activity/plug-in assembly for a solution](#scaffold-a-custom-workflow-activityplug-in-assembly-for-a-solution)
+  - [Scaffold reference/configuration data migration for a solution](#scaffold-referenceconfiguration-data-migration-for-a-solution)
+  - [Scaffold a Power BI project for a solution](#scaffold-a-power-bi-assembly-for-a-solution)
+- [Contributing](#Contributing)
+- [Licence](#Licence)
 
 ## Prerequisites
 
@@ -164,13 +163,10 @@ Running this sub-generator:
 - Details regarding scripts, prerequisites and setting up a release pipeline for a report can be found in README file under src/generators/powerbi folder.
 - This set up does not require Premium license and it is fully functioning with Pro license.
 
-## Known Issues
-### Yeoman Permissions error
-This happens when you have a .yo-rc-global file in the root of your user directory. It tries to scaffold to this location which is not ideal. To solve this remove this file.
+## Contributing
 
-### Git Hangs During scaffold
-This happens when git does not have credentials set to the remote repository.
+Please refer to the [Contributing](./CONTRIBUTING.md) guide.
 
 ## License
 
-Unlicensed © [Capgemini](https://capgemini.com)
+The Power Apps Project Template is released under the [MIT](./LICENSE) license.

@@ -24,7 +24,16 @@
       "dependsOn": ["npm: build", "npm: clean-debug"],
       "dependsOrder": "parallel",
       "group": "build",
-      "problemMatcher": ["$tsc-watch"],
+      "problemMatcher": ["$tsc-watch"]
+    },
+    {
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": [
+        "$eslint-stylish"
+      ],
+      "label": "npm: lint",
+      "detail": "eslint -c .eslintrc.js --ext .ts ./src"
     }
   ]
 }

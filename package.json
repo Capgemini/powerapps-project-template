@@ -2,41 +2,54 @@
   "name": "@capgeminiuk/generator-powerapps-project",
   "version": "0.1.0",
   "description": "This Yeoman generator scaffolds Power Apps projects.",
+  "homepage": "https://github.com/Capgemini/powerapps-project-template#readme",
+  "url": "https://github.com/Capgemini/powerapps-project-template/issues",
+  "repository": "github:Capgemini/powerapps-project-template",
+  "license": "MIT",
+  "keywords": [
+    "yeoman-generator",
+    "power-apps",
+    "power-platform",
+    "dataverse",
+    "dynamics",
+    "dynamics-365"
+  ],
+  "engines": {
+    "npm": ">= 4.0.0"
+  },
   "files": [
     "common",
     "generators"
-  ],
-  "keywords": [
-    "yeoman-generator"
   ],
   "devDependencies": {
     "@types/ejs": "^2.7.0",
     "@types/guid": "^1.0.0",
     "@types/inquirer": "^6.5.0",
-    "@types/js-yaml": "^4.0.2",
+    "@types/js-yaml": "^4.0.3",
     "@types/node": "^10.17.24",
     "@types/node-fetch": "^2.5.7",
     "@types/strip-json-comments": "0.0.30",
     "@types/xml2js": "^0.4.5",
     "@types/yeoman-generator": "^3.1.4",
     "@types/yosay": "0.0.29",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.1",
     "jest": "^23.5.0",
     "prettier": "^1.19.1",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.9.3",
+    "typescript": "^3.9.10",
     "yeoman-assert": "^3.1.0",
     "yeoman-test": "^1.7.0",
     "yo": "^2.0.6"
-  },
-  "engines": {
-    "npm": ">= 4.0.0"
   },
   "dependencies": {
     "@types/rimraf": "^2.0.4",
     "azure-devops-node-api": "^7.2.0",
     "chalk": "^2.1.0",
     "ejs": "^2.7.4",
+    "eslint-config-airbnb-typescript": "^13.0.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
     "guid": "0.0.12",
@@ -66,6 +79,7 @@
     "copy-scripts-template": "xcopy \"src\\generators\\scripts\\templates\" \"generators\\scripts\\templates\" /I /S /y",
     "copy-data-template": "xcopy \"src\\generators\\data\\templates\" \"generators\\data\\templates\" /I /S /y",
     "copy-powerbi-template": "xcopy \"src\\generators\\powerbi\\templates\" \"generators\\powerbi\\templates\" /I /S /y",
-    "clean-debug": "del /S /q debug\\*"
+    "clean-debug": "del /S /q debug\\*",
+    "lint": "eslint .eslintrc.js ./src"
   }
 }

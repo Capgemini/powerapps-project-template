@@ -1,10 +1,11 @@
-import inquirer from "inquirer";
-import Generator from "yeoman-generator";
-import { MappingFileTransformer } from "../../common/MappingFileTransformer";
-import { PackageReader } from "../../common/PackageReader";
+import inquirer from 'inquirer';
+import Generator from 'yeoman-generator';
+import MappingFileTransformer from '../../common/MappingFileTransformer';
+import PackageReader from '../../common/PackageReader';
 
 class Main extends Generator {
   private readonly packageReader: PackageReader;
+
   private readonly mappingFileTransformer: MappingFileTransformer;
 
   private answers!: inquirer.Answers;
@@ -20,11 +21,11 @@ class Main extends Generator {
     this.answers = await this.prompt([
       {
         choices: () => this.packageReader.getSolutions(),
-        message: "Name of the solution?",
-        name: "sourceSolution",
+        message: 'Name of the solution?',
+        name: 'sourceSolution',
         store: true,
-        type: "list"
-      }
+        type: 'list',
+      },
     ]);
   }
 
@@ -34,25 +35,33 @@ class Main extends Generator {
   }
 
   private updateMappingFile = async (): Promise<void> => {
-    const packMappingFilePath = this.destinationPath("src", "solutions", this.answers.sourceSolution, "PackMappingFile.xml");
-    const templatePackMappingFilePath = this.templatePath("PackMappingFile.xml");
+    const packMappingFilePath = this.destinationPath('src', 'solutions', this.answers.sourceSolution, 'PackMappingFile.xml');
+    const templatePackMappingFilePath = this.templatePath('PackMappingFile.xml');
 
-    this.mappingFileTransformer.transform(templatePackMappingFilePath, this.answers, packMappingFilePath);
+    this.mappingFileTransformer.transform(
+      templatePackMappingFilePath,
+      this.answers,
+      packMappingFilePath,
+    );
 
-    const ExtractMappingFilePath = this.destinationPath("src", "solutions", this.answers.sourceSolution, "ExtractMappingFile.xml");
-    const templateExtractMappingFilePath = this.templatePath("ExtractMappingFile.xml");
+    const ExtractMappingFilePath = this.destinationPath('src', 'solutions', this.answers.sourceSolution, 'ExtractMappingFile.xml');
+    const templateExtractMappingFilePath = this.templatePath('ExtractMappingFile.xml');
 
-    this.mappingFileTransformer.transform(templateExtractMappingFilePath, this.answers, ExtractMappingFilePath);
-  }
+    this.mappingFileTransformer.transform(
+      templateExtractMappingFilePath,
+      this.answers,
+      ExtractMappingFilePath,
+    );
+  };
 
   private writeSource = () => {
-    this.log(`Writing solution from template...`);
+    this.log('Writing solution from template...');
     this.fs.copyTpl(
-      this.templatePath("source"),
-      this.destinationPath("src", "solutions", this.answers.sourceSolution),
+      this.templatePath('source'),
+      this.destinationPath('src', 'solutions', this.answers.sourceSolution),
       this.answers,
       {},
-      { globOptions: { dot: true } }
+      { globOptions: { dot: true } },
     );
   };
 }

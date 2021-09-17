@@ -1,14 +1,15 @@
-import { VariableGroup } from "azure-devops-node-api/interfaces/BuildInterfaces";
-import { VariableGroupParameters } from "azure-devops-node-api/interfaces/TaskAgentInterfaces";
-import { ITaskAgentApi } from "azure-devops-node-api/TaskAgentApi";
-import ciEnvironment from "../definitions/variablegroups/ci-environment.json";
-import integrationTests from "../definitions/variablegroups/integration-tests.json";
-import { IGenerator } from "./IGenerator.js";
+import { VariableGroup } from 'azure-devops-node-api/interfaces/BuildInterfaces';
+import { VariableGroupParameters } from 'azure-devops-node-api/interfaces/TaskAgentInterfaces';
+import { ITaskAgentApi } from 'azure-devops-node-api/TaskAgentApi';
+import ciEnvironment from '../definitions/variablegroups/ci-environment.json';
+import integrationTests from '../definitions/variablegroups/integration-tests.json';
+import { IGenerator } from './IGenerator.js';
 
-export class VarGroupGenerator implements IGenerator<VariableGroup> {
+export default class VarGroupGenerator implements IGenerator<VariableGroup> {
   public readonly createdObjects: VariableGroup[];
 
   private readonly conn: ITaskAgentApi;
+
   private readonly log: (msg: string) => void;
 
   constructor(conn: ITaskAgentApi, log: (msg: string) => void) {
@@ -24,13 +25,13 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     serviceAccountUsername: string,
     serviceAccountPassword: string,
   ): Promise<VariableGroup[]> {
-    this.log("Generating variable groups...");
+    this.log('Generating variable groups...');
 
-    const groupsToCreate = this.generateVariableGroups(
+    const groupsToCreate = VarGroupGenerator.generateVariableGroups(
       packageName,
       ciEnvironmentUrl,
       serviceAccountUsername,
-      serviceAccountPassword
+      serviceAccountPassword,
     );
 
     const varGroups = await this.createVariableGroups(project, groupsToCreate);
@@ -42,19 +43,16 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
   public async rollback(project: string): Promise<void> {
     this.log(`Rolling back ${this.createdObjects.length} variable groups...`);
     await Promise.all(
-      this.createdObjects.map(obj =>
-        this.conn.deleteVariableGroup(project, obj.id!)
-      )
+      this.createdObjects.map((obj) => this.conn.deleteVariableGroup(project, obj.id!)),
     );
     this.createdObjects.length = 0;
-    return;
   }
 
-  private generateVariableGroups(
+  private static generateVariableGroups(
     packageName: string,
     ciEnvironmentUrl: string,
     serviceAccountUsername: string,
-    serviceAccountPassword: string
+    serviceAccountPassword: string,
   ): VariableGroup[] {
     const groups: VariableGroup[] = [];
 
@@ -62,9 +60,9 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
     groups.push(ciEnvironment);
 
     integrationTests.name = `Integration Tests - ${packageName}`;
-    integrationTests.variables["CDS Test CDS URL"].value = ciEnvironmentUrl;
-    integrationTests.variables["CDS Test Admin Username"].value = serviceAccountUsername;
-    integrationTests.variables["CDS Test Admin Password"].value = serviceAccountPassword;
+    integrationTests.variables['CDS Test CDS URL'].value = ciEnvironmentUrl;
+    integrationTests.variables['CDS Test Admin Username'].value = serviceAccountUsername;
+    integrationTests.variables['CDS Test Admin Password'].value = serviceAccountPassword;
     groups.push(integrationTests);
 
     return groups;
@@ -72,13 +70,13 @@ export class VarGroupGenerator implements IGenerator<VariableGroup> {
 
   private async createVariableGroups(
     project: string,
-    groups: VariableGroupParameters[]
+    groups: VariableGroupParameters[],
   ): Promise<VariableGroup[]> {
     return Promise.all(
-      groups.map(group => {
+      groups.map((group) => {
         this.log(`Creating ${group.name} variable group...`);
         return this.conn.addVariableGroup(group, project);
-      })
+      }),
     );
   }
 }
