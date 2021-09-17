@@ -25,7 +25,7 @@
     "@types/ejs": "^2.7.0",
     "@types/guid": "^1.0.0",
     "@types/inquirer": "^6.5.0",
-    "@types/js-yaml": "^4.0.2",
+    "@types/js-yaml": "^4.0.3",
     "@types/node": "^10.17.24",
     "@types/node-fetch": "^2.5.7",
     "@types/strip-json-comments": "0.0.30",
