@@ -39,7 +39,7 @@ jobs:
           command: custom
           customCommand: run build
 
-      - task: WhiteSource@21
+      - task: WhiteSource Bolt@20
         displayName: Detect security and licence issues
         inputs:
           cwd: "$(Build.SourcesDirectory)"
