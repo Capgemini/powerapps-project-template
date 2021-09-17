@@ -33,17 +33,36 @@ jobs:
         inputs:
           verbose: true
 
+      - task: SonarCloudPrepare@1
+        displayName: Prepare SonarCloud
+        inputs:
+          SonarCloud: "SonarCloud"
+          organization: "capgemini-1"
+          scannerMode: "CLI"
+          configMode: "file"
+          extraProperties: |
+            soner.projectVersion=$(GitVersion.SemVer)
+
       - task: Npm@1
         displayName: Lint Package
         inputs:
           command: custom
           customCommand: run lint
+        continueOnError: true
 
       - task: Npm@1
         displayName: Build Package
         inputs:
           command: custom
           customCommand: run build
+
+      - task: SonarCloudAnalyze@1
+        displayName: Analyse with SonarCloud
+
+      - task: SonarCloudPublish@1
+        displayName: Publish SonarCloud results
+        inputs:
+          pollingTimeoutSec: "300"
 
       - task: WhiteSource Bolt@20
         displayName: Detect security and licence issues

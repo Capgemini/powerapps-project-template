@@ -80,6 +80,6 @@
     "copy-data-template": "xcopy \"src\\generators\\data\\templates\" \"generators\\data\\templates\" /I /S /y",
     "copy-powerbi-template": "xcopy \"src\\generators\\powerbi\\templates\" \"generators\\powerbi\\templates\" /I /S /y",
     "clean-debug": "del /S /q debug\\*",
-    "lint": "eslint .eslintrc.js ./src"
+    "lint": "eslint .eslintrc.js ./src --fix -o test_results/analysis/eslint.json -f json"
   }
 }
