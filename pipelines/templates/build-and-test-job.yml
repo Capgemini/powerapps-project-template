@@ -42,7 +42,6 @@ jobs:
           configMode: "file"
           extraProperties: |
             soner.projectVersion=$(GitVersion.SemVer)
-            sonar.eslint.reportPaths=$(Build.SourcesDirectory)/test_results/analysis/eslint.json
 
       - task: Npm@1
         displayName: Lint Package
