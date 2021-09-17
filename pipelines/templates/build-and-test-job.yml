@@ -33,6 +33,17 @@ jobs:
         inputs:
           verbose: true
 
+      - task: SonarCloudPrepare@1
+        displayName: Prepare SonarCloud
+        inputs:
+          SonarCloud: 'SonarCloud'
+          organization: 'capgemini-1'
+          projectKey: 'Capgemini_powerapps-project-template'
+          projectName: 'powerapps-project-template'
+          projectVersion: '$(GitVersion.SemVer)'
+          extraProperties: |
+            sonar.eslint.reportPaths=$(Build.SourcesDirectory)/test_results/analysis/eslint.json
+
       - task: Npm@1
         displayName: Lint Package
         inputs:
@@ -44,6 +55,14 @@ jobs:
         inputs:
           command: custom
           customCommand: run build
+
+      - task: SonarCloudAnalyze@1
+        displayName: Analyse with SonarCloud
+
+      - task: SonarCloudPublish@1
+        displayName: Publish SonarCloud results
+        inputs:
+          pollingTimeoutSec: '300'
 
       - task: WhiteSource Bolt@20
         displayName: Detect security and licence issues

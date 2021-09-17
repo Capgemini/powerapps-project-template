@@ -1,8 +1,8 @@
-node_modules
-coverage
-dist
-/common
-generators
-debug
-!src/generators
 .vscode/settings.json
+/node_modules
+/coverage
+/dist
+/common
+/generators
+/debug
+/test_results
