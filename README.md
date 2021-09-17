@@ -21,6 +21,7 @@ This Yeoman generator scaffolds Power Apps projects. This includes:
   - [Scaffold a web resource project for a solution](#scaffold-a-web-resource-project-for-a-solution)
   - [Scaffold a custom workflow activity/plug-in assembly for a solution](#scaffold-a-custom-workflow-activityplug-in-assembly-for-a-solution)
   - [Scaffold reference/configuration data migration for a solution](#scaffold-referenceconfiguration-data-migration-for-a-solution)
+  - [Scaffold a Power BI project for a solution](#scaffold-a-power-bi-assembly-for-a-solution)
 - [Contributing](#Contributing)
 - [Licence](#Licence)
 
@@ -145,6 +146,22 @@ yo @capgeminiuk/powerapps-project:data
 ```
 
 Creates a `data` folder which contains the `DataExport.json`, `DataImport.json`, and `DataSchema.xml` files for use with the Capgemini XRM Data Migrator tool. The `ImportConfig.xml` is also updated to include the import of the data.
+
+### Scaffold a Power BI assembly for a solution
+
+This sub-generator generates the source code required to support the migration of Power BI components. A new powerbi project can be generated within a solution using the `powerbi` sub-generator:
+
+```bash
+yo @capgeminiuk/powerapps-project:powerbi
+```
+
+Running this sub-generator:
+
+- Creates a C# class library project targeting .NET Framework 4.6.2 within the specified solution folder. This project is pre-configured with required powershell module and scripts which enables to deploy powerbi reports, updates required parameters and connections.
+- Creates two folders under the C# project. One is for the pbix files and the other folder is for the powershell files.
+- Updates the `include-build-stage.yml` file to include the assembly built by the newly created project. This allows the reports and powershell files to be included in the build artifact so that release pipelines for reports can access the required files.
+- Details regarding scripts, prerequisites and setting up a release pipeline for a report can be found in README file under src/generators/powerbi folder.
+- This set up does not require Premium license and it is fully functioning with Pro license.
 
 ## Contributing
 

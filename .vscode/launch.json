@@ -75,6 +75,18 @@
       "internalConsoleOptions": "neverOpen",
       "skipFiles": ["<node_internals>/**"],
       "preLaunchTask": "npm: build"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "PowerBI Generator",
+      "runtimeArgs": ["${workspaceFolder}/node_modules/yo/lib/cli.js"],
+      "program": "${workspaceFolder}/src/generators/powerbi/index.ts",
+      "cwd": "${workspaceFolder}/debug",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": "npm: build"
     }
   ]
 }
