@@ -38,6 +38,7 @@ jobs:
         inputs:
           SonarCloud: 'SonarCloud'
           organization: 'capgemini-1'
+          scannerMode: 'Standalone'
           projectKey: 'Capgemini_powerapps-project-template'
           projectName: 'powerapps-project-template'
           projectVersion: '$(GitVersion.SemVer)'
