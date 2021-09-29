@@ -30,7 +30,7 @@ export default class ExtensionGenerator implements IGenerator<{ publisher: strin
         this.log(`Extension: ${extension.name} is already installed.`);
       }
 
-      return installed;
+      return !installed;
     });
 
     const installPromises: Array<Promise<void> | undefined> = uninstalledEntensions
