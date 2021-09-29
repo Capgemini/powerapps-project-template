@@ -1,4 +1,5 @@
 import { ExtensionManagementApi } from 'azure-devops-node-api/ExtensionManagementApi';
+import { sleep } from '../../../common/utilities';
 import extensions from '../definitions/extensions.json';
 import { IGenerator } from './IGenerator';
 
@@ -36,7 +37,13 @@ export default class ExtensionGenerator implements IGenerator<{ publisher: strin
     const installPromises: Array<Promise<void> | undefined> = uninstalledEntensions
       .map((extension) => this.installExtension(extension.publisher, extension.name));
 
-    return Promise.all(installPromises);
+    await Promise.all(installPromises);
+
+    if (installPromises.length > 0) {
+      this.log('Waiting 1 minute for the extension(s) to fully install.');
+      const ONE_MINUTE = 1 * 60 * 1000;
+      await sleep(ONE_MINUTE);
+    }
   }
 
   public async rollback(): Promise<void> {

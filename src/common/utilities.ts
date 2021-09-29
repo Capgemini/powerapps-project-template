@@ -43,3 +43,9 @@ export function validatePacAuthProfile(input: string): boolean | string {
     ? true
     : 'PAC Auth profile not found.';
 }
+
+export function sleep(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
+}
