@@ -32,6 +32,7 @@ You must have the following installed globally before you can use this generator
 - [Node](https://nodejs.org/en/)
 - [Yeoman](https://yeoman.io/)
 - [PAC](https://docs.microsoft.com/en-us/powerapps/developer/data-platform/powerapps-cli)
+- [.NET 5.0](https://dotnet.microsoft.com/download)
 
 If you already have Node installed, install Yeoman:
 
