@@ -129,7 +129,7 @@ The early-bound model classes can be generated for solutions using the `Generate
 
 ### Building the package
 
-The entire package can be built using the `Build Package` task. This will pack all solutions and copy them to the _Package_ folder. The PackageDeployer import configuration and reference/configuration data and associated import configurations will also be copied to this folder.
+The entire package can be built into managed or unmanged using the `Compile` task. This will pack all solutions and copy them to the _Package_ folder. The PackageDeployer import configuration and reference/configuration data and associated import configurations will also be copied to this folder.
 
 ## Pull requests
 
