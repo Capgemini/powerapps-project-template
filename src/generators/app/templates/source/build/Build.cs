@@ -46,11 +46,6 @@ class Build : NukeBuild
     [PathExecutable]
     readonly Tool Pac;
 
-    [PackageExecutable(
-        "Microsoft.CrmSdk.CoreTools",
-        "SolutionPackager.exe")]
-    readonly Tool SolutionPackager;
-
     // using local executable rather than package due to an issue with spkl location CrmSvcUtil within SDK-style package cache
     [LocalExecutable(".tmp/spkl/spkl.exe")]
     readonly Tool Spkl;
@@ -123,7 +118,7 @@ class Build : NukeBuild
 
            var metadataFolder = SolutionDirectory / "Extract";
            var mappingFilePath = SolutionDirectory / "ExtractMappingFile.xml";
-           SolutionPackager($"/action:Extract /zipfile:{unmanagedSolutionPath} /folder:{ metadataFolder } /packagetype:Both  /allowdelete:Yes /map:{ mappingFilePath }");
+           Pac($"solution unpack -z {unmanagedSolutionPath} -f { metadataFolder } -p Both  -ad Yes -m { mappingFilePath }");
 
            DeleteDirectory(outputDirectory);
        });
@@ -131,10 +126,10 @@ class Build : NukeBuild
     Target PackSolution => _ => _
         .Executes(() =>
         {
-            DotNetBuild(s => s
-                .SetProjectFile(SolutionDirectory / $"{DataverseSolution}.cdsproj")
-                .SetConfiguration(SolutionType == SolutionType.Unmanaged ? Configuration.Debug : Configuration.Release)
-                .SetDisableParallel(true));
+            var metadataFolder = SolutionDirectory / "Extract";
+            var mappingFilePath = SolutionDirectory / "ExtractMappingFile.xml";
+            var buildConfiguration  = SolutionType == SolutionType.Unmanaged ? Configuration.Debug : Configuration.Release;
+            Pac($"solution pack -z \"{SolutionDirectory / "bin" / buildConfiguration / $"{DataverseSolution}.zip"}\" -f {metadataFolder} -p {SolutionType} -ad Yes -m { mappingFilePath }");
         });
 
     Target PrepareDevelopmentEnvironment => _ => _
