@@ -44,6 +44,7 @@ class Build : NukeBuild
     [GitRepository] readonly GitRepository GitRepository;
 
     [PathExecutable]
+    // Docs: https://docs.microsoft.com/en-us/powerapps/developer/data-platform/powerapps-cli
     readonly Tool Pac;
 
     // using local executable rather than package due to an issue with spkl location CrmSvcUtil within SDK-style package cache
