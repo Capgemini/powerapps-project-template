@@ -42,18 +42,18 @@
     "typescript": "^3.9.10",
     "yeoman-assert": "^3.1.0",
     "yeoman-test": "^1.7.0",
-    "yo": "^2.0.6"
+    "yo": "^4.3.0"
   },
   "dependencies": {
     "@types/rimraf": "^2.0.4",
     "azure-devops-node-api": "^7.2.0",
-    "chalk": "^2.1.0",
+    "chalk": "^4.1.2",
     "ejs": "^2.7.4",
     "eslint-config-airbnb-typescript": "^13.0.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
     "guid": "0.0.12",
-    "inquirer": "^6.5.2",
+    "inquirer": "^8.2.0",
     "js-yaml": "^4.1.0",
     "node-fetch": "^2.6.0",
     "renamer": "^1.1.4",
@@ -61,8 +61,8 @@
     "simple-git": "^2.38.0",
     "strip-json-comments": "^3.1.0",
     "xml2js": "^0.4.23",
-    "yeoman-generator": "^2.0.1",
-    "yosay": "^2.0.1"
+    "yeoman-generator": "^5.4.2",
+    "yosay": "^2.0.2"
   },
   "jest": {
     "testEnvironment": "node"

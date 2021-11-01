@@ -3,7 +3,7 @@ import {
   GitRepository,
   GitRepositoryCreateOptions,
 } from 'azure-devops-node-api/interfaces/GitInterfaces';
-import { promises as fs } from 'fs';
+import * as fs from 'fs';
 import Git from 'simple-git';
 import { IGenerator } from './IGenerator';
 
@@ -51,8 +51,11 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
       this.createdObjects.map((obj) => this.conn.deleteRepository(obj.id!, project)),
     );
 
-    // @ts-ignore The second argument is allowed but the type definition hasn't been updated.
-    await fs.rmdir(`${this.repoLocation}/.git`, { recursive: true });
+    if (this.repoLocation && fs.existsSync(`${this.repoLocation}/.git`)) {
+      this.log('Deleting the .git directory...');
+      // @ts-ignore The second argument is allowed but the type definition hasn't been updated.
+      await fs.promises.rmdir(`${this.repoLocation}/.git`, { recursive: true });
+    }
 
     this.createdObjects.length = 0;
   }
