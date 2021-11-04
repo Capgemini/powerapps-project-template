@@ -10,7 +10,7 @@ describe("generator-powerapps-project:app", () => {
       .withPrompts({ someAnswer: true });
   });
 
-  // it("creates files", () => {
-  //   assert.file(["dummyfile.txt"]);
-  // });
+  it("empty test", () => {
+    // assert.file(["dummyfile.txt"]);
+  });
 });
