@@ -4,11 +4,11 @@ const assert = require("yeoman-assert");
 const helpers = require("yeoman-test");
 
 describe("generator-powerapps-project:app", () => {
-  beforeAll(() => {
-    return helpers
-      .run(path.join(__dirname, "../generators/app"))
-      .withPrompts({ someAnswer: true });
-  });
+  // beforeAll(() => {
+  //   return helpers
+  //     .run(path.join(__dirname, "../generators/app"))
+  //     .withPrompts({ someAnswer: true });
+  // });
 
   it("empty test", () => {
     // assert.file(["dummyfile.txt"]);
