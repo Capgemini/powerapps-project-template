@@ -4,7 +4,7 @@ import { Builder, parseString } from 'xml2js';
 import Generator from 'yeoman-generator';
 import PackageReader from '../../common/PackageReader';
 
-class Main extends Generator {
+export default class DataGenerator extends Generator {
   private readonly packageReader: PackageReader;
 
   private answers!: inquirer.Answers;
@@ -115,5 +115,3 @@ class Main extends Generator {
     });
   };
 }
-
-module.exports = Main;
