@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "module": "commonjs",
+    "module": "CommonJS",
     "outDir": "./",
     "rootDir": "./src",
     "strict": true,
@@ -9,6 +9,7 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "types": ["node"],
+    "declaration": true,
   },
   "include": ["./src", "./typings"],
   "exclude": ["node_modules"]

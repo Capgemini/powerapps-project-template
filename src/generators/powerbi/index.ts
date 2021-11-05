@@ -5,7 +5,7 @@ import Generator from 'yeoman-generator';
 import yaml from 'js-yaml';
 import PackageReader from '../../common/PackageReader';
 
-class Main extends Generator {
+export default class PowerBiGenerator extends Generator {
   private packageReader: PackageReader;
 
   private answers!: inquirer.Answers;
@@ -119,5 +119,3 @@ class Main extends Generator {
     });
   };
 }
-
-module.exports = Main;

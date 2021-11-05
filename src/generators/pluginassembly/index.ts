@@ -6,7 +6,7 @@ import Generator from 'yeoman-generator';
 import MappingFileTransformer from '../../common/MappingFileTransformer';
 import PackageReader from '../../common/PackageReader';
 
-class Main extends Generator {
+export default class PluginAssemblyGenerator extends Generator {
   private packageReader: PackageReader;
 
   private mappingFileTransformer: MappingFileTransformer;
@@ -126,5 +126,3 @@ class Main extends Generator {
     });
   };
 }
-
-module.exports = Main;
