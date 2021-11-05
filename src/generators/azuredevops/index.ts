@@ -12,7 +12,7 @@ import RepoGenerator from './generator/RepoGenerator';
 import ServiceEndpointGenerator from './generator/ServiceEndpointGenerator';
 import VarGroupGenerator from './generator/VarGroupGenerator';
 
-export default class AzureDevOpsGenerator extends Generator {
+class Main extends Generator {
   private answers!: inquirer.Answers;
 
   private conn?: WebApi = undefined;
@@ -174,3 +174,5 @@ export default class AzureDevOpsGenerator extends Generator {
       : true;
   };
 }
+
+module.exports = Main;

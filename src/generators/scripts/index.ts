@@ -3,7 +3,7 @@ import Generator from 'yeoman-generator';
 import MappingFileTransformer from '../../common/MappingFileTransformer';
 import PackageReader from '../../common/PackageReader';
 
-export default class ScriptsGenerator extends Generator {
+class Main extends Generator {
   private readonly packageReader: PackageReader;
 
   private readonly mappingFileTransformer: MappingFileTransformer;
@@ -65,3 +65,5 @@ export default class ScriptsGenerator extends Generator {
     );
   };
 }
+
+module.exports = Main;
