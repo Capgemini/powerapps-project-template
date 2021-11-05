@@ -3,7 +3,7 @@ import Renamer from 'renamer';
 import Generator from 'yeoman-generator';
 import { validateNamespace } from '../../common/utilities';
 
-export default class Main extends Generator {
+class Main extends Generator {
   private answers!: inquirer.Answers;
 
   public async prompting(): Promise<void> {
@@ -49,3 +49,5 @@ export default class Main extends Generator {
     });
   }
 }
+
+module.exports = Main;
