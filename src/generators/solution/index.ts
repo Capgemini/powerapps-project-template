@@ -4,33 +4,58 @@ import Renamer from 'renamer';
 import stripJsonComments from 'strip-json-comments';
 import { Builder, parseString } from 'xml2js';
 import Generator from 'yeoman-generator';
-import { validatePacAuthProfile } from '../../common/utilities';
+import { validatePacAuthProfile, validateUrl } from '../../common/utilities';
 
 class Main extends Generator {
   private answers!: inquirer.Answers;
 
   public async prompting(): Promise<void> {
-    this.answers = await this.prompt([
+    this.answers = {};
+
+    const { existingSolution } = await this.prompt([
       {
-        message: 'Publisher prefix?',
-        name: 'prefix',
-        store: true,
+        message: 'Does the solution already exist?',
+        name: 'existingSolution',
+        store: false,
+        type: 'confirm',
       },
-      {
-        message: 'Name of the client?',
-        name: 'client',
-        store: true,
-      },
-      {
-        message: 'Name of the package?',
-        name: 'package',
-        store: true,
-      },
-      {
-        message: 'Name of the solution?',
-        name: 'solution',
-        store: true,
-      },
+    ]);
+
+    if (existingSolution) {
+      // Ask and store solution unique name.
+      const { solutionUniqueName } = await this.prompt([
+        {
+          message: 'What is the solution unique name?',
+          name: 'solutionUniqueName',
+          store: true,
+        },
+      ]);
+
+      this.answers.solutionUniqueName = solutionUniqueName;
+    } else {
+      // Ask questions to build solution unique name.
+      const solutionParts = await this.prompt([
+        {
+          message: 'Publisher prefix?',
+          name: 'prefix',
+          store: true,
+        },
+        {
+          message: 'Name of the package?',
+          name: 'package',
+          store: true,
+        },
+        {
+          message: 'Name of the solution?',
+          name: 'solution',
+          store: true,
+        },
+      ]);
+
+      this.answers.solutionUniqueName = `${solutionParts.prefix}_${solutionParts.package}_${solutionParts.solution}`;
+    }
+
+    const solutionConfig = await this.prompt([
       {
         message:
           'Name of PAC Auth profile? This is used to export the solution locally. (please ensure this has been created with pac auth create -n <name> -u <url>)',
@@ -43,6 +68,7 @@ class Main extends Generator {
         message: 'Development environment URL?',
         name: 'environment',
         store: false,
+        validate: validateUrl,
       },
       {
         message:
@@ -55,14 +81,12 @@ class Main extends Generator {
         message: 'Staging environment URL?',
         name: 'stagingEnvironment',
         store: false,
+        validate: validateUrl,
         when: (answers: any) => answers.hasStagingEnvironment,
       },
     ]);
 
-    this.answers.client = this.answers.client.replace(/\s/g, '');
-    this.answers.package = this.answers.package.replace(/\s/g, '');
-    this.answers.solution = this.answers.solution.replace(/\s/g, '');
-    this.answers.solutionUniqueName = `${this.answers.prefix}_${this.answers.package}_${this.answers.solution}`;
+    this.answers = { ...this.answers, ...solutionConfig };
     this.answers.projectGuid = raw();
   }
 
@@ -75,10 +99,7 @@ class Main extends Generator {
 
   public async install() {
     this.renameFileAndFolders([
-      { from: '{{Client}}', to: this.answers.client },
-      { from: '{{Package}}', to: this.answers.package },
-      { from: '{{Solution}}', to: this.answers.solution },
-      { from: '{{prefix}}', to: this.answers.prefix },
+      { from: '{{solutionUniqueName}}', to: this.answers.solutionUniqueName },
     ]);
   }
 
@@ -109,7 +130,7 @@ class Main extends Generator {
       this.destinationPath(
         'src',
         'solutions',
-        '{{prefix}}_{{Package}}_{{Solution}}',
+        '{{solutionUniqueName}}',
         'solution.json',
       ),
       solutionConfig,
@@ -124,9 +145,7 @@ class Main extends Generator {
     const tasks = JSON.parse(stripJsonComments(tasksString));
     tasks.inputs
       .find((input: { id: string }) => input.id === 'solution')
-      .options.push(
-        `${this.answers.prefix}_${this.answers.package}_${this.answers.solution}`,
-      );
+      .options.push(this.answers.solutionUniqueName);
     this.fs.writeJSON(this.destinationPath('.vscode', 'tasks.json'), tasks);
   };
 
@@ -146,14 +165,13 @@ class Main extends Generator {
           throw err;
         }
         const solutions = res.configdatastorage.solutions[0];
-        const solutionFullName = `${this.answers.prefix}_${this.answers.package}_${this.answers.solution}`;
         const solutionElement = {
           $: {
             deleteonly: 'false',
             forceUpgrade: 'false',
             overwriteunmanagedcustomizations: true,
             publishworkflowsandactivateplugins: true,
-            solutionpackagefilename: `${solutionFullName}/${solutionFullName}.zip`,
+            solutionpackagefilename: `${this.answers.solutionUniqueName}/${this.answers.solutionUniqueName}.zip`,
             useAsync: 'true',
           },
         };

@@ -42,7 +42,7 @@
     "typescript": "^3.9.10",
     "yeoman-assert": "^3.1.0",
     "yeoman-test": "^1.7.0",
-    "yo": "^2.0.6"
+    "yo": "^4.3.0"
   },
   "dependencies": {
     "@types/rimraf": "^2.0.4",
@@ -62,7 +62,7 @@
     "simple-git": "^2.38.0",
     "strip-json-comments": "^3.1.0",
     "xml2js": "^0.4.23",
-    "yeoman-generator": "^2.0.1",
+    "yeoman-generator": "^5.4.2",
     "yosay": "^2.0.1"
   },
   "jest": {
