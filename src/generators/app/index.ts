@@ -1,5 +1,4 @@
 import inquirer from 'inquirer';
-import Renamer from 'renamer';
 import Generator from 'yeoman-generator';
 import { validateNamespace } from '../../common/utilities';
 
@@ -31,24 +30,12 @@ class Main extends Generator {
       this.destinationPath(),
       this.answers,
       {},
-      { globOptions: { dot: true } },
+      {
+        globOptions: { dot: true },
+        processDestinationPath:
+          (destinationPath: string) => destinationPath.replace(/Client.Package/g, `${this.answers.client}.${this.answers.package}`),
+      },
     );
-  }
-
-  public async install() {
-    this.log('Renaming file and folders...');
-
-    const rootNamespace = `${this.answers.client}.${this.answers.package}`.replace(
-      /\s/g,
-      '',
-    );
-
-    new Renamer().rename({
-      dryRun: false,
-      files: [`${this.destinationPath()}/**/*`],
-      find: 'Client.Package',
-      replace: rootNamespace,
-    });
   }
 }
 
