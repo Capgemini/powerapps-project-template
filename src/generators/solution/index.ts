@@ -97,12 +97,6 @@ class Main extends Generator {
     this.updateImportConfig();
   }
 
-  public async install() {
-    this.renameFileAndFolders([
-      { from: '{{solutionUniqueName}}', to: this.answers.solutionUniqueName },
-    ]);
-  }
-
   private writeSource = () => {
     this.log('Writing solution from template...');
     this.fs.copyTpl(
@@ -110,7 +104,11 @@ class Main extends Generator {
       this.destinationPath('src', 'solutions'),
       this.answers,
       {},
-      { globOptions: { dot: true } },
+      {
+        globOptions: { dot: true },
+        processDestinationPath:
+          (destinationPath: string) => destinationPath.replace(/{{solutionUniqueName}}/g, this.answers.solutionUniqueName),
+      },
     );
   };
 
@@ -130,7 +128,7 @@ class Main extends Generator {
       this.destinationPath(
         'src',
         'solutions',
-        '{{solutionUniqueName}}',
+        this.answers.solutionUniqueName,
         'solution.json',
       ),
       solutionConfig,
@@ -197,25 +195,6 @@ class Main extends Generator {
         );
       },
     );
-  };
-
-  private renameFileAndFolders = (
-    rules: Array<{ from: string; to: string }>,
-  ) => {
-    this.log('Renaming file and folders...');
-
-    const renamer = new Renamer();
-
-    rules.forEach((rule) => {
-      this.log(`From ${rule.from} to ${rule.to}.`);
-
-      renamer.rename({
-        dryRun: false,
-        files: [`${this.destinationPath()}/src/solutions/**/*`],
-        find: rule.from,
-        replace: rule.to,
-      });
-    });
   };
 }
 

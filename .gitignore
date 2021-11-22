@@ -4,6 +4,6 @@
 
 /common
 /generators
-/debug
+/debug*/
 
 .vscode/settings.json
