@@ -1,0 +1,9 @@
+name: $(GITVERSION_FullSemVer)
+pool:
+  vmImage: 'windows-latest'
+trigger: none
+stages:
+  - template: templates/include-build-stage.yml
+  - template: templates/include-solution-checker-stage.yml
+    parameters:
+      serviceConnection: 'CI Environment - TestPackage'
