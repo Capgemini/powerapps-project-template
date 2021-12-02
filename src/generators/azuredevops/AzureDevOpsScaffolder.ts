@@ -62,6 +62,7 @@ export default class AzureDevOpsScaffolder {
       settings.projectName,
       settings.gitRepository,
       settings.package.path,
+      settings.personalAccessToken,
     );
 
     const buildDefs = await this.buildGenerator.generate(

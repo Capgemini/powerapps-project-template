@@ -27,6 +27,7 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
     projectName: string,
     repoName: string,
     repoLocation: string,
+    adoToken: string,
   ): Promise<GitRepository> {
     this.log('Generating repository...');
     this.repoLocation = repoLocation;
@@ -39,7 +40,7 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
       throw new Error('An error occurred while creating repository.');
     }
 
-    await this.pushRepo(repoLocation, repo.remoteUrl!);
+    await this.pushRepo(repoLocation, repo.remoteUrl!, adoToken);
 
     return repo;
   }
@@ -71,7 +72,7 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
     return repository;
   }
 
-  private async pushRepo(repoLocation: string, gitUrl: string) {
+  private async pushRepo(repoLocation: string, gitUrl: string, adoToken: string) {
     this.log(`Pushing initial commit to ${gitUrl}`);
 
     const repo = Git(repoLocation);
@@ -79,7 +80,7 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
       .init(['--initial-branch', 'master'])
       .then(() => repo.add('.'))
       .then(() => repo.commit('Initial commit from template.'))
-      .then(() => repo.remote(['add', 'origin', gitUrl]))
+      .then(() => repo.remote(['add', 'origin', gitUrl.replace('@', `:${adoToken}@`)]))
       .then(() => repo.push('origin', undefined, ['--set-upstream', '--all']));
   }
 }

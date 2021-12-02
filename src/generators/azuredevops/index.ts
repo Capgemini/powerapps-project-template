@@ -137,6 +137,7 @@ class Main extends Generator {
 
     try {
       await scaffolder.scaffold({
+        personalAccessToken: this.answers.adoToken,
         applicationId: this.answers.applicationId,
         ciEnvironmentUrl: this.answers.ciUrl,
         clientName: this.answers.client,
