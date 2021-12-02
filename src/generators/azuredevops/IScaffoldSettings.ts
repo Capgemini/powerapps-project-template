@@ -1,6 +1,7 @@
 import { IPackageDetails } from './IPackageDetails';
 
 export interface IScaffoldSettings {
+  personalAccessToken: string;
   projectName: string;
   clientName: string;
   package: IPackageDetails;
