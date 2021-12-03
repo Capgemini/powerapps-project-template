@@ -1,4 +1,5 @@
 import { getPersonalAccessTokenHandler, WebApi } from 'azure-devops-node-api';
+import chalk from 'chalk';
 import inquirer from 'inquirer';
 import Generator from 'yeoman-generator';
 import {
@@ -151,10 +152,16 @@ class Main extends Generator {
         tenantId: this.answers.tenantId,
       });
       this.log('Done.');
-    } catch (e) {
-      this.log('Package generator encountered an error.');
-      await scaffolder.rollback(this.answers.adoProject);
-      this.log(e as string);
+    } catch (scaffoldError) {
+      this.log(chalk.red('Package generator encountered an error:'));
+      this.log(chalk.red(scaffoldError.toString()));
+      this.log('');
+      try {
+        await scaffolder.rollback(this.answers.adoProject);
+      } catch (rollbackError) {
+        this.log(chalk.red('Rollback failed:'));
+        this.log(chalk.red(rollbackError.toString()));
+      }
     }
   }
 
