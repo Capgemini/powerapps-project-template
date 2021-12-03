@@ -155,7 +155,7 @@ class Main extends Generator {
     } catch (scaffoldError) {
       this.log(chalk.red('Package generator encountered an error:'));
       this.log(chalk.red(scaffoldError.toString()));
-      this.log("")
+      this.log('');
       try {
         await scaffolder.rollback(this.answers.adoProject);
       } catch (rollbackError) {
