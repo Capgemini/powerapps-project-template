@@ -1,8 +1,10 @@
+const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
 const helpers = require("yeoman-test");
 
 const testGeneration = path.join(__dirname, "sample-with-solution");
+const testGenerationFiles = getAllFiles(testGeneration);
 
 describe("generator-powerapps-project:app", () => {
   let runResult;
@@ -26,12 +28,21 @@ describe("generator-powerapps-project:app", () => {
         })
     })
 
-    getAllFiles(testGeneration).map(file => {
-      const relativeFilePath = file.replace(testGeneration + "\\", "");
+    it("generates to correct files", () => {
+      assert.deepEqual(
+        getAllFiles(runResult.cwd), 
+        testGenerationFiles, 
+        "File list does not match."
+      );
+    });
 
-      it("file: " + relativeFilePath, () => {
-        runResult.assertFile(relativeFilePath);
-        runResult.assertFileContent(relativeFilePath, fs.readFileSync(file).toString());
+    testGenerationFiles.map(file => {
+      it(`generates ${file} content`, () => {
+        assertFileLines(
+          runResult.fs.read(file, 'utf8'),
+          fs.readFileSync(path.join(testGeneration, file), 'utf8'),
+          `${file} does not match.`
+        );
       });
     });
   });
@@ -54,29 +65,46 @@ describe("generator-powerapps-project:app", () => {
         })
     })
 
-    getAllFiles(testGeneration).map(file => {
-      const relativeFilePath = file.replace(testGeneration + "\\", "");
+    it("generates to correct files", () => {
+      assert.deepEqual(
+        getAllFiles(runResult.cwd),
+        testGenerationFiles,
+        "File list does not match."
+      );
+    });
 
-      it("file: " + relativeFilePath, () => {
-        runResult.assertFile(relativeFilePath);
-        runResult.assertFileContent(relativeFilePath, fs.readFileSync(file).toString());
+    testGenerationFiles.map(file => {
+      it(`generates ${file} content`, () => {
+        assertFileLines(
+          runResult.fs.read(file, 'utf8'),
+          fs.readFileSync(path.join(testGeneration, file), 'utf8'),
+          `${file} does not match.`
+        );
       });
     });
   })
 });
 
-function getAllFiles(dirPath, arrayOfFiles = []) {
-  const items = fs.readdirSync(dirPath)
+function getAllFiles(baseDir, dirPath = "", arrayOfFiles = []) {
+  const items = fs.readdirSync(path.join(baseDir, dirPath));
 
   items.map(file => {
-    const fileStats = fs.statSync(path.join(dirPath, file));
+    const fileStats = fs.statSync(path.join(baseDir, dirPath, file));
 
     if (fileStats.isDirectory()) {
-      arrayOfFiles = getAllFiles(path.join(dirPath, file), arrayOfFiles)
+      arrayOfFiles = getAllFiles(baseDir, path.join(dirPath, file), arrayOfFiles)
     } else {
       arrayOfFiles.push(path.join(dirPath, file))
     }
   });
 
   return arrayOfFiles
+}
+
+function assertFileLines(actualFileContent, expectedFileContent, message) {
+  assert.equal(
+    actualFileContent.replace(/\r?\n/g, '\n'), 
+    expectedFileContent.replace(/\r?\n/g, '\n'), 
+    message
+  );
 }
