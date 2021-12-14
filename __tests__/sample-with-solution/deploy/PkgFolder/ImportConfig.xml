@@ -3,7 +3,6 @@
   <solutions>
     <configsolutionfile deleteonly="false" forceUpgrade="false" overwriteunmanagedcustomizations="true" publishworkflowsandactivateplugins="true" solutionpackagefilename="test_TestPackage_TestSolution/test_TestPackage_TestSolution.zip" useAsync="true"/>
   </solutions>
-  <templateconfig>&#xD;
-  &#xD;
+  <templateconfig>
   </templateconfig>
 </configdatastorage>

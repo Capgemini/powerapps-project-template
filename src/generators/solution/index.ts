@@ -1,7 +1,7 @@
 import { raw } from 'guid';
 import inquirer from 'inquirer';
 import stripJsonComments from 'strip-json-comments';
-import { Builder, parseString } from 'xml2js';
+import xml2js from 'xml2js';
 import Generator from 'yeoman-generator';
 import { validatePacAuthProfile, validateUrl } from '../../common/utilities';
 
@@ -159,45 +159,42 @@ class Main extends Generator {
       'PkgFolder',
       'ImportConfig.xml',
     );
-    parseString(
-      this.fs.read(importConfigPath),
+    const importConfig = await xml2js.parseStringPromise(
+      this.fs.read(importConfigPath, 'utf8').replace(/\r\n/g, '\n'),
       { trim: true, includeWhiteChars: false, renderOpts: { pretty: true } },
-      (err, res) => {
-        if (err) {
-          throw err;
-        }
-        const solutions = res.configdatastorage.solutions[0];
-        const solutionElement = {
-          $: {
-            deleteonly: 'false',
-            forceUpgrade: 'false',
-            overwriteunmanagedcustomizations: true,
-            publishworkflowsandactivateplugins: true,
-            solutionpackagefilename: `${this.answers.solutionUniqueName}/${this.answers.solutionUniqueName}.zip`,
-            useAsync: 'true',
-          },
-        };
+    );
 
-        if (solutions.configsolutionfile) {
-          solutions.configsolutionfile.push(solutionElement);
-        } else {
-          res.configdatastorage.solutions = [
-            {
-              configsolutionfile: [solutionElement],
-            },
-          ];
-        }
-
-        this.fs.write(
-          importConfigPath,
-          new Builder({
-            explicitArray: true,
-            includeWhiteChars: false,
-            renderOpts: { pretty: true },
-            trim: true,
-          }).buildObject(res),
-        );
+    const solutions = importConfig.configdatastorage.solutions[0];
+    const solutionElement = {
+      $: {
+        deleteonly: 'false',
+        forceUpgrade: 'false',
+        overwriteunmanagedcustomizations: true,
+        publishworkflowsandactivateplugins: true,
+        solutionpackagefilename: `${this.answers.solutionUniqueName}/${this.answers.solutionUniqueName}.zip`,
+        useAsync: 'true',
       },
+    };
+
+    if (solutions.configsolutionfile) {
+      solutions.configsolutionfile.push(solutionElement);
+    } else {
+      importConfig.configdatastorage.solutions = [
+        {
+          configsolutionfile: [solutionElement],
+        },
+      ];
+    }
+
+    this.fs.write(
+      importConfigPath,
+      new xml2js.Builder({
+        explicitArray: true,
+        explicitChildren: true,
+        includeWhiteChars: false,
+        renderOpts: { pretty: true },
+        trim: true,
+      }).buildObject(importConfig),
     );
   };
 }
