@@ -13,7 +13,7 @@ class Main extends Generator {
 
     const { existingSolution } = await this.prompt([
       {
-        message: 'Does the solution already exist?',
+        message: 'Does the Dataverse solution already exist?',
         name: 'existingSolution',
         store: false,
         type: 'confirm',
@@ -24,7 +24,7 @@ class Main extends Generator {
       // Ask and store solution unique name.
       const { solutionUniqueName } = await this.prompt([
         {
-          message: 'What is the solution unique name?',
+          message: 'What is the solution *unique* name? This must exist in the development/staging environment.',
           name: 'solutionUniqueName',
           store: true,
         },
@@ -32,6 +32,8 @@ class Main extends Generator {
 
       this.answers.solutionUniqueName = solutionUniqueName;
     } else {
+      this.log('This following question answers will be used to build a solution unique name. This must be used when creating the solution within Dataverse.');
+
       // Ask questions to build solution unique name.
       const solutionParts = await this.prompt([
         {
@@ -52,32 +54,35 @@ class Main extends Generator {
       ]);
 
       this.answers.solutionUniqueName = `${solutionParts.prefix}_${solutionParts.package}_${solutionParts.solution}`;
+      this.log(`Solution unique name: ${this.answers.solutionUniqueName}. Please ensure the Dataverse solution is created with this value.`);
     }
+
+    this.log('The following questions are used to configure the solution development tasks including solution export.');
 
     const solutionConfig = await this.prompt([
       {
         message:
-          'Name of PAC Auth profile? This is used to export the solution locally. (please ensure this has been created with pac auth create -n <name> -u <url>)',
+          'Name of PAC Auth profile? This is used to export the solution locally. (please ensure this has been created with `pac auth create -n <name> -u <url>`)',
         name: 'pacProfile',
         store: false,
         validate: validatePacAuthProfile,
         when: !this.options?.chatbot,
       },
       {
-        message: 'Development environment URL?',
+        message: 'Development environment URL? (e.g. https://myenvironment.crm.dynamics.com)',
         name: 'environment',
         store: false,
         validate: validateUrl,
       },
       {
         message:
-          'Are changes to this solution promoted using a staging environment?',
+          'Are changes to this solution promoted using a staging environment? (if you aren\'t sure, read https://medium.com/capgemini-microsoft-team/continuous-integration-for-power-apps-the-development-hub-7f1b4320ecfd.)',
         name: 'hasStagingEnvironment',
         store: false,
         type: 'confirm',
       },
       {
-        message: 'Staging environment URL?',
+        message: 'Staging environment URL? (e.g. https://myenvironment.crm.dynamics.com)',
         name: 'stagingEnvironment',
         store: false,
         validate: validateUrl,

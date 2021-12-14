@@ -8,13 +8,13 @@ class Main extends Generator {
   public async prompting(): Promise<void> {
     this.answers = await this.prompt([
       {
-        message: 'Name of the client?',
+        message: 'Name of the client? (this will be used for naming various artifacts)',
         name: 'client',
         store: true,
         validate: validateNamespace,
       },
       {
-        message: 'Name of the package?',
+        message: 'Name of the package? (this will be used for naming various artifacts)',
         name: 'package',
         store: true,
       },
