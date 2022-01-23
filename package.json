@@ -55,7 +55,7 @@
     "guid": "0.0.12",
     "inquirer": "^8.2.0",
     "js-yaml": "^4.1.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^3.1.1",
     "renamer": "^1.1.4",
     "rimraf": "^2.7.1",
     "simple-git": "^2.38.0",
