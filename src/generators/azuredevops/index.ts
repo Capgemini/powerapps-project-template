@@ -162,10 +162,10 @@ class Main extends Generator {
         tenantId: this.answers.tenantId,
       });
       this.log('Done.');
-    } catch (e) {
+    } catch (error) {
       this.log('Package generator encountered an error.');
       await scaffolder.rollback(this.answers.adoProject);
-      this.log(e as string);
+      this.log(`${error}`);
     }
   }
 
