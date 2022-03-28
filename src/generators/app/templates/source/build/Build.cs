@@ -119,7 +119,7 @@ class Build : NukeBuild
 
            var metadataFolder = SolutionDirectory / "Extract";
            var mappingFilePath = SolutionDirectory / "ExtractMappingFile.xml";
-           Pac($"solution unpack -z {unmanagedSolutionPath} -f { metadataFolder } -p Both  -ad Yes -m { mappingFilePath }");
+           Pac($"solution unpack -z {unmanagedSolutionPath} -f { metadataFolder } -p Both  -ad true -m { mappingFilePath }");
 
            DeleteDirectory(outputDirectory);
        });
