@@ -40,7 +40,7 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
       throw new Error('An error occurred while creating repository.');
     }
 
-    await this.pushRepo(repoLocation, repo.remoteUrl!, adoToken);
+    await this.pushRepo(repoLocation, repo.sshUrl!, adoToken);
 
     return repo;
   }
