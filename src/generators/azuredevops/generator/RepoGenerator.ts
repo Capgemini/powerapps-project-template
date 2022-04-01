@@ -40,7 +40,10 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
       throw new Error('An error occurred while creating repository.');
     }
 
-    await this.pushRepo(repoLocation, repo.sshUrl!, adoToken);
+    const orgName = repo.remoteUrl!.split("/")[2].split(".")[0];
+    const repoUrl = `https://${orgName}:${adoToken}@dev.azure.com/${orgName}/${encodeURIComponent(projectName)}/_git/${repoName}`;
+
+    await this.pushRepo(repoLocation, repoUrl);
 
     return repo;
   }
@@ -69,7 +72,7 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
     return repository;
   }
 
-  private async pushRepo(repoLocation: string, gitUrl: string, adoToken: string) {
+  private async pushRepo(repoLocation: string, gitUrl: string) {
     this.log(`Pushing initial commit to ${gitUrl}`);
 
     const repo = Git(repoLocation);
@@ -77,7 +80,7 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
       .init(['--initial-branch', 'master'])
       .then(() => repo.add('.'))
       .then(() => repo.commit('Initial commit from template.'))
-      .then(() => repo.remote(['add', 'origin', gitUrl.replace('@', `:${adoToken}@`)]))
+      .then(() => repo.remote(['add', 'origin', gitUrl]))
       .then(() => repo.push('origin', undefined, ['--set-upstream', '--all']));
   }
 }
