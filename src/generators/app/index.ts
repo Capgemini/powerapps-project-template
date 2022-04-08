@@ -6,10 +6,6 @@ import { validateNamespace } from '../../common/utilities';
 class Main extends Generator {
   private answers!: inquirer.Answers;
 
-  public initializing() {
-    this.composeWith(require.resolve('../solution'), this.options);
-  }
-
   public async prompting(): Promise<void> {
     this.answers = await this.prompt([
       {
@@ -24,6 +20,7 @@ class Main extends Generator {
         store: true,
       },
     ]);
+    this.composeWith(require.resolve('../solution'), { ...this.options, client: this.answers.client, package: this.answers.package });
   }
 
   public writing(): void {
