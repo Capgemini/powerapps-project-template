@@ -1,0 +1,78 @@
+stages:
+  - stage: Build
+    displayName: 'Build'
+    pool:
+      vmImage: 'windows-latest'
+    jobs:
+      - job: BuildJob
+        displayName: 'Build'
+        variables:
+          - name: 'GitVersion.SemVer'
+            value: ''
+        steps:
+          - task: PowerShell@2
+            displayName: 'Add build tag for each updated solution'
+            inputs:
+              targetType: 'filePath'
+              errorActionPreference: 'stop'
+              filePath: 'pipelines/scripts/Add-BuildTagForEachUpdatedSolution.ps1'
+          - task: gitversion/setup@0
+            displayName: 'Install GitVersion'
+            inputs:
+              versionSpec: '5.x'
+          - task: gitversion/execute@0
+            displayName: 'Execute GitVersion'
+            inputs:
+              useConfigFile: true
+              configFilePath: '$(Build.SourcesDirectory)\GitVersion.yml'
+          - pwsh: Write-Host "##vso[task.setvariable variable=SemVer;isOutput=true]$(GitVersion.SemVer)"
+            displayName: 'Output SemVer variable'
+            name: OutputSemVerTask
+          - task: PowerShell@2
+            displayName: 'Build package'
+            inputs:
+              targetType: 'filePath'
+              filePath: './build.ps1'
+              arguments: '--target compile --solution-type managed'
+          - task: PowerShell@2
+            displayName: 'Build tests'
+            inputs:
+              targetType: 'filePath'
+              filePath: './build.ps1'
+              arguments: '--target compile-tests'
+          - task: VSTest@2
+            displayName: Run unit tests
+            inputs:
+              runInParallel: true
+              codeCoverageEnabled: true
+              runSettingsFile: tests/TestClient.TestPackage.UnitTests/unit.runsettings
+              testAssemblyVer2: |
+                **\*.UnitTests.dll
+                !**\*TestAdapter.dll
+                !**\obj\**
+              searchFolder: tests
+          - task: CopyFiles@2
+            displayName: 'Copy package to artifact staging directory'
+            inputs:
+              SourceFolder: 'deploy/bin/Release/net462'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)/package'
+          - task: CopyFiles@2
+            displayName: 'Copy integration tests to artifact staging directory'
+            inputs:
+              SourceFolder: 'tests\TestClient.TestPackage.IntegrationTests\bin\Debug\net48'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)/tests/integration'
+          - task: CopyFiles@2
+            displayName: 'Copy UI tests to artifact staging directory'
+            inputs:
+              SourceFolder: 'tests\TestClient.TestPackage.UiTests\bin\Debug\net48'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)/tests/ui'
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish package artifact'
+            inputs:
+                pathtoPublish: '$(Build.ArtifactStagingDirectory)/package'
+                artifactName: 'Package'
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish tests artifact'
+            inputs:
+                pathtoPublish: '$(Build.ArtifactStagingDirectory)/tests'
+                artifactName: 'Tests'

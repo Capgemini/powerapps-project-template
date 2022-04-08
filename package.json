@@ -37,11 +37,12 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.1",
-    "jest": "^23.5.0",
+    "mocha": "^9.1.3",
+    "nyc": "^15.1.0",
     "prettier": "^1.19.1",
     "typescript": "^3.9.10",
-    "yeoman-assert": "^3.1.0",
-    "yeoman-test": "^1.7.0",
+    "yeoman-assert": "^3.1.1",
+    "yeoman-test": "^6.2.0",
     "yo": "^4.3.0"
   },
   "dependencies": {
@@ -64,11 +65,28 @@
     "yeoman-generator": "^5.4.2",
     "yosay": "^2.0.2"
   },
-  "jest": {
-    "testEnvironment": "node"
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "**/.eslintrc.js",
+      "**/*.d.ts",
+      "**/*.test.*",
+      "**/__tests__",
+      "**/coverage",
+      "**/deploymentScripts",
+      "**/src/index.ts"
+    ],
+    "reporter": [
+      "text",
+      "lcov"
+    ],
+    "all": true
   },
   "scripts": {
-    "test": "jest",
+    "test": "nyc mocha __tests__/*.js",
     "build": "tsc && npm run copy-all",
     "clean": "del /s /q common && del /s /q generators",
     "copy-all": "npm run copy-ado-definitions && npm run copy-app-template && npm run copy-solution-template && npm run copy-pluginassembly-template && npm run copy-scripts-template && npm run copy-data-template && npm run copy-powerbi-template",

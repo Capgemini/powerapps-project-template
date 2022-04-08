@@ -1,0 +1,11 @@
+url: 
+browserOptions: 
+  browserType: Chrome
+  headless: true
+  width: 1920
+  height: 1080
+  startMaximized: false
+users: 
+  - username: 
+    password: 
+    alias: 

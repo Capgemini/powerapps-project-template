@@ -1,6 +1,5 @@
 import { raw } from 'guid';
 import inquirer from 'inquirer';
-import Renamer from 'renamer';
 import stripJsonComments from 'strip-json-comments';
 import { Builder, parseString } from 'xml2js';
 import Generator from 'yeoman-generator';

@@ -1,0 +1,100 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <AssemblyTitle>TestClient.TestPackage.Deployment</AssemblyTitle>
+    <CodeAnalysisRuleSet>TestClient.TestPackage.Deployment.ruleset</CodeAnalysisRuleSet>
+    <Configurations>Debug;Release;Test</Configurations>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <SolutionProjectsToBuild Include="../src/**/*.cdsproj" Visible="false" />
+  </ItemGroup>
+  <Target Condition="'$(Configuration)'!='Test'" Name="PackSolutions" BeforeTargets="Build">
+    <Exec Command="dotnet build %(SolutionProjectsToBuild.FullPath) --configuration $(Configuration)" />
+    <!-- Using Exec as the MSBuild task was failing from a clean build.
+    <MSBuild Projects="@(SolutionProjectsToBuild)" Targets="Restore" />
+    <MSBuild Projects="@(SolutionProjectsToBuild)" Targets="Build" /> -->
+  </Target>
+  <Target Condition="'$(Configuration)'!='Test' And '@(SolutionProjectsToBuild->Count())' &gt; 0" Name="CopySolutionsToPackageFolder" AfterTargets="Build">
+    <ItemGroup>
+      <SolutionsToPack Include="../src/solutions/*/bin/$(Configuration)/*.zip" Visible="false" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(SolutionsToPack)" 
+      DestinationFiles="@(SolutionsToPack->'$(OutputPath)\PkgFolder\%(Filename)\%(Filename)%(Extension)')" />
+  </Target>
+  <Target Condition="'$(Configuration)'!='Test'" Name="CopyDataToPackageFolder" AfterTargets="Build">
+    <ItemGroup>
+      <DataToPack Include="../src/solutions/*/data/**/*.*" Visible="false" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(DataToPack)" 
+      DestinationFiles="@(DataToPack->'$(OutputPath)\PkgFolder\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.29">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CrmSdk.Deployment" Version="9.0.2.29">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CrmSdk.Workflow" Version="9.0.2.28">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CrmSdk.XrmTooling.CoreAssembly" Version="9.1.0.68">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CrmSdk.XrmTooling.PackageDeployment" Version="9.1.0.46">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.20" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Capgemini.PowerApps.PackageDeployerTemplate" Version="0.3.4" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Activities.Presentation" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Workflow.Activities" />
+    <Reference Include="System.Workflow.ComponentModel" />
+    <Reference Include="System.Workflow.Runtime" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestClient.TestPackage.Deployment.ruleset" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="PkgFolder\ImportConfig.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

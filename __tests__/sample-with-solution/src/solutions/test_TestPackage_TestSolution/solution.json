@@ -1,0 +1,5 @@
+{
+  "DevelopmentProfile": "test",
+  "environment": "https://dev.com",
+  "stagingEnvironment": "https://staging.com"
+}

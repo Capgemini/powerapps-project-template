@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configdatastorage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" installsampledata="false" waitforsampledatatoinstall="true" agentdesktopzipfile="" agentdesktopexename="" crmmigdataimportfile="">
+  <solutions>
+    <configsolutionfile deleteonly="false" forceUpgrade="false" overwriteunmanagedcustomizations="true" publishworkflowsandactivateplugins="true" solutionpackagefilename="test_TestPackage_TestSolution/test_TestPackage_TestSolution.zip" useAsync="true"/>
+  </solutions>
+  <templateconfig>&#xD;
+  &#xD;
+  </templateconfig>
+</configdatastorage>
