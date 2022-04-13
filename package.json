@@ -99,6 +99,6 @@
     "copy-data-template": "copyfiles -a -u 4 \"src/generators/data/templates/**/*\" \"generators/data/templates\" -V",
     "copy-powerbi-template": "copyfiles -a -u 4 \"src/generators/powerbi/templates/**/*\" \"generators/powerbi/templates\" -V",
     "clean-debug": "npx rimraf debug",
-    "lint": "eslint .eslintrc.js ./src"
+    "lint": "eslint .eslintrc.js ./src ./__tests__/"
   }
 }
