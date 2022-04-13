@@ -44,6 +44,12 @@ jobs:
         inputs:
           command: custom
           customCommand: run build
+          
+      - task: Npm@1
+        displayName: Test Package
+        inputs:
+          command: custom
+          customCommand: run test
 
       - task: WhiteSource Bolt@20
         displayName: Detect security and licence issues
