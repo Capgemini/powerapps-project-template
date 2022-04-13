@@ -51,10 +51,9 @@ jobs:
           command: custom
           customCommand: run test
 
-      - task: WhiteSource Bolt@20
-        displayName: Detect security and licence issues
+      - task: WhiteSource@21
         inputs:
-          cwd: "$(Build.SourcesDirectory)"
+          cwd: '$(System.DefaultWorkingDirectory)'
 
       - task: Npm@1
         displayName: Pack Package
