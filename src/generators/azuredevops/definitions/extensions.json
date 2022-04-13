@@ -5,7 +5,7 @@
   },
   {
     "publisher": "sariftools",
-    "name": "sarif-viewer-build-tab"
+    "name": "scans"
   },
   {
     "publisher": "gittools",
