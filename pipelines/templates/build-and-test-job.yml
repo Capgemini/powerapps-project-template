@@ -51,9 +51,11 @@ jobs:
           command: custom
           customCommand: run test
 
-      - task: WhiteSource@21
-        inputs:
-          cwd: '$(System.DefaultWorkingDirectory)'
+      # Version 20 has been deprecated and never completes while version 21 requires activation within the org.
+      
+      # - task: WhiteSource@21
+      #   inputs:
+      #     cwd: '$(System.DefaultWorkingDirectory)'
 
       - task: Npm@1
         displayName: Pack Package
