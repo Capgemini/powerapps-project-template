@@ -60,7 +60,7 @@
     "js-yaml": "^4.1.0",
     "node-fetch": "^2.6.0",
     "renamer": "^1.1.4",
-    "simple-git": "^2.38.0",
+    "simple-git": "^3.5.0",
     "strip-json-comments": "^3.1.0",
     "xml2js": "^0.4.23",
     "yeoman-generator": "^5.4.2",
