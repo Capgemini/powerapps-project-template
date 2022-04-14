@@ -28,6 +28,7 @@
     "@types/js-yaml": "^4.0.3",
     "@types/node": "^10.17.24",
     "@types/node-fetch": "^2.5.7",
+    "@types/rimraf": "^2.0.4",
     "@types/strip-json-comments": "0.0.30",
     "@types/xml2js": "^0.4.5",
     "@types/yeoman-generator": "^3.1.4",
@@ -48,7 +49,6 @@
     "yo": "^4.3.0"
   },
   "dependencies": {
-    "@types/rimraf": "^2.0.4",
     "azure-devops-node-api": "^7.2.0",
     "chalk": "^4.1.2",
     "ejs": "^2.7.4",
