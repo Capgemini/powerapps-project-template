@@ -31,6 +31,8 @@ jobs:
       - task: Npm@1
         displayName: Install NPM Dependencies
         inputs:
+          command: custom
+          customCommand: ci
           verbose: true
 
       - task: Npm@1
