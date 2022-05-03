@@ -31,6 +31,8 @@ jobs:
       - task: Npm@1
         displayName: Install NPM Dependencies
         inputs:
+          command: custom
+          customCommand: ci
           verbose: true
 
       - task: Npm@1
@@ -44,11 +46,18 @@ jobs:
         inputs:
           command: custom
           customCommand: run build
-
-      - task: WhiteSource Bolt@20
-        displayName: Detect security and licence issues
+          
+      - task: Npm@1
+        displayName: Test Package
         inputs:
-          cwd: "$(Build.SourcesDirectory)"
+          command: custom
+          customCommand: run test
+
+      # Version 20 has been deprecated and never completes while version 21 requires activation within the org.
+      
+      # - task: WhiteSource@21
+      #   inputs:
+      #     cwd: '$(System.DefaultWorkingDirectory)'
 
       - task: Npm@1
         displayName: Pack Package

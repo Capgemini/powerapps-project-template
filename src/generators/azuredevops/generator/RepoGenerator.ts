@@ -27,6 +27,7 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
     projectName: string,
     repoName: string,
     repoLocation: string,
+    adoToken: string,
   ): Promise<GitRepository> {
     this.log('Generating repository...');
     this.repoLocation = repoLocation;
@@ -39,7 +40,10 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
       throw new Error('An error occurred while creating repository.');
     }
 
-    await this.pushRepo(repoLocation, repo.remoteUrl!);
+    const orgName = repo.remoteUrl!.split('/')[2].split('.')[0];
+    const repoUrl = `https://${orgName}:${adoToken}@dev.azure.com/${orgName}/${encodeURIComponent(projectName)}/_git/${repoName}`;
+
+    await this.pushRepo(repoLocation, repoUrl);
 
     return repo;
   }

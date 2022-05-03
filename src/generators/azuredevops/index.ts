@@ -19,16 +19,18 @@ class Main extends Generator {
   private conn?: WebApi = undefined;
 
   public async prompting(): Promise<void> {
+    this.log('The following questions are used to connect to your Azure DevOps project. You will need to be a project administrator to complete this activity.');
+
     const adoAnswers = await this.prompt([
       {
-        message: 'Azure DevOps URL?',
+        message: 'Azure DevOps URL? (e.g. https://dev.azure.com/my-organisation)',
         name: 'adoUrl',
         store: true,
         validate: validateUrl,
       },
       {
         mask: '*',
-        message: 'Azure DevOps auth token (manage)?',
+        message: 'Azure DevOps PAC Token with full access? (how to: https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page#create-a-pat, recommendation to expire this tomorrow or manually after the generator has completed)',
         name: 'adoToken',
         store: false,
         type: 'password',
@@ -53,13 +55,13 @@ class Main extends Generator {
         type: 'list',
       },
       {
-        message: 'Name of the client?',
+        message: 'Name of the client? (this will be used for naming various artifacts)',
         name: 'client',
         store: true,
         validate: validateNamespace,
       },
       {
-        message: 'Name of the package?',
+        message: 'Name of the package? (this will be used for naming various artifacts)',
         name: 'package',
         store: true,
         validate: (input: any, answers: any) => this.validatePackage(input, answers!, adoAnswers),
@@ -72,25 +74,14 @@ class Main extends Generator {
     packageAnswers.package = packageAnswers.package.replace(/\s/g, '');
     packageAnswers.client = packageAnswers.client.replace(/\s/g, '');
 
+    this.log('The following questions will used to configure continuous integration and deployment. This requires an application user to be created which can be done following this guides: https://docs.microsoft.com/en-us/powerapps/developer/data-platform/walkthrough-register-app-azure-active-directory https://docs.microsoft.com/en-us/power-platform/admin/manage-application-users#create-an-application-user');
+
     const connectionAnswers = await this.prompt([
       {
-        message: 'CI environment URL?',
+        message: 'CI environment URL? (e.g. https://myenvironment.crm.dynamics.com)',
         name: 'ciUrl',
         store: true,
         validate: validateUrl,
-      },
-      {
-        message: 'Service account email?',
-        name: 'serviceAccountUsername',
-        store: true,
-        validate: validateEmail,
-      },
-      {
-        mask: '*',
-        message: 'Service account password?',
-        name: 'serviceAccountPassword',
-        store: false,
-        type: 'password',
       },
       {
         message: 'Tenant ID?',
@@ -113,10 +104,29 @@ class Main extends Generator {
       },
     ]);
 
+    this.log('These final questions are used by the integration and UI test projects within the CI pipeline. These values are stored in `Integration Tests` variable group.');
+
+    const testingCredentials = await this.prompt([
+      {
+        message: 'Service account email?',
+        name: 'serviceAccountUsername',
+        store: true,
+        validate: validateEmail,
+      },
+      {
+        mask: '*',
+        message: 'Service account password?',
+        name: 'serviceAccountPassword',
+        store: false,
+        type: 'password',
+      },
+    ]);
+
     this.answers = {
       ...adoAnswers,
       ...packageAnswers,
       ...connectionAnswers,
+      ...testingCredentials,
     };
   }
 
@@ -137,6 +147,7 @@ class Main extends Generator {
 
     try {
       await scaffolder.scaffold({
+        personalAccessToken: this.answers.adoToken,
         applicationId: this.answers.applicationId,
         ciEnvironmentUrl: this.answers.ciUrl,
         clientName: this.answers.client,
@@ -154,13 +165,13 @@ class Main extends Generator {
       this.log('Done.');
     } catch (scaffoldError) {
       this.log(chalk.red('Package generator encountered an error:'));
-      this.log(chalk.red(scaffoldError.toString()));
+      this.log(chalk.red((scaffoldError as Error).toString()));
       this.log('');
       try {
         await scaffolder.rollback(this.answers.adoProject);
       } catch (rollbackError) {
         this.log(chalk.red('Rollback failed:'));
-        this.log(chalk.red(rollbackError.toString()));
+        this.log(chalk.red((rollbackError as Error).toString()));
       }
     }
   }

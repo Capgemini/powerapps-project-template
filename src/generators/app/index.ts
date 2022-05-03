@@ -1,5 +1,4 @@
 import inquirer from 'inquirer';
-import Renamer from 'renamer';
 import Generator from 'yeoman-generator';
 import { validateNamespace } from '../../common/utilities';
 
@@ -9,17 +8,18 @@ class Main extends Generator {
   public async prompting(): Promise<void> {
     this.answers = await this.prompt([
       {
-        message: 'Name of the client?',
+        message: 'Name of the client? (this will be used for naming various artifacts)',
         name: 'client',
         store: true,
         validate: validateNamespace,
       },
       {
-        message: 'Name of the package?',
+        message: 'Name of the package? (this will be used for naming various artifacts)',
         name: 'package',
         store: true,
       },
     ]);
+    this.composeWith(require.resolve('../solution'), { ...this.options, client: this.answers.client, package: this.answers.package });
   }
 
   public writing(): void {
@@ -30,23 +30,12 @@ class Main extends Generator {
       this.destinationPath(),
       this.answers,
       {},
-      { globOptions: { dot: true } },
+      {
+        globOptions: { dot: true },
+        processDestinationPath:
+          (destinationPath: string) => destinationPath.replace(/Client.Package/g, `${this.answers.client}.${this.answers.package}`),
+      },
     );
-  }
-
-  public async install() {
-    this.log('Renaming file and folders...');
-
-    const rootNamespace = `${this.answers.client}.${
-      this.answers.package
-    }`.replace(/\s/g, '');
-
-    new Renamer().rename({
-      dryRun: false,
-      files: [`${this.destinationPath()}/**/*`],
-      find: 'Client.Package',
-      replace: rootNamespace,
-    });
   }
 }
 

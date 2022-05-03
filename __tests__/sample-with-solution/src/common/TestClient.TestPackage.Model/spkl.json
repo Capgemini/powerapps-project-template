@@ -1,0 +1,14 @@
+{
+  "earlyboundtypes": [
+    {
+      "entities": "",
+      "actions": "",
+      "generateOptionsetEnums": true,
+      "generateStateEnums": true,
+      "generateGlobalOptionsets": true,
+      "filename": "TestPackageContext.cs",
+      "classNamespace": "TestClient.TestPackage.Model",
+      "serviceContextName": "TestPackageContext"
+    }
+  ]
+}

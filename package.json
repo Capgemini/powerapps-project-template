@@ -28,24 +28,27 @@
     "@types/js-yaml": "^4.0.3",
     "@types/node": "^10.17.24",
     "@types/node-fetch": "^2.5.7",
+    "@types/rimraf": "^2.0.4",
     "@types/strip-json-comments": "0.0.30",
     "@types/xml2js": "^0.4.5",
     "@types/yeoman-generator": "^3.1.4",
     "@types/yosay": "0.0.29",
     "@typescript-eslint/eslint-plugin": "^4.29.2",
     "@typescript-eslint/parser": "^4.29.2",
+    "copyfiles": "^2.4.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.1",
-    "jest": "^23.5.0",
+    "mocha": "^9.1.3",
+    "nyc": "^15.1.0",
     "prettier": "^1.19.1",
+    "rimraf": "^2.7.1",
     "typescript": "^3.9.10",
-    "yeoman-assert": "^3.1.0",
-    "yeoman-test": "^1.7.0",
+    "yeoman-assert": "^3.1.1",
+    "yeoman-test": "^6.3.0",
     "yo": "^4.3.0"
   },
   "dependencies": {
-    "@types/rimraf": "^2.0.4",
     "azure-devops-node-api": "^7.2.0",
     "chalk": "^4.1.2",
     "ejs": "^2.7.4",
@@ -57,29 +60,45 @@
     "js-yaml": "^4.1.0",
     "node-fetch": "^2.6.0",
     "renamer": "^1.1.4",
-    "rimraf": "^2.7.1",
-    "simple-git": "^2.38.0",
+    "simple-git": "^3.5.0",
     "strip-json-comments": "^3.1.0",
     "xml2js": "^0.4.23",
     "yeoman-generator": "^5.4.2",
     "yosay": "^2.0.2"
   },
-  "jest": {
-    "testEnvironment": "node"
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "**/.eslintrc.js",
+      "**/*.d.ts",
+      "**/*.test.*",
+      "**/__tests__",
+      "**/coverage",
+      "**/deploymentScripts",
+      "**/src/index.ts"
+    ],
+    "reporter": [
+      "text",
+      "lcov"
+    ],
+    "all": true
   },
   "scripts": {
-    "test": "jest",
+    "test": "nyc mocha __tests__/*.js",
     "build": "tsc && npm run copy-all",
     "clean": "del /s /q common && del /s /q generators",
     "copy-all": "npm run copy-ado-definitions && npm run copy-app-template && npm run copy-solution-template && npm run copy-pluginassembly-template && npm run copy-scripts-template && npm run copy-data-template && npm run copy-powerbi-template",
-    "copy-ado-definitions": "xcopy \"src\\generators\\azuredevops\\definitions\" \"generators\\azuredevops\\definitions\" /I /y",
-    "copy-app-template": "xcopy \"src\\generators\\app\\templates\" \"generators\\app\\templates\" /I /S /y",
-    "copy-solution-template": "xcopy \"src\\generators\\solution\\templates\" \"generators\\solution\\templates\" /I /S /y",
-    "copy-pluginassembly-template": "xcopy \"src\\generators\\pluginassembly\\templates\" \"generators\\pluginassembly\\templates\" /I /S /y",
-    "copy-scripts-template": "xcopy \"src\\generators\\scripts\\templates\" \"generators\\scripts\\templates\" /I /S /y",
-    "copy-data-template": "xcopy \"src\\generators\\data\\templates\" \"generators\\data\\templates\" /I /S /y",
-    "copy-powerbi-template": "xcopy \"src\\generators\\powerbi\\templates\" \"generators\\powerbi\\templates\" /I /S /y",
-    "clean-debug": "del /S /q debug\\*",
-    "lint": "eslint .eslintrc.js ./src"
+    "copy-ado-definitions": "copyfiles -a -u 4 \"src/generators/azuredevops/definitions/**/*\" \"generators/azuredevops/definitions\" -V",
+    "copy-app-template": "copyfiles -a -u 4 \"src/generators/app/templates/**/*\" \"generators/app/templates\" -V",
+    "copy-solution-template": "copyfiles -a -u 4 \"src/generators/solution/templates/**/*\" \"generators/solution/templates\" -V",
+    "copy-pluginassembly-template": "copyfiles -a -u 4 \"src/generators/pluginassembly/templates/**/*\" \"generators/pluginassembly/templates\" -V",
+    "copy-scripts-template": "copyfiles -a -u 4 \"src/generators/scripts/templates/**/*\" \"generators/scripts/templates\" -V",
+    "copy-data-template": "copyfiles -a -u 4 \"src/generators/data/templates/**/*\" \"generators/data/templates\" -V",
+    "copy-powerbi-template": "copyfiles -a -u 4 \"src/generators/powerbi/templates/**/*\" \"generators/powerbi/templates\" -V",
+    "clean-debug": "npx rimraf debug",
+    "lint": "eslint .eslintrc.js ./src ./__tests__/"
   }
 }

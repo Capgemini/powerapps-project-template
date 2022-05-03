@@ -1,9 +1,11 @@
 /node_modules
-/coverage
-/test_results
 
 /common
 /generators
-/debug
+/debug*/
 
 .vscode/settings.json
+
+# Tests output
+/.nyc_output
+/coverage

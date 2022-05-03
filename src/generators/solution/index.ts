@@ -1,65 +1,96 @@
 import { raw } from 'guid';
 import inquirer from 'inquirer';
-import Renamer from 'renamer';
 import stripJsonComments from 'strip-json-comments';
-import { Builder, parseString } from 'xml2js';
+import xml2js from 'xml2js';
 import Generator from 'yeoman-generator';
-import { validatePacAuthProfile } from '../../common/utilities';
+import { validatePacAuthProfile, validateUrl } from '../../common/utilities';
 
 class Main extends Generator {
   private answers!: inquirer.Answers;
 
   public async prompting(): Promise<void> {
-    this.answers = await this.prompt([
+    this.answers = {};
+
+    const { existingSolution } = await this.prompt([
       {
-        message: 'Publisher prefix?',
-        name: 'prefix',
-        store: true,
+        message: 'Does the Dataverse solution already exist?',
+        name: 'existingSolution',
+        store: false,
+        type: 'confirm',
       },
+    ]);
+
+    if (existingSolution) {
+      // Ask and store solution unique name.
+      const { solutionUniqueName } = await this.prompt([
+        {
+          message: 'What is the solution *unique* name? This must exist in the development/staging environment.',
+          name: 'solutionUniqueName',
+          store: true,
+        },
+      ]);
+
+      this.answers.solutionUniqueName = solutionUniqueName;
+    } else {
+      this.log('This following question answers will be used to build a solution unique name. This must be used when creating the solution within Dataverse.');
+
+      // Ask questions to build solution unique name.
+      const solutionParts = await this.prompt([
+        {
+          message: 'Publisher prefix?',
+          name: 'prefix',
+          store: true,
+        },
+        {
+          message: 'Name of the package?',
+          name: 'package',
+          store: true,
+        },
+        {
+          message: 'Name of the solution?',
+          name: 'solution',
+          store: true,
+        },
+      ]);
+
+      this.answers.solutionUniqueName = `${solutionParts.prefix}_${solutionParts.package}_${solutionParts.solution}`;
+      this.log(`Solution unique name: ${this.answers.solutionUniqueName}. Please ensure the Dataverse solution is created with this value.`);
+    }
+
+    this.log('The following questions are used to configure the solution development tasks including solution export.');
+
+    const solutionConfig = await this.prompt([
       {
-        message: 'Name of the client?',
-        name: 'client',
-        store: true,
-      },
-      {
-        message: 'Name of the package?',
-        name: 'package',
-        store: true,
-      },
-      {
-        message: 'Name of the solution?',
-        name: 'solution',
-        store: true,
-      },
-      {
-        message: 'Name of PAC Auth profile? This is used to export the solution locally. (please ensure this has been created with pac auth create -n <name> -u <url>)',
+        message:
+          'Name of PAC Auth profile? This is used to export the solution locally. (please ensure this has been created with `pac auth create -n <name> -u <url>`)',
         name: 'pacProfile',
         store: false,
         validate: validatePacAuthProfile,
+        when: !this.options?.chatbot,
       },
       {
-        message: 'Development environment URL?',
+        message: 'Development environment URL? (e.g. https://myenvironment.crm.dynamics.com)',
         name: 'environment',
         store: false,
+        validate: validateUrl,
       },
       {
-        message: 'Are changes to this solution promoted using a staging environment?',
+        message:
+          'Are changes to this solution promoted using a staging environment? (if you aren\'t sure, read https://medium.com/capgemini-microsoft-team/continuous-integration-for-power-apps-the-development-hub-7f1b4320ecfd.)',
         name: 'hasStagingEnvironment',
         store: false,
         type: 'confirm',
       },
       {
-        message: 'Staging environment URL?',
+        message: 'Staging environment URL? (e.g. https://myenvironment.crm.dynamics.com)',
         name: 'stagingEnvironment',
         store: false,
+        validate: validateUrl,
         when: (answers: any) => answers.hasStagingEnvironment,
       },
     ]);
 
-    this.answers.client = this.answers.client.replace(/\s/g, '');
-    this.answers.package = this.answers.package.replace(/\s/g, '');
-    this.answers.solution = this.answers.solution.replace(/\s/g, '');
-    this.answers.solutionUniqueName = `${this.answers.prefix}_${this.answers.package}_${this.answers.solution}`;
+    this.answers = { ...this.answers, ...solutionConfig };
     this.answers.projectGuid = raw();
   }
 
@@ -70,15 +101,6 @@ class Main extends Generator {
     this.updateImportConfig();
   }
 
-  public async install() {
-    this.renameFileAndFolders([
-      { from: '{{Client}}', to: this.answers.client },
-      { from: '{{Package}}', to: this.answers.package },
-      { from: '{{Solution}}', to: this.answers.solution },
-      { from: '{{prefix}}', to: this.answers.prefix },
-    ]);
-  }
-
   private writeSource = () => {
     this.log('Writing solution from template...');
     this.fs.copyTpl(
@@ -86,7 +108,11 @@ class Main extends Generator {
       this.destinationPath('src', 'solutions'),
       this.answers,
       {},
-      { globOptions: { dot: true } },
+      {
+        globOptions: { dot: true },
+        processDestinationPath:
+          (destinationPath: string) => destinationPath.replace(/{{solutionUniqueName}}/g, this.answers.solutionUniqueName),
+      },
     );
   };
 
@@ -103,7 +129,12 @@ class Main extends Generator {
     }
 
     this.fs.writeJSON(
-      this.destinationPath('src', 'solutions', '{{prefix}}_{{Package}}_{{Solution}}', 'solution.json'),
+      this.destinationPath(
+        'src',
+        'solutions',
+        this.answers.solutionUniqueName,
+        'solution.json',
+      ),
       solutionConfig,
     );
   };
@@ -116,10 +147,7 @@ class Main extends Generator {
     const tasks = JSON.parse(stripJsonComments(tasksString));
     tasks.inputs
       .find((input: { id: string }) => input.id === 'solution')
-      .options.push(
-        `${this.answers.prefix}_${this.answers.package}_${this.answers.solution
-        }`,
-      );
+      .options.push(this.answers.solutionUniqueName);
     this.fs.writeJSON(this.destinationPath('.vscode', 'tasks.json'), tasks);
   };
 
@@ -131,66 +159,43 @@ class Main extends Generator {
       'PkgFolder',
       'ImportConfig.xml',
     );
-    parseString(
-      this.fs.read(importConfigPath),
+    const importConfig = await xml2js.parseStringPromise(
+      this.fs.read(importConfigPath, 'utf8').replace(/\r\n/g, '\n'),
       { trim: true, includeWhiteChars: false, renderOpts: { pretty: true } },
-      (err, res) => {
-        if (err) {
-          throw err;
-        }
-        const solutions = res.configdatastorage.solutions[0];
-        const solutionFullName = `${this.answers.prefix}_${this.answers.package}_${this.answers.solution}`;
-        const solutionElement = {
-          $: {
-            deleteonly: 'false',
-            forceUpgrade: 'false',
-            overwriteunmanagedcustomizations: true,
-            publishworkflowsandactivateplugins: true,
-            solutionpackagefilename: `${solutionFullName}/${solutionFullName}.zip`,
-            useAsync: 'true',
-          },
-        };
-
-        if (solutions.configsolutionfile) {
-          solutions.configsolutionfile.push(solutionElement);
-        } else {
-          res.configdatastorage.solutions = [
-            {
-              configsolutionfile: [solutionElement],
-            },
-          ];
-        }
-
-        this.fs.write(
-          importConfigPath,
-          new Builder({
-            explicitArray: true,
-            includeWhiteChars: false,
-            renderOpts: { pretty: true },
-            trim: true,
-          }).buildObject(res),
-        );
-      },
     );
-  };
 
-  private renameFileAndFolders = (
-    rules: Array<{ from: string; to: string }>,
-  ) => {
-    this.log('Renaming file and folders...');
+    const solutions = importConfig.configdatastorage.solutions[0];
+    const solutionElement = {
+      $: {
+        deleteonly: 'false',
+        forceUpgrade: 'false',
+        overwriteunmanagedcustomizations: true,
+        publishworkflowsandactivateplugins: true,
+        solutionpackagefilename: `${this.answers.solutionUniqueName}/${this.answers.solutionUniqueName}.zip`,
+        useAsync: 'true',
+      },
+    };
 
-    const renamer = new Renamer();
+    if (solutions.configsolutionfile) {
+      solutions.configsolutionfile.push(solutionElement);
+    } else {
+      importConfig.configdatastorage.solutions = [
+        {
+          configsolutionfile: [solutionElement],
+        },
+      ];
+    }
 
-    rules.forEach((rule) => {
-      this.log(`From ${rule.from} to ${rule.to}.`);
-
-      renamer.rename({
-        dryRun: false,
-        files: [`${this.destinationPath()}/src/solutions/**/*`],
-        find: rule.from,
-        replace: rule.to,
-      });
-    });
+    this.fs.write(
+      importConfigPath,
+      new xml2js.Builder({
+        explicitArray: true,
+        explicitChildren: true,
+        includeWhiteChars: false,
+        renderOpts: { pretty: true },
+        trim: true,
+      }).buildObject(importConfig),
+    );
   };
 }
 
