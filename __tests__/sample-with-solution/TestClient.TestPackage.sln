@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2042
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66632694-4D0C-4007-B7AC-059E9BCC5932}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{2A6CAD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E0325506-7C79-41A6-AD29-B31ABC678C9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.TestPackage.Deployment", "deploy\TestClient.TestPackage.Deployment.csproj", "{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient.TestPackage.Deployment", "deploy\TestClient.TestPackage.Deployment.csproj", "{4E0FEC5A-48CA-423F-B581-86B12F3A0E7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{4FAC9E73-87B5-48C3-912B-AFFCDCED63B9}"
 EndProject
@@ -30,25 +30,17 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TestClient.TestPackage.Busi
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TestClient.TestPackage.Repositories", "src\common\TestClient.TestPackage.Repositories\TestClient.TestPackage.Repositories.shproj", "{56D657E2-2DB7-4489-AD26-CA2E147836C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.TestPackage.Container", "src\common\TestClient.TestPackage.Container\TestClient.TestPackage.Container.csproj", "{F9E5EF62-5BDF-4E36-8027-D265754B56C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient.TestPackage.Container", "src\common\TestClient.TestPackage.Container\TestClient.TestPackage.Container.csproj", "{F9E5EF62-5BDF-4E36-8027-D265754B56C7}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TestClient.TestPackage.Model", "src\common\TestClient.TestPackage.Model\TestClient.TestPackage.Model.shproj", "{70363B14-5D32-4BD6-AA74-A1CA3373C087}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.TestPackage.IntegrationTests", "tests\TestClient.TestPackage.IntegrationTests\TestClient.TestPackage.IntegrationTests.csproj", "{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient.TestPackage.IntegrationTests", "tests\TestClient.TestPackage.IntegrationTests\TestClient.TestPackage.IntegrationTests.csproj", "{FD08C829-9610-4141-8C8F-0CDB7DCDDB57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.TestPackage.UiTests", "tests\TestClient.TestPackage.UiTests\TestClient.TestPackage.UiTests.csproj", "{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient.TestPackage.UiTests", "tests\TestClient.TestPackage.UiTests\TestClient.TestPackage.UiTests.csproj", "{D4F155F1-411E-4C63-95F6-F0F9D9D450DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.TestPackage.UnitTests", "tests\TestClient.TestPackage.UnitTests\TestClient.TestPackage.UnitTests.csproj", "{F9924F3A-AF7A-408B-BF7E-4833CA103E70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient.TestPackage.UnitTests", "tests\TestClient.TestPackage.UnitTests\TestClient.TestPackage.UnitTests.csproj", "{F9924F3A-AF7A-408B-BF7E-4833CA103E70}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\common\TestClient.TestPackage.BusinessLogic\TestClient.TestPackage.BusinessLogic.projitems*{2b1ef6de-63cc-4b7e-9bf6-5d9b4c0afded}*SharedItemsImports = 13
-		src\common\TestClient.TestPackage.Repositories\TestClient.TestPackage.Repositories.projitems*{56d657e2-2db7-4489-ad26-ca2e147836c6}*SharedItemsImports = 13
-		src\common\TestClient.TestPackage.Model\TestClient.TestPackage.Model.projitems*{70363b14-5d32-4bd6-aa74-a1ca3373c087}*SharedItemsImports = 13
-		src\common\TestClient.TestPackage.BusinessLogic\TestClient.TestPackage.BusinessLogic.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 4
-		src\common\TestClient.TestPackage.Model\TestClient.TestPackage.Model.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 4
-		src\common\TestClient.TestPackage.Repositories\TestClient.TestPackage.Repositories.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Deploy|Any CPU = Deploy|Any CPU
@@ -96,13 +88,6 @@ Global
 		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9924F3A-AF7A-408B-BF7E-4833CA103E70}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{94FCD8F7-FF8D-43D5-97C2-56861BAB45BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94FCD8F7-FF8D-43D5-97C2-56861BAB45BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94FCD8F7-FF8D-43D5-97C2-56861BAB45BB}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
-		{94FCD8F7-FF8D-43D5-97C2-56861BAB45BB}.Deploy|Any CPU.Build.0 = Debug|Any CPU
-		{94FCD8F7-FF8D-43D5-97C2-56861BAB45BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94FCD8F7-FF8D-43D5-97C2-56861BAB45BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94FCD8F7-FF8D-43D5-97C2-56861BAB45BB}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,5 +105,13 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3D6A7645-2C64-4610-BC84-6AD17AA98B71}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\common\TestClient.TestPackage.BusinessLogic\TestClient.TestPackage.BusinessLogic.projitems*{2b1ef6de-63cc-4b7e-9bf6-5d9b4c0afded}*SharedItemsImports = 13
+		src\common\TestClient.TestPackage.Repositories\TestClient.TestPackage.Repositories.projitems*{56d657e2-2db7-4489-ad26-ca2e147836c6}*SharedItemsImports = 13
+		src\common\TestClient.TestPackage.Model\TestClient.TestPackage.Model.projitems*{70363b14-5d32-4bd6-aa74-a1ca3373c087}*SharedItemsImports = 13
+		src\common\TestClient.TestPackage.BusinessLogic\TestClient.TestPackage.BusinessLogic.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 5
+		src\common\TestClient.TestPackage.Model\TestClient.TestPackage.Model.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 5
+		src\common\TestClient.TestPackage.Repositories\TestClient.TestPackage.Repositories.projitems*{f9e5ef62-5bdf-4e36-8027-d265754b56c7}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
