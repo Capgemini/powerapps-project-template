@@ -9,3 +9,6 @@
 # Tests output
 /.nyc_output
 /coverage
+
+# Visual Studio cache/options directory
+.vs/
