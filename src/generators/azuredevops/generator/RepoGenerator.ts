@@ -40,7 +40,7 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
       throw new Error('An error occurred while creating repository.');
     }
 
-    const orgName = repo.remoteUrl!.split('/')[2].split('.')[0];
+    const orgName = repo.remoteUrl!.split('/')[3].split('.')[0];
     const repoUrl = `https://${orgName}:${adoToken}@dev.azure.com/${orgName}/${encodeURIComponent(projectName)}/_git/${repoName}`;
 
     await this.pushRepo(repoLocation, repoUrl);
