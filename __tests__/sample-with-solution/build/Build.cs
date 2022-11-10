@@ -130,7 +130,7 @@ class Build : NukeBuild
             var metadataFolder = SolutionDirectory / "Extract";
             var mappingFilePath = SolutionDirectory / "ExtractMappingFile.xml";
             var buildConfiguration  = SolutionType == SolutionType.Unmanaged ? Configuration.Debug : Configuration.Release;
-            Pac($"solution pack -z \"{SolutionDirectory / "bin" / buildConfiguration / $"{DataverseSolution}.zip"}\" -f {metadataFolder} -p {SolutionType} -ad Yes -m { mappingFilePath }");
+            Pac($"solution pack -z \"{SolutionDirectory / "bin" / buildConfiguration / $"{DataverseSolution}.zip"}\" -f {metadataFolder} -p {SolutionType} -ad true -m { mappingFilePath }");
         });
 
     Target PrepareDevelopmentEnvironment => _ => _
