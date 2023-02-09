@@ -7,14 +7,14 @@ A Yeoman based generator that scaffolds Power Platform Projects.
 
 Power Apps Project Generator is an open-source tool designed to make it easier for developers working with Power Apps to quickly get up and running with new projects. It helps to ensure best practices are employed from the start, allowing developers to focus on the task at hand. The generator scaffolds source code for deployment, automated testing, build tasks, and more. In addition, it will configure an Azure DevOps repository, and associated build and release pipelines along with other Azure DevOps components. This allows developers to get up and running quickly and with confidence, and make their projects a success.
 
-The scaffold automates the creation of :
-- Scaffold a project
-- Scaffold Azure DevOps
-- Scaffold a solution
-- Scaffold a web resource project for a solution
-- Scaffold a custom workflow activity/plug-in assembly for a solution.
-- Scaffold reference/configuration data migration for a solution.
-- Scaffold a Power BI project for a solution
+The generator scaffolds:
+- An Azure DevOps project (pipelines, releases, variable groups, service connections, etc.)
+- Build tasks
+- Solution metadata source code
+- Web resource project source code
+- Custom workflow activity/plug-in assembly project source code
+- Reference/configuration data migration project source code
+- Power BI project source code
 
 ## Table of Contents
 
