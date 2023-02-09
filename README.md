@@ -3,11 +3,18 @@
 [![Build Status](https://capgeminiuk.visualstudio.com/GitHub%20Support/_apis/build/status/CI-Builds/NPM%20package/powerapps-project-template?branchName=master)](https://capgeminiuk.visualstudio.com/GitHub%20Support/_build/latest?definitionId=229&branchName=master)
 [![npm (scoped)](https://img.shields.io/npm/v/@capgeminiuk/generator-powerapps-project)](https://www.npmjs.com/package/@capgeminiuk/generator-powerapps-project)
 
-This Yeoman generator scaffolds Power Apps projects. This includes:
+A Yeoman based generator that scaffolds Power Platform Projects.
 
-- Source code
-- Build pipelines
-- Release pipelines
+Power Apps Project Generator is an open-source tool designed to make it easier for developers working with Power Apps to quickly get up and running with new projects. It helps to ensure best practices are employed from the start, allowing developers to focus on the task at hand. The generator scaffolds source code for deployment, automated testing, build tasks, and more. In addition, it will configure an Azure DevOps repository, and associated build and release pipelines along with other Azure DevOps components. This allows developers to get up and running quickly and with confidence, and make their projects a success.
+
+The generator scaffolds:
+- An Azure DevOps project (pipelines, releases, variable groups, service connections, etc.)
+- Build tasks
+- Solution metadata source code
+- Web resource project source code
+- Custom workflow activity/plug-in assembly project source code
+- Reference/configuration data migration project source code
+- Power BI project source code
 
 ## Table of Contents
 
