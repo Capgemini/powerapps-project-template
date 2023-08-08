@@ -40,7 +40,7 @@ export default class RepoGenerator implements IGenerator<GitRepository> {
       throw new Error('An error occurred while creating repository.');
     }
 
-    const orgName : string = repo.remoteUrl!.startsWith('https://dev.azure.com/')
+    const orgName : string = repo.remoteUrl!.includes('dev.azure.com/')
       ? repo.remoteUrl!.split('/')[3] // for https://dev.azure.com/{orgname}/
       : repo.remoteUrl!.split('/')[2].split('.')[0]; // for https://{orgname}.visualstudio.com/
     const repoUrl = `https://${orgName}:${adoToken}@dev.azure.com/${orgName}/${encodeURIComponent(projectName)}/_git/${repoName}`;
