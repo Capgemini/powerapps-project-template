@@ -22,7 +22,7 @@ export default class ExtensionGenerator implements IGenerator<{ publisher: strin
   public async generate() {
     const installedExtensions = await this.conn.getInstalledExtensions();
 
-    const uninstalledEntensions = extensions.filter((extension) => {
+    const uninstalledExtensions = extensions.filter((extension) => {
       const installed = installedExtensions
         // eslint-disable-next-line max-len
         .find((ext) => ext.extensionId === extension.name && ext.publisherId === extension.publisher) !== undefined;
@@ -34,10 +34,16 @@ export default class ExtensionGenerator implements IGenerator<{ publisher: strin
       return !installed;
     });
 
-    const installPromises: Array<Promise<void> | undefined> = uninstalledEntensions
+    const installPromises: Array<Promise<void> | undefined> = uninstalledExtensions
       .map((extension) => this.installExtension(extension.publisher, extension.name));
 
-    await Promise.all(installPromises);
+    try {
+      await Promise.all(installPromises);
+    } catch (e) {
+      this.log('Installing extensions failed. This is likely due to your user (who generated the PAC token) not having permissions to install extensions into this organisation. Please request the following extensions and wait for the install.');
+      uninstalledExtensions.forEach((x) => this.log(`- https://marketplace.visualstudio.com/items?itemName=${x.publisher}.${x.name}`));
+      throw e;
+    }
 
     if (installPromises.length > 0) {
       this.log('Waiting 1 minute for the extension(s) to fully install.');
